@@ -9,7 +9,6 @@ import Intro from "./scenes/Intro";
 import { GameData } from "./GameData"; // global game data
 
 window.addEventListener("load", () => {
-
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.WEBGL,
     backgroundColor: GameData.globals.bgColor,
@@ -42,5 +41,4 @@ window.addEventListener("load", () => {
   };
 
   const game = new Phaser.Game(config); // game initializing according to configs
-
 });
