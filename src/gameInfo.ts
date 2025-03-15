@@ -18,7 +18,7 @@ export let GameInfo = {
     },
 
     menu: {
-      items: ["Credits", "Options", "Exit", "Start Game"],
+      items: ["Play", "Options", "Credits", "Exit"],
       font: "Pixelify Sans",
       align: 'center',
       fontSize: 50,
