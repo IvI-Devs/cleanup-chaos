@@ -24,16 +24,19 @@ export let GameData: gameData = {
   ],
   images: [
     { name: "bootscreen-bg", path: "assets/images/backgrounds/bootscreen.svg" },
+    { name: "bg-01", path: "assets/images/backgrounds/bg-01.svg" },
+    { name: "bg-02", path: "assets/images/backgrounds/bg-02.svg" },
+    { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
   ],
   atlas: [],
   sounds: [
     /*{
-    name: "music",
-    paths: ["assets/sounds/intro.ogg", "assets/sounds/intro.m4a"],
-    volume: 1,
-    loop: true,
-    frame: 1,
-  }*/
+      name: "music",
+      paths: ["assets/sounds/intro.ogg", "assets/sounds/intro.m4a"],
+      volume: 1,
+      loop: true,
+      frame: 1,
+    }*/
   ],
 
   videos: [

@@ -5,7 +5,7 @@ export let GameInfo = {
   description: "...",
   credits: [
       "Created by: ",
-      "Designed by: pAKo3549, A.P.",
+      "Designed by: P4K0, A.P.",
       "Developed by: pH@ntom, p1x3lc4t, Z3n0x, T1g3r",
       "Music by: pH@nto.m, T1g3r",
   ],
@@ -29,7 +29,7 @@ export let GameInfo = {
     },
 
     options: {
-      items: ["Music", "Sound Effects", "Commands"],
+      items: {"Music": true, "Sound Effects": false},
       font: "Pixelify Sans",
       align: 'center',
       fontSize: 50

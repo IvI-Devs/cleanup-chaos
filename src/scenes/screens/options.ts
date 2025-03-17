@@ -32,8 +32,12 @@ export default class Options extends Phaser.Scene {
       .setFontFamily(GameInfo.gameTitle.font);
   }
 
+  preload(){
+    this.load.image("bg-03", "assets/images/backgrounds/bg-03.svg");
+  }
+
   create(){
-    this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    this._background = this.add.image(0, 0, "bg-03").setOrigin(0, 0);
     this._title.setText("Options");
 
     this._menuItems = [];
@@ -44,8 +48,11 @@ export default class Options extends Phaser.Scene {
   }
 
   createMenu(){
-    for(let i = 0; i < GameInfo.options.items.length; i++){
-      const item = GameInfo.menu.items[i];
+    const keys = Object.keys(GameInfo.options.items);
+    const values = Object.values(GameInfo.options.items);
+
+    for(let i = 0; i < keys.length; i++){
+      const item = `${keys[i]}: ${values[i] == true ? 'ON' : 'OFF'}`;
       const x = this.game.canvas.width / 2;
       const y = 400 + i * 75;
 
@@ -80,30 +87,37 @@ export default class Options extends Phaser.Scene {
     });
   }
 
-  updateMenu() {
+  updateMenu(){
+    const keys = Object.keys(GameInfo.options.items);
+    const values = Object.values(GameInfo.options.items);
+
+
     for(let i = 0; i < this._menuItems.length; i++){
+      const item = `${keys[i]}: ${values[i] == true ? 'ON' : 'OFF'}`;
       if(i === this._selectedIndex){
-        this._menuItems[i].setText(`> ${GameInfo.options.items[i]} <`);
+        this._menuItems[i].setText(`> ${item} <`);
       }
-      else this._menuItems[i].setText(GameInfo.options.items[i]);
+      else this._menuItems[i].setText(item);
     }
   }
 
   selectItem(index: number){
-    switch(GameInfo.options.items[index]){
-      case GameInfo.menu.items[0]:
-        console.log("Disable music");
+    const keys = Object.keys(GameInfo.options.items);
+    const selectedKey = keys[index];
+
+    switch(selectedKey){
+      case 'Music':
+        GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
         break;
-      case GameInfo.options.items[1]:
-      console.log("Disable SFX");
-        break;
-      case GameInfo.options.items[2]:
-        console.log("Commands");
+      case 'Sound Effects':
+        GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
         break;
       case 'Exit':
         this.game.destroy(true);
         break;
     }
+
+    this.updateMenu()
   }
 
   goBack(){

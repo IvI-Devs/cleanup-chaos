@@ -7,6 +7,7 @@ import GamePlay from "./scenes/GamePlay";
 import GameOver from "./scenes/GameOver";
 import Intro from "./scenes/Intro";
 import Options from "./scenes/screens/options";
+import Credits from "./scenes/screens/credits";
 import { GameData } from "./GameData"; // global game data
 
 window.addEventListener("load", () => {
@@ -26,7 +27,8 @@ window.addEventListener("load", () => {
       Intro,
       GamePlay,
       GameOver,
-      Options
+      Options,
+      Credits
     ],
     physics: {
       default: "arcade",
