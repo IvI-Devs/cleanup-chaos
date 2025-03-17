@@ -10,6 +10,10 @@ export let GameInfo = {
         "Art by: Name1"
     ],
 
+    default: {
+      font: "Pixelify Sans",
+    },
+
     gameTitle: {
       text: "Guardians of the Void: Cleanup Chaos",
       font: "Pixelify Sans",
@@ -18,10 +22,17 @@ export let GameInfo = {
     },
 
     menu: {
-      items: ["Credits", "Options", "Exit", "Start Game"],
+      items: ["Start Game", "Options", "Credits", "Exit"],
       font: "Pixelify Sans",
       align: 'center',
       fontSize: 50,
     },
+
+    options: {
+      items: ["Music", "Sound Effects", "Commands"],
+      font: "Pixelify Sans",
+      align: 'center',
+      fontSize: 50
+    }
 
 };

@@ -1,15 +1,26 @@
-import { GameInfo } from "../gameInfo";
-import { GameData } from "../GameData";
+import { GameInfo } from "../../gameInfo";
+import { GameData } from "../../GameData";
 
-export default class Boot extends Phaser.Scene {
-  constructor(){ super({ key: "Boot" }) }
+export default class Options extends Phaser.Scene {
+  constructor(){ super({ key: "Options" }) }
   private _background: Phaser.GameObjects.Image;
-  private _gameTitle: Phaser.GameObjects.Text;
+  private _title: Phaser.GameObjects.Text;
+  private _backArrow: Phaser.GameObjects.Text;
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
 
   init(){
-    this._gameTitle = this.add
+    this._backArrow = this.add.text(50, 75, "<").setAlpha(1)
+      .setDepth(1001)
+      .setOrigin(0.5, 1)
+      .setColor("#fff")
+      .setWordWrapWidth(1000)
+      .setFontSize(50)
+      .setFontFamily(GameInfo.default.font)
+      .setInteractive()
+      .on('pointerdown', () => { this.goBack() });
+
+    this._title = this.add
       .text(this.game.canvas.width / 2, 250, "")
       .setAlpha(1)
       .setDepth(1001)
@@ -21,29 +32,26 @@ export default class Boot extends Phaser.Scene {
       .setFontFamily(GameInfo.gameTitle.font);
   }
 
-  preload(){
-    this.cameras.main.setBackgroundColor("fff");
-    this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
-  }
-
-  create() {
+  create(){
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
-    this._gameTitle.setText(GameInfo.gameTitle.text);
+    this._title.setText("Options");
 
     this._menuItems = [];
     this._selectedIndex = 0;
     this.createMenu();
+
+    this.input.keyboard.on('keydown-ESC', () => { this.goBack(); });
   }
 
   createMenu(){
-    for(let i = 0; i < GameInfo.menu.items.length; i++){
+    for(let i = 0; i < GameInfo.options.items.length; i++){
       const item = GameInfo.menu.items[i];
       const x = this.game.canvas.width / 2;
       const y = 400 + i * 75;
 
       let menuItem = this.add.text(x, y, item, {
-        fontSize: GameInfo.menu.fontSize,
-        fontFamily: GameInfo.menu.font,
+        fontSize: GameInfo.options.fontSize,
+        fontFamily: GameInfo.options.font,
         color: '#fff'
       })
       .setOrigin(0.5)
@@ -73,32 +81,34 @@ export default class Boot extends Phaser.Scene {
   }
 
   updateMenu() {
-      for(let i = 0; i < this._menuItems.length; i++){
-        if(i === this._selectedIndex){
-          this._menuItems[i].setText(`> ${GameInfo.menu.items[i]} <`);
-        }
-        else this._menuItems[i].setText(GameInfo.menu.items[i]);
+    for(let i = 0; i < this._menuItems.length; i++){
+      if(i === this._selectedIndex){
+        this._menuItems[i].setText(`> ${GameInfo.options.items[i]} <`);
       }
+      else this._menuItems[i].setText(GameInfo.options.items[i]);
+    }
   }
 
   selectItem(index: number){
-    switch(GameInfo.menu.items[index]){
-      case 'Credits':
-        this.scene.stop(this)
-        this.scene.start('Credits');
+    switch(GameInfo.options.items[index]){
+      case GameInfo.menu.items[0]:
+        console.log("Disable music");
         break;
-      case 'Options':
-        this.scene.stop(this)
-        this.scene.start('Options');
+      case GameInfo.options.items[1]:
+      console.log("Disable SFX");
         break;
-      case 'Start Game':
-        this.scene.stop(this)
-        this.scene.start('Preloader');
+      case GameInfo.options.items[2]:
+        console.log("Commands");
         break;
       case 'Exit':
         this.game.destroy(true);
         break;
     }
+  }
+
+  goBack(){
+    this.scene.stop(this);
+    this.scene.start("Boot");
   }
 
 }

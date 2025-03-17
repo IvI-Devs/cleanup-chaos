@@ -6,6 +6,7 @@ import Preloader from "./scenes/Preloader";
 import GamePlay from "./scenes/GamePlay";
 import GameOver from "./scenes/GameOver";
 import Intro from "./scenes/Intro";
+import Options from "./scenes/screens/options";
 import { GameData } from "./GameData"; // global game data
 
 window.addEventListener("load", () => {
@@ -24,7 +25,8 @@ window.addEventListener("load", () => {
       Preloader,
       Intro,
       GamePlay,
-      GameOver
+      GameOver,
+      Options
     ],
     physics: {
       default: "arcade",

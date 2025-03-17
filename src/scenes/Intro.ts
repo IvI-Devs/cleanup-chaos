@@ -8,8 +8,4 @@ export default class Intro extends Phaser.Scene {
     this._image1 = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2, "phaser");
   }
 
-  update(time: number, delta: number): void {
-    this._image1.angle += 1;
-  }
-
 }
