@@ -27,6 +27,8 @@ export let GameData: gameData = {
     { name: "bg-01", path: "assets/images/backgrounds/bg-01.svg" },
     { name: "bg-02", path: "assets/images/backgrounds/bg-02.svg" },
     { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
+
+    { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
   ],
   atlas: [],
   sounds: [

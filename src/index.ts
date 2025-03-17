@@ -8,6 +8,7 @@ import GameOver from "./scenes/GameOver";
 import Intro from "./scenes/Intro";
 import Options from "./scenes/screens/options";
 import Credits from "./scenes/screens/credits";
+import Exit from "./scenes/easter\ eggs/exit";
 import { GameData } from "./GameData"; // global game data
 
 window.addEventListener("load", () => {
@@ -17,6 +18,7 @@ window.addEventListener("load", () => {
     parent: "my-game",
     scale: {
       mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
       width: GameData.globals.gameWidth,
       height: GameData.globals.gameHeight,
     },
@@ -28,7 +30,8 @@ window.addEventListener("load", () => {
       GamePlay,
       GameOver,
       Options,
-      Credits
+      Credits,
+      Exit
     ],
     physics: {
       default: "arcade",

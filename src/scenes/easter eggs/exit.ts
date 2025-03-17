@@ -1,0 +1,43 @@
+import { GameInfo } from "../../gameInfo";
+import { GameData } from "../../GameData";
+
+export default class Exit extends Phaser.Scene {
+  constructor(){ super({ key: "Exit" }) }
+  private _text: Phaser.GameObjects.Text;
+  private _hole: Phaser.GameObjects.Image;
+
+  init(){
+    this._text = this.add
+      .text(this.game.canvas.width / 2, 200, "")
+      .setAlpha(1)
+      .setDepth(1001)
+      .setOrigin(0.5, 0.5)
+      .setColor('000')
+      .setWordWrapWidth(1000)
+      .setAlign(GameInfo.gameTitle.align)
+      .setFontSize(50)
+      .setFontFamily(GameInfo.gameTitle.font);
+  }
+
+  preload(){
+    this.cameras.main.setBackgroundColor("fff");
+    this.load.image("hole-with-text", "assets/images/other/hole-with-text.png");
+  }
+
+  create(){
+    this._hole = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 100, "hole-with-text")
+      .setOrigin(0.5, 0.5)
+      .setDepth(1000)
+      .setInteractive()
+      .on('pointerdown', () => { this.goBack(); });
+    this._text.setText("U really tried to close a web game with the exit button... :|");
+
+    this.input.keyboard.on('keydown-ESC', () => { this.goBack(); });
+  }
+
+  goBack(){
+    this.scene.stop(this);
+    this.scene.start("Boot");
+  }
+
+}

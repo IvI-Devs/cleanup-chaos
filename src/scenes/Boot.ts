@@ -22,7 +22,7 @@ export default class Boot extends Phaser.Scene {
   }
 
   preload(){
-    this.cameras.main.setBackgroundColor("fff");
+    this.cameras.main.setBackgroundColor("000");
     this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
   }
 
@@ -96,7 +96,9 @@ export default class Boot extends Phaser.Scene {
         this.scene.start('Credits');
         break;
       case 'Exit':
-        this.game.destroy(true);
+        this.scene.stop(this)
+        this.scene.start('Exit');
+        // this.game.destroy(true);
         break;
     }
   }
