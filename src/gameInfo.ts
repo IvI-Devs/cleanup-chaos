@@ -1,14 +1,14 @@
 export let GameInfo = {
-    title: "Cleanup Chaos",
-    version: "1.0.0",
-    authors: ["Name1", "Name2", "Name3", "Name4"],
-    description: "...",
-    credits: [
-        "Created by: Team Name",
-        "Developed by: Name1, Name2, Name3, Name4",
-        "Music by: Name1",
-        "Art by: Name1"
-    ],
+  title: "Cleanup Chaos",
+  version: "1.0.0",
+  authors: ["pH@nto.m", "p1x3lc4t", "Z3n0x", "T1g3r", "pAKo3549", "A.P."],
+  description: "...",
+  credits: [
+      "Created by: ",
+      "Designed by: pAKo3549, A.P.",
+      "Developed by: pH@ntom, p1x3lc4t, Z3n0x, T1g3r",
+      "Music by: pH@nto.m, T1g3r",
+  ],
 
     default: {
       font: "Pixelify Sans",
