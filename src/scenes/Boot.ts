@@ -83,17 +83,17 @@ export default class Boot extends Phaser.Scene {
 
   selectItem(index: number){
     switch(GameInfo.menu.items[index]){
-      case 'Credits':
+      case 'Start Game':
         this.scene.stop(this)
-        this.scene.start('Credits');
+        this.scene.start('Preloader');
         break;
       case 'Options':
         this.scene.stop(this)
         this.scene.start('Options');
         break;
-      case 'Start Game':
+      case 'Credits':
         this.scene.stop(this)
-        this.scene.start('Preloader');
+        this.scene.start('Credits');
         break;
       case 'Exit':
         this.game.destroy(true);
