@@ -62,7 +62,7 @@ export default class Preloader extends Phaser.Scene {
     //-------------------------- Assets Load
 
     //WEB FONT
-    if (GameData.webfonts != null) {
+    if(GameData.webfonts != null){
       let _fonts: Array<string> = [];
       GameData.webfonts.forEach((element: FontAsset) => {
         _fonts.push(element.key);
@@ -70,7 +70,7 @@ export default class Preloader extends Phaser.Scene {
       this.load.addFile(new WebFontFile(this.load, _fonts));
     }
 
-    //local FONT
+    // local FONT
     if (GameData.fonts != null) {
       let _fonts: Array<string> = [];
       GameData.fonts.forEach((element: FontAsset) => {
@@ -78,7 +78,7 @@ export default class Preloader extends Phaser.Scene {
       });
     }
 
-    //SCRIPT
+    // SCRIPT
     if (GameData.scripts != null)
       GameData.scripts.forEach((element: ScriptAsset) => {
         this.load.script(element.key, element.path);
@@ -112,14 +112,14 @@ export default class Preloader extends Phaser.Scene {
         });
       });
 
-    //video
+    // video
     if (GameData.videos != null) {
       GameData.videos.forEach((element: VideoAsset) => {
         this.load.video(element.name, element.path, true);
       });
     }
 
-    //bitmap fonts
+    // bitmap fonts
     if (GameData.bitmapfonts != null)
       GameData.bitmapfonts.forEach((element: BitmapfontAsset) => {
         this.load.bitmapFont(element.name, element.imgpath, element.xmlpath);
