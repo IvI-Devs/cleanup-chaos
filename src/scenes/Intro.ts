@@ -35,6 +35,7 @@ export default class Intro extends Phaser.Scene {
   private trashSpeed: number = 150;
 
   create(){
+    this.score = 0;
     this.hearts = 3;
     this.cursor = this.input.keyboard.createCursorKeys();
     this._background = this.add.image(0, 0, "bg-01").setOrigin(0, 0);
