@@ -1,4 +1,4 @@
-import { GameInfo } from "../gameInfo";
+import { GameInfo } from "../GameInfo";
 import WebFontFile from "../scenes/webFontFile";
 
 export default class Boot extends Phaser.Scene {
@@ -24,7 +24,7 @@ export default class Boot extends Phaser.Scene {
   preload(){
     this.cameras.main.setBackgroundColor("000");
     this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
-    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans'));
+    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
   }
 
   create() {

@@ -1,4 +1,5 @@
 import { GameData } from "../GameData";
+import { GameInfo } from "../GameInfo";
 import WebFontFile from "../scenes/webFontFile";
 
 export default class Preloader extends Phaser.Scene {
@@ -6,6 +7,8 @@ export default class Preloader extends Phaser.Scene {
   private _loading: Phaser.GameObjects.Text;
   private _progress: Phaser.GameObjects.Graphics;
   private _image: Phaser.GameObjects.Image;
+  private _background: Phaser.GameObjects.Image;
+  private _gameTitle: Phaser.GameObjects.Text;
 
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
@@ -14,7 +17,17 @@ export default class Preloader extends Phaser.Scene {
   }
 
   init(){
-    this._image = this.add.image(GameData.preloader.imageX, GameData.preloader.imageY, GameData.preloader.image).setAlpha(0).setScale(0.4);
+    this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    this._gameTitle = this.add
+      .text(this.game.canvas.width / 2, 250, GameInfo.gameTitle.text)
+      .setAlpha(1)
+      .setDepth(1001)
+      .setOrigin(0.5, 1)
+      .setColor('#fff')
+      .setWordWrapWidth(1000)
+      .setAlign(GameInfo.gameTitle.align)
+      .setFontSize(100)
+      .setFontFamily(GameInfo.gameTitle.font);
 
     this.tweens.add({
       targets: [this._image],
@@ -27,20 +40,20 @@ export default class Preloader extends Phaser.Scene {
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
-      .setColor("#000000")
+      .setColor('#fff')
       .setFontSize(40)
       .setFontFamily(GameData.preloader.loadingTextFont);
   }
 
   loadAssets(): void {
     this.load.on("start", () => {});
-    this.load.on("fileprogress", (file: any, value: any) => {});
-    this.load.on("progress", (value: number) => {
-      this._progress.clear();
-      this._progress.fillStyle(GameData.preloader.loadingBarColor, 1);
-      this._progress.fillRect(0, GameData.preloader.loadingBarY, GameData.globals.gameWidth * value, 70);
-      this._loading.setText(GameData.preloader.loadingText + " " + Math.round(value * 100) + "%");
-    });
+    // this.load.on("fileprogress", (file: any, value: any) => {});
+    // this.load.on("progress", (value: number) => {
+    //   this._progress.clear();
+    //   this._progress.fillStyle(GameData.preloader.loadingBarColor, 1);
+    //   this._progress.fillRect(0, GameData.preloader.loadingBarY, GameData.globals.gameWidth * value, 70);
+    //   this._loading.setText(GameData.preloader.loadingText + " " + Math.round(value * 100) + "%");
+    // });
 
     this.load.on("complete", () => {
       this._progress.clear();
@@ -105,11 +118,7 @@ export default class Preloader extends Phaser.Scene {
     // SPRITESHEETS
     if (GameData.spritesheets != null)
       GameData.spritesheets.forEach((element: SpritesheetsAsset) => {
-        this.load.spritesheet(element.name, element.path, {
-          frameWidth: element.width,
-          frameHeight: element.height,
-          endFrame: element.frames,
-        });
+        this.load.spritesheet(element.name, element.path, { frameWidth: element.width, frameHeight: element.height, endFrame: element.frames });
       });
 
     // video
@@ -132,14 +141,11 @@ export default class Preloader extends Phaser.Scene {
       });
 
     // Audio
-    if (GameData.audios != null)
+    if(GameData.audios != null){
       GameData.audios.forEach((element: AudioSpriteAsset) => {
-        this.load.audioSprite(
-          element.name,
-          element.jsonpath,
-          element.paths,
-          element.instance,
-        );
+        this.load.audioSprite(element.name, element.jsonpath, element.paths, element.instance);
       });
+    }
+
   }
 }

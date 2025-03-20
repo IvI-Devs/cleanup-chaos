@@ -1,4 +1,4 @@
-import { GameInfo } from "../../gameInfo";
+import { GameInfo } from "../../GameInfo";
 import { GameData } from "../../GameData";
 
 export default class Options extends Phaser.Scene {
