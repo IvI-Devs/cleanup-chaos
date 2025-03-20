@@ -29,12 +29,17 @@ export let GameData: gameData = {
     { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
+
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
 
     { name: "asteroid-base", path: "assets/images/asteroids/png/base.png" },
 
     { name: "heart-white", path: "assets/images/hearts/white.svg" },
+
+    { name: "bottle", path: "assets/images/trash/bottle.svg" },
+    { name: "can", path: "assets/images/trash/can-1.svg" },
+    { name: "tin", path: "assets/images/trash/tin.svg" }
   ],
   atlas: [],
   sounds: [
