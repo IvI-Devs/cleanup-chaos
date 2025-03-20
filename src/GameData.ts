@@ -32,6 +32,7 @@ export let GameData: gameData = {
 
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
+    { name: "ship-damaged", path: "assets/images/ships/damaged.svg" },
 
     { name: "asteroid-base", path: "assets/images/asteroids/png/base.png" },
 
@@ -39,7 +40,11 @@ export let GameData: gameData = {
 
     { name: "bottle", path: "assets/images/trash/bottle.svg" },
     { name: "can", path: "assets/images/trash/can-1.svg" },
-    { name: "tin", path: "assets/images/trash/tin.svg" }
+    { name: "tin", path: "assets/images/trash/tin.svg" },
+    { name: "pizzaCarton", path: "assets/images/trash/pizza-carton.svg" },
+    { name: "brokenMug", path: "assets/images/trash/broken-mug.svg" },
+    { name: "glassBottle", path: "assets/images/trash/glass-bottle.svg" },
+    { name: "tinStone", path: "assets/images/trash/tin-stone.svg" },
   ],
   atlas: [],
   sounds: [

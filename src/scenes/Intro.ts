@@ -7,9 +7,13 @@ export default class Intro extends Phaser.Scene {
   private heartsGroup: Phaser.GameObjects.Group;
 
   private trashPoints: Record<string, number> = {
-    bottle: 90,
-    can: 20,
-    tin: 70
+    bottle: 45,
+    pizzaCarton: 50,
+    can: 30,
+    tin: 20,
+    tinStone: 10,
+    brokenMug: 25,
+    glassBottle: 15,
   }
 
   private keys: {
@@ -88,6 +92,11 @@ export default class Intro extends Phaser.Scene {
     );
   }
 
+  private updateShip(): void {
+    if(this.hearts == 2){ this._ship.setTexture("ship-slight-damage"); }
+    if(this.hearts == 1){ this._ship.setTexture("ship-damaged"); }
+  }
+
   update(time: number, delta: number){
     if(this.cursor.space.isDown) this._speed = 500;
     else this._speed = 200;
@@ -137,10 +146,21 @@ export default class Intro extends Phaser.Scene {
       const heart = this.add.image(startX + (i * spacing), startY, 'heart-white').setScale(0.5).setScrollFactor(0).setDepth(1000);
       this.heartsGroup.add(heart);
     }
+    this.updateShip();
   }
 
   handleCollision(ship: any, asteroid:any) {
     if(!ship.active || !asteroid.active) return;
+
+    this.time.addEvent({
+      delay: 150,
+      repeat: 1,
+      callback: () => {
+          if (this._ship.tintFill) this._ship.clearTint();
+          else this._ship.setTintFill(0xff0000);
+      },
+      callbackScope: this,
+    });
 
     if(this.hearts > 0){
       this.hearts -= 1;
@@ -252,9 +272,9 @@ export default class Intro extends Phaser.Scene {
     }
 
     const keys = Object.keys(this.trashPoints) as Array<keyof typeof this.trashPoints>;
-    const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)]; // "bottle", "can" o "tin"
+    const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
-    const trash = this.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.5, 1.5))
+    const trash = this.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.5, 0.7))
       .setInteractive().on('pointerdown', () => { trash.destroy(); this.updateScore(this.trashPoints[randomTrash]); });
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 
