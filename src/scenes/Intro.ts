@@ -251,12 +251,12 @@ export default class Intro extends Phaser.Scene {
       }
     }
 
-    const asteroid = this.asteroids.create(x, y, 'asteroid-base').setScale(Phaser.Math.Between(1.5, 5));
+    const asteroid = this.asteroids.create(x, y, 'asteroid').setScale(Phaser.Math.FloatBetween(0.1, 0.5));
     asteroid.setAngularVelocity(Phaser.Math.Between(-50, 50));
-    asteroid.body.setSize(asteroid.width * 0.35, asteroid.height * 0.35);
+    asteroid.body.setSize(asteroid.width, asteroid.height);
     asteroid.body.setOffset(
-      (asteroid.width - asteroid.width * 0.35) / 2,
-      (asteroid.height - asteroid.height * 0.35) / 2
+      (asteroid.width - asteroid.width) / 2,
+      (asteroid.height - asteroid.height) / 2
     );
 
     const targetPoint = new Phaser.Math.Vector2(
