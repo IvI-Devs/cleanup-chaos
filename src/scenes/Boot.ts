@@ -71,6 +71,10 @@ export default class Boot extends Phaser.Scene {
     this.input.keyboard.on('keydown-ENTER', () => {
         this.selectItem(this._selectedIndex);
     });
+
+    this.input.keyboard.on('keydown-SPACE', () => {
+        this.selectItem(this._selectedIndex);
+    });
   }
 
   updateMenu() {

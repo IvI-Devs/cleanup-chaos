@@ -24,9 +24,11 @@ export let GameData: gameData = {
   ],
   images: [
     { name: "bootscreen-bg", path: "assets/images/backgrounds/bootscreen.svg" },
+    { name: "bg-example", path: "assets/images/backgrounds/example.jpg" },
     { name: "bg-01", path: "assets/images/backgrounds/bg-01.svg" },
     { name: "bg-02", path: "assets/images/backgrounds/bg-02.svg" },
     { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
+    { name: "bg-01-wider", path: "assets/images/backgrounds/bg-01-wider.png" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
 
@@ -39,12 +41,14 @@ export let GameData: gameData = {
     { name: "heart-white", path: "assets/images/hearts/white.svg" },
 
     { name: "bottle", path: "assets/images/trash/bottle.svg" },
-    { name: "can", path: "assets/images/trash/can-1.svg" },
+    { name: "can", path: "assets/images/trash/can.svg" },
     { name: "tin", path: "assets/images/trash/tin.svg" },
     { name: "pizzaCarton", path: "assets/images/trash/pizza-carton.svg" },
     { name: "brokenMug", path: "assets/images/trash/broken-mug.svg" },
     { name: "glassBottle", path: "assets/images/trash/glass-bottle.svg" },
     { name: "tinStone", path: "assets/images/trash/tin-stone.svg" },
+
+    { name: "debugRectangle", path: "assets/images/ship-debug.svg" },
   ],
   atlas: [],
   sounds: [

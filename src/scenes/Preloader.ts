@@ -9,6 +9,7 @@ export default class Preloader extends Phaser.Scene {
   private _image: Phaser.GameObjects.Image;
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
+  private _backToMenu: Phaser.GameObjects.Text;
 
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
@@ -29,6 +30,16 @@ export default class Preloader extends Phaser.Scene {
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
 
+    this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
+      .setDepth(1001)
+      .setOrigin(0.5, 1)
+      .setColor("#fff")
+      .setWordWrapWidth(1000)
+      .setFontSize(35)
+      .setFontFamily(GameInfo.default.font)
+      .setInteractive()
+      .on('pointerdown', () => { this.goToMenu() });
+
     this.tweens.add({
       targets: [this._image],
       alpha: 1,
@@ -43,6 +54,11 @@ export default class Preloader extends Phaser.Scene {
       .setColor('#fff')
       .setFontSize(40)
       .setFontFamily(GameData.preloader.loadingTextFont);
+  }
+
+  private goToMenu(){
+    this.scene.stop(this);
+    this.scene.start('Boot');
   }
 
   loadAssets(): void {

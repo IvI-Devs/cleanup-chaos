@@ -33,6 +33,8 @@ export default class Exit extends Phaser.Scene {
     this._text.setText("U really tried to close a web game with the exit button... :|");
 
     this.input.keyboard.on('keydown-ESC', () => { this.goBack(); });
+    this.input.keyboard.on('keydown-SPACE', () => { this.goBack(); });
+    this.input.keyboard.on('keydown-ENTER', () => { this.goBack(); });
   }
 
   goBack(){
