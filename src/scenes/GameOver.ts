@@ -4,15 +4,19 @@ export default class GameOver extends Phaser.Scene {
   constructor(public registry: Phaser.Data.DataManager){ super({ key: "GameOver" }) }
   private _gameOverText: Phaser.GameObjects.Text;
   private _playAgainButton: Phaser.GameObjects.Text;
-  private _score: number;
+  public score: number;
   private _scoreText: Phaser.GameObjects.Text;
   private _background: Phaser.GameObjects.Image;
   private _backToMenu: Phaser.GameObjects.Text;
 
   create(){
     this.cameras.main.setBackgroundColor('#000');
-    this._score = this.registry.get("score") || 0;
+    this.score = this.registry.get("score") || 0;
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+
+    if(this.score > parseInt(localStorage.getItem('score'))){
+      localStorage.setItem('score', this.score.toString());
+    }
 
     this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
       .setDepth(1001)
@@ -33,7 +37,7 @@ export default class GameOver extends Phaser.Scene {
       .setFontFamily(GameInfo.default.font);
 
     this._scoreText = this.add
-      .text(this.game.canvas.width / 2, this.game.canvas.height / 2 - 50, `Your score: ${this._score}`)
+      .text(this.game.canvas.width / 2, this.game.canvas.height / 2 - 50, `Your score: ${this.score}`)
       .setAlpha(1)
       .setOrigin(0.5, 1)
       .setColor('#fff')

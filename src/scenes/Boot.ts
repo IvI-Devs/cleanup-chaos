@@ -5,6 +5,7 @@ export default class Boot extends Phaser.Scene {
   constructor(){ super({ key: "Boot" }) }
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
+  private _highestScore: Phaser.GameObjects.Text;
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
 
@@ -19,6 +20,17 @@ export default class Boot extends Phaser.Scene {
       .setAlign(GameInfo.gameTitle.align)
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
+
+    if(localStorage.getItem('score') === null){
+      localStorage.setItem('score', '0');
+    }
+    else{
+      this._highestScore = this.add.text(this.game.canvas.width / 2 + 275, 300, `High Score: ${localStorage.getItem('score')}`)
+        .setOrigin(0.5, 1)
+        .setColor('#fff')
+        .setFontSize(40)
+        .setFontFamily(GameInfo.default.font);
+    }
   }
 
   preload(){
