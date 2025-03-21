@@ -42,7 +42,7 @@ export default class Intro extends Phaser.Scene {
     this.registry.set("score", 0);
     this.cursor = this.input.keyboard.createCursorKeys();
     this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'bg-01-wider').setOrigin(0, 0);
-    this._scoreText = this.add.text(50, 50, `Score: ${this.score}`).setFontSize(35).setFontFamily(GameInfo.default.font);
+    this._scoreText = this.add.text(50, 50, `Score: ${this.score}`).setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
     this.asteroids = this.physics.add.group();
     this.trashGroup = this.physics.add.group();

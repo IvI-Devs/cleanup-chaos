@@ -10,6 +10,7 @@ export default class Preloader extends Phaser.Scene {
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
   private _backToMenu: Phaser.GameObjects.Text;
+  private _highestScore: Phaser.GameObjects.Text;
 
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
@@ -29,6 +30,18 @@ export default class Preloader extends Phaser.Scene {
       .setAlign(GameInfo.gameTitle.align)
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
+
+    if(localStorage.getItem('score') === null){
+      localStorage.setItem('score', '0');
+    }
+    else{
+      this._highestScore = this.add.text(this.game.canvas.width / 2, 300, `High Score: ${localStorage.getItem('score')}`)
+        .setDepth(1001)
+        .setOrigin(0.5, 1)
+        .setColor('#fff')
+        .setFontSize(40)
+        .setFontFamily(GameInfo.default.font);
+    }
 
     this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
       .setDepth(1001)
