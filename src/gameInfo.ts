@@ -32,6 +32,17 @@ export let GameInfo = {
       font: "Pixelify Sans",
       align: 'center',
       fontSize: 50
+    },
+
+    trash: {
+      bottle: 45,
+      pizzaCarton: 75,
+      can: 30
+    },
+
+    powerUps: {
+      shield: 5000,
+      speed: 5000,
     }
 
 };

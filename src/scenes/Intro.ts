@@ -19,17 +19,7 @@ export default class Intro extends Phaser.Scene {
   private asteroidSpeed: number = 150;
   private trashSpeed: number = 150;
 
-  private trashPoints: Record<string, number> = {
-    bottle: 45,
-    pizzaCarton: 50,
-    can: 30,
-  }
-
   private powerUpsIndicators: Record<string, Phaser.GameObjects.Image> = {};
-  private powerUpsList: Record<string, number> = {
-    'shield': 5000,
-    'speedBoost': 5000,
-  }
 
   private keys: {
     W: Phaser.Input.Keyboard.Key,
@@ -80,14 +70,14 @@ export default class Intro extends Phaser.Scene {
   private updateScore(score: number): void { this.score += score; this._scoreText.setText(`Score: ${this.score}`); }
 
   private createPowerUpIndicators() {
-    Object.keys(this.powerUpsList).forEach((powerUp, index) => {
+    Object.keys(GameInfo.powerUps).forEach((powerUp, index) => {
       this.powerUpsIndicators[powerUp] = this.add.image(50 + index * 50, 160, `powerUp-${powerUp}`)
         .setOrigin(0, 0).setDepth(1000).setScale(0.2).setAlpha(0);
     });
   }
 
   private updateIndicators(ship: any){
-    Object.keys(this.powerUpsList).forEach(type => {
+    Object.keys(GameInfo.powerUps).forEach(type => {
       this.powerUpsIndicators[type].setAlpha(ship.data.get(type) ? 1 : 0);
     });
   }
@@ -132,7 +122,7 @@ export default class Intro extends Phaser.Scene {
       this._ship.angle = 180;
     }
 
-    Object.entries(this.powerUpsList).forEach(([type, duration]) => {
+    Object.entries(GameInfo.powerUps).forEach(([type, duration]) => {
       if(this._ship.data.get(`${type}Expiry`) > this.time.now){
         let flashStart = this._ship.data.get(`${type}FlashTime`);
         if(flashStart && this.time.now >= flashStart){
@@ -192,7 +182,7 @@ export default class Intro extends Phaser.Scene {
   pickUpTrash(ship: any, trash: any){
     if(!ship.active || !trash.active) return;
     if(trash.body) trash.destroy();
-    this.updateScore(this.trashPoints[trash.texture.key]);
+    this.updateScore(GameInfo.trash[trash.texture.key as keyof typeof GameInfo.trash]);
   }
 
   handleCollision(ship: any, asteroid:any){
@@ -249,7 +239,7 @@ export default class Intro extends Phaser.Scene {
           y = Phaser.Math.Between(-padding, screenHeight + padding);
       }
 
-      const keys = Object.keys(this.powerUpsList) as Array<keyof typeof this.powerUpsList>;
+      const keys = Object.keys(GameInfo.powerUps) as Array<keyof typeof GameInfo.powerUps>;
       const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
 
       const powerUp = this.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
@@ -266,7 +256,7 @@ export default class Intro extends Phaser.Scene {
     const type = powerUp.data.get('type');
     let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
     let remainingTime = currentExpiry - this.time.now; // if remainingTime > 0
-    let powerUpTime = remainingTime > 0 ? remainingTime + this.powerUpsList[type] : this.powerUpsList[type];
+    let powerUpTime = remainingTime > 0 ? remainingTime + GameInfo.powerUps[type as keyof typeof GameInfo.powerUps] : GameInfo.powerUps[type as keyof typeof GameInfo.powerUps];
     let newExpiry = this.time.now + powerUpTime;
 
     if(ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
@@ -389,11 +379,11 @@ export default class Intro extends Phaser.Scene {
       }
     }
 
-    const keys = Object.keys(this.trashPoints) as Array<keyof typeof this.trashPoints>;
+    const keys = Object.keys(GameInfo.trash) as Array<keyof typeof GameInfo.trash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
     const trash = this.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
-      .setInteractive().on('pointerdown', () => { trash.destroy(); this.updateScore(this.trashPoints[randomTrash]); });
+      .setInteractive().on('pointerdown', () => { trash.destroy(); this.updateScore(GameInfo.trash[randomTrash]); });
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 
     const targetPoint = new Phaser.Math.Vector2(
