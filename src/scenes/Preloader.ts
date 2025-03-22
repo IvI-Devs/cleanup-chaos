@@ -88,6 +88,11 @@ export default class Preloader extends Phaser.Scene {
       this._progress.clear();
       this._loading.setText(GameData.preloader.loadingTextComplete);
 
+      this.input.keyboard.on('keydown-ESC', () => {
+        this.scene.stop("Preloader");
+        this.scene.start("Boot");
+      });
+
       this.input.keyboard.on("keydown", () => {
         this.tweens.add({
           targets: [this._image, this._loading],

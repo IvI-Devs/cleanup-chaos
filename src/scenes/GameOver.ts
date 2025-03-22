@@ -54,6 +54,7 @@ export default class GameOver extends Phaser.Scene {
       .setInteractive().on('pointerdown', () => this.playAgain() );
 
 
+    this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
     this.input.keyboard.on('keydown-SPACE', () => { this.playAgain(); });
     this.input.keyboard.on('keydown-ENTER', () => { this.playAgain(); });
   }

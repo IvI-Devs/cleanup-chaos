@@ -25,10 +25,10 @@ export default class Boot extends Phaser.Scene {
       localStorage.setItem('score', '0');
     }
     else{
-      this._highestScore = this.add.text(this.game.canvas.width / 2 + 275, 300, `High Score: ${localStorage.getItem('score')}`)
+      this._highestScore = this.add.text(this.game.canvas.width / 2 + 300, 300, `High Score: ${localStorage.getItem('score')}`)
         .setDepth(1001)
         .setOrigin(0.5, 1)
-        .setColor('#fff')
+        .setColor('#0099DB')
         .setFontSize(40)
         .setFontFamily(GameInfo.default.font);
     }
