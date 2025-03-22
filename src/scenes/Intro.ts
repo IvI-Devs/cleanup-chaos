@@ -92,13 +92,22 @@ export default class Intro extends Phaser.Scene {
     this._ship.setData('speedBoost', false);
   }
 
-  private updateShip(): void {
-    if(this.hearts == 2){ this._ship.setTexture("ship-slight-damage"); }
-    if(this.hearts == 1){ this._ship.setTexture("ship-damaged"); }
+  private updateShip(ship: any): void {
+    if(ship.data.get('shield') !== false){
+      if(this.hearts == 3){ ship.setTexture("ship-base-shielded"); }
+      if(this.hearts == 2){ this._ship.setTexture("ship-slight-damage-shielded"); }
+      if(this.hearts == 1){ this._ship.setTexture("ship-damaged-shielded"); }
+    }
+    else{
+      if(this.hearts == 3){ this._ship.setTexture("ship-base"); }
+      if(this.hearts == 2){ this._ship.setTexture("ship-slight-damage"); }
+      if(this.hearts == 1){ this._ship.setTexture("ship-damaged"); }
+    }
+
   }
 
   update(time: number, delta: number){
-    if(this.cursor.space.isDown && this._ship.getData('speedBoost')) this._speed = 650;
+    if(this.cursor.space.isDown && this._ship.getData('speed')) this._speed = 650;
     else this._speed = 250;
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
@@ -122,7 +131,7 @@ export default class Intro extends Phaser.Scene {
       this._ship.angle = 180;
     }
 
-    Object.entries(GameInfo.powerUps).forEach(([type, duration]) => {
+    Object.entries(GameInfo.powerUps).forEach(([type]) => {
       if(this._ship.data.get(`${type}Expiry`) > this.time.now){
         let flashStart = this._ship.data.get(`${type}FlashTime`);
         if(flashStart && this.time.now >= flashStart){
@@ -131,6 +140,8 @@ export default class Intro extends Phaser.Scene {
 
           if (elapsed % flashInterval < flashInterval / 2) this.powerUpsIndicators[type].setAlpha(0);
           else this.powerUpsIndicators[type].setAlpha(1);
+
+          this.flashObject(this._ship, flashInterval); // to fix
         }
       }
     });
@@ -160,6 +171,18 @@ export default class Intro extends Phaser.Scene {
     });
   }
 
+  private flashObject(item: any, frequency: number){
+    this.time.addEvent({
+      delay: frequency,
+      repeat: 1,
+      callback: () => {
+        if (item.tintFill) item.clearTint();
+        else item.setTintFill(0xffffff);
+      },
+      callbackScope: this,
+    });
+  }
+
   private updateHearts(){
     if(this.hearts <= 0){
       this.registry.set("score", this.score);
@@ -176,7 +199,7 @@ export default class Intro extends Phaser.Scene {
       const heart = this.add.image(startX + (i * spacing), startY, 'heart-white').setScale(0.5).setScrollFactor(0).setDepth(1000);
       this.heartsGroup.add(heart);
     }
-    this.updateShip();
+    this.updateShip(this._ship);
   }
 
   pickUpTrash(ship: any, trash: any){
@@ -270,10 +293,12 @@ export default class Intro extends Phaser.Scene {
       ship.setData(type, false);
       ship.setData(`${type}Expiry`, 0);
       this.updateIndicators(ship);
+      this.updateShip(ship);
     });
 
     ship.setData(`${type}Timer`, powerUpTimer);
 
+    this.updateShip(ship);
     if(powerUp.body) powerUp.destroy();
   }
 

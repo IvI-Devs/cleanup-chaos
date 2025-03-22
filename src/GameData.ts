@@ -3,7 +3,7 @@ export let GameData: gameData = {
     gameWidth: 1280,
     gameHeight: 800,
     bgColor: "#ffffff",
-    debug: true
+    debug: false
   },
 
   preloader: {
@@ -35,6 +35,9 @@ export let GameData: gameData = {
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
     { name: "ship-damaged", path: "assets/images/ships/damaged.svg" },
+    { name: "ship-base-shielded", path: "assets/images/ships/base-shielded.svg" },
+    { name: "ship-slight-damage-shielded", path: "assets/images/ships/slight-damage-shielded.svg" },
+    { name: "ship-damaged-shielded", path: "assets/images/ships/damaged-shielded.svg" },
 
     { name: "asteroid-base", path: "assets/images/asteroids/png/base.png" },
     { name: "asteroid", path: "assets/images/asteroids/asteroid.svg" },
