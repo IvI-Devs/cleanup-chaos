@@ -25,6 +25,7 @@ export default class Intro extends Phaser.Scene {
     can: 30,
   }
 
+  private powerUpsIndicators: Record<string, Phaser.GameObjects.Image> = {};
   private powerUpsList: Record<string, number> = {
     'shield': 5000,
     'speedBoost': 5000,
@@ -45,6 +46,8 @@ export default class Intro extends Phaser.Scene {
     this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'bg-01-wider').setOrigin(0, 0);
     this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
+
+    this.createPowerUpIndicators();
 
     this.asteroids = this.physics.add.group();
     this.trashGroup = this.physics.add.group();
@@ -71,10 +74,23 @@ export default class Intro extends Phaser.Scene {
 
     this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: 1500, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: 5000, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
   private updateScore(score: number): void { this.score += score; this._scoreText.setText(`Score: ${this.score}`); }
+
+  private createPowerUpIndicators() {
+    Object.keys(this.powerUpsList).forEach((powerUp, index) => {
+      this.powerUpsIndicators[powerUp] = this.add.image(50 + index * 50, 160, `powerUp-${powerUp}`)
+        .setOrigin(0, 0).setDepth(1000).setScale(0.2).setAlpha(0);
+    });
+  }
+
+  private updateIndicators(ship: any){
+    Object.keys(this.powerUpsList).forEach(type => {
+      this.powerUpsIndicators[type].setAlpha(ship.data.get(type) ? 1 : 0);
+    });
+  }
 
   private createShip(): void {
     this._ship = this.physics.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "ship-base").setScale(0.5);
@@ -116,6 +132,18 @@ export default class Intro extends Phaser.Scene {
       this._ship.angle = 180;
     }
 
+    Object.entries(this.powerUpsList).forEach(([type, duration]) => {
+      if(this._ship.data.get(`${type}Expiry`) > this.time.now){
+        let flashStart = this._ship.data.get(`${type}FlashTime`);
+        if(flashStart && this.time.now >= flashStart){
+          let elapsed = this.time.now - flashStart;
+          let flashInterval = 250;
+
+          if (elapsed % flashInterval < flashInterval / 2) this.powerUpsIndicators[type].setAlpha(0);
+          else this.powerUpsIndicators[type].setAlpha(1);
+        }
+      }
+    });
 
     const body = this._ship.body as Phaser.Physics.Arcade.Body;
     body.setSize(this._ship.width, this._ship.height);
@@ -204,27 +232,27 @@ export default class Intro extends Phaser.Scene {
 
       const edge = Phaser.Math.Between(0, 3);
       switch (edge) {
-          case 0: // Top
-              x = Phaser.Math.Between(-padding, screenWidth + padding);
-              y = -padding;
-              break;
-          case 1: // Right
-              x = screenWidth + padding;
-              y = Phaser.Math.Between(-padding, screenHeight + padding);
-              break;
-          case 2: // Bottom
-              x = Phaser.Math.Between(-padding, screenWidth + padding);
-              y = screenHeight + padding;
-              break;
-          default: // Left
-              x = -padding;
-              y = Phaser.Math.Between(-padding, screenHeight + padding);
+        case 0: // Top
+          x = Phaser.Math.Between(-padding, screenWidth + padding);
+          y = -padding;
+          break;
+        case 1: // Right
+          x = screenWidth + padding;
+          y = Phaser.Math.Between(-padding, screenHeight + padding);
+          break;
+        case 2: // Bottom
+          x = Phaser.Math.Between(-padding, screenWidth + padding);
+          y = screenHeight + padding;
+          break;
+        default: // Left
+          x = -padding;
+          y = Phaser.Math.Between(-padding, screenHeight + padding);
       }
 
       const keys = Object.keys(this.powerUpsList) as Array<keyof typeof this.powerUpsList>;
       const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
 
-      const powerUp = this.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.5);
+      const powerUp = this.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
       powerUp.body.setSize(powerUp.width, powerUp.height);
       powerUp.setData('type', powerUpType);
 
@@ -238,20 +266,23 @@ export default class Intro extends Phaser.Scene {
     const type = powerUp.data.get('type');
     let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
     let remainingTime = currentExpiry - this.time.now; // if remainingTime > 0
-    let speedBoostTime = remainingTime > 0 ? remainingTime + this.powerUpsList[type] : this.powerUpsList[type];
-    let newExpiry = this.time.now + speedBoostTime;
+    let powerUpTime = remainingTime > 0 ? remainingTime + this.powerUpsList[type] : this.powerUpsList[type];
+    let newExpiry = this.time.now + powerUpTime;
 
     if(ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
 
     ship.setData(type, true);
     ship.setData(`${type}Expiry`, newExpiry);
+    ship.setData(`${type}FlashTime`, newExpiry - 1000);
+    this.updateIndicators(ship);
 
-    let speedBoostTimer = this.time.delayedCall(speedBoostTime, () => {
+    let powerUpTimer = this.time.delayedCall(powerUpTime, () => {
       ship.setData(type, false);
       ship.setData(`${type}Expiry`, 0);
+      this.updateIndicators(ship);
     });
 
-    ship.setData(`${type}Timer`, speedBoostTimer);
+    ship.setData(`${type}Timer`, powerUpTimer);
 
     if(powerUp.body) powerUp.destroy();
   }
