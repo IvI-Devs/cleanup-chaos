@@ -5,16 +5,29 @@ export default class Intro extends Phaser.Scene {
   constructor(public registry: Phaser.Data.DataManager){ super({ key: "Intro" }); }
   public score: number = 0;
   public hearts: number = 3;
+
+  private _background: Phaser.GameObjects.TileSprite;
+  private _ship: Phaser.GameObjects.Image;
+  private _scoreText: Phaser.GameObjects.Text;
+  private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
+  private _speed: number = 250;
+
+  private asteroids: Phaser.Physics.Arcade.Group;
+  private trashGroup: Phaser.Physics.Arcade.Group;
   private heartsGroup: Phaser.GameObjects.Group;
+  private powerUps: Phaser.Physics.Arcade.Group;
+  private asteroidSpeed: number = 150;
+  private trashSpeed: number = 150;
 
   private trashPoints: Record<string, number> = {
     bottle: 45,
     pizzaCarton: 50,
     can: 30,
-    // tin: 20,
-    // tinStone: 10,
-    // brokenMug: 25,
-    // glassBottle: 15,
+  }
+
+  private powerUpsList: Record<string, number> = {
+    'shield': 5000,
+    'speedBoost': 5000,
   }
 
   private keys: {
@@ -24,28 +37,18 @@ export default class Intro extends Phaser.Scene {
     D: Phaser.Input.Keyboard.Key
   };
 
-  private _background: Phaser.GameObjects.TileSprite;
-  private _background2: Phaser.GameObjects.Image;
-  private _ship: Phaser.GameObjects.Image;
-  private _scoreText: Phaser.GameObjects.Text;
-  private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
-  private _speed: number = 250;
-
-  private asteroids: Phaser.Physics.Arcade.Group;
-  private asteroidSpeed: number = 150;
-  private trashGroup: Phaser.Physics.Arcade.Group;
-  private trashSpeed: number = 150;
-
   create(){
     this.score = 0;
     this.hearts = 3;
     this.registry.set("score", 0);
     this.cursor = this.input.keyboard.createCursorKeys();
     this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'bg-01-wider').setOrigin(0, 0);
-    this._scoreText = this.add.text(50, 50, `Score: ${this.score}`).setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
+    this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
+      .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
     this.asteroids = this.physics.add.group();
     this.trashGroup = this.physics.add.group();
+    this.powerUps = this.physics.add.group();
     this.heartsGroup = this.add.group();
 
     this.updateScore(this.score);
@@ -53,23 +56,11 @@ export default class Intro extends Phaser.Scene {
     this.updateHearts();
 
     this.physics.world.setBounds(50, 50, this.scale.width - 50 * 2, this.scale.height - 50 * 2);
-
     this.physics.world.enable(this._ship);
-    this.physics.add.overlap(
-      this._ship,
-      this.asteroids,
-      (ship, asteroid) => this.handleCollision(ship, asteroid),
-      undefined,
-      this
-    );
 
-    this.physics.add.overlap(
-      this._ship,
-      this.trashGroup,
-      (ship, trash) => this.pickUpTrash(ship, trash),
-      undefined,
-      this
-    );
+    this.physics.add.overlap(this._ship, this.asteroids, (ship, asteroid) => this.handleCollision(ship, asteroid), undefined, this);
+    this.physics.add.overlap(this._ship, this.trashGroup, (ship, trash) => this.pickUpTrash(ship, trash), undefined, this);
+    this.physics.add.overlap(this._ship, this.powerUps, (ship, powerUp) => this.rocketEnhancement(ship, powerUp), undefined, this);
 
     this.keys = {
       W: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -78,19 +69,9 @@ export default class Intro extends Phaser.Scene {
       D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     };
 
-    this.time.addEvent({
-      delay: 1500,
-      callback: this.spawnAsteroid,
-      callbackScope: this,
-      loop: true
-    });
-
-    this.time.addEvent({
-      delay: 1500,
-      callback: this.spawnTrash,
-      callbackScope: this,
-      loop: true
-    });
+    this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: 1500, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
   private updateScore(score: number): void { this.score += score; this._scoreText.setText(`Score: ${this.score}`); }
@@ -100,6 +81,9 @@ export default class Intro extends Phaser.Scene {
     const body = this._ship.body as Phaser.Physics.Arcade.Body;
     body.setSize(this._ship.width, this._ship.height);
     body.setCollideWorldBounds(true);
+
+    this._ship.setData('shield', false);
+    this._ship.setData('speedBoost', false);
   }
 
   private updateShip(): void {
@@ -108,8 +92,8 @@ export default class Intro extends Phaser.Scene {
   }
 
   update(time: number, delta: number){
-    if(this.cursor.space.isDown) this._speed = 500;
-    else this._speed = 200;
+    if(this.cursor.space.isDown && this._ship.getData('speedBoost')) this._speed = 650;
+    else this._speed = 250;
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
       this._ship.x -= this._speed * delta / 1000;
@@ -138,7 +122,7 @@ export default class Intro extends Phaser.Scene {
 
     if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       this._ship.angle = -135;
-      // body.setSize(this._ship.width - 50, this._ship.height - 50);
+      // body.setSize(this._ship.width - 50, this._ship.height - 50); // to update
     }
     if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       this._ship.angle = 135;
@@ -183,39 +167,103 @@ export default class Intro extends Phaser.Scene {
     this.updateScore(this.trashPoints[trash.texture.key]);
   }
 
-  handleCollision(ship: any, asteroid:any) {
+  handleCollision(ship: any, asteroid:any){
     if(!ship.active || !asteroid.active) return;
+    if(asteroid.body) asteroid.destroy(); // to do: asteroid destruction animation
 
-    this.time.addEvent({
-      delay: 150,
-      repeat: 1,
-      callback: () => {
+    if(this._ship.getData('shield') == false){
+      this.time.addEvent({
+        delay: 150,
+        repeat: 1,
+        callback: () => {
           if (this._ship.tintFill) this._ship.clearTint();
           else this._ship.setTintFill(0xff0000);
-      },
-      callbackScope: this,
-    });
+        },
+        callbackScope: this,
+      });
 
-    if(this.hearts > 0){
-      this.hearts -= 1;
-      this.updateHearts();
+      if(this.hearts > 0){
+        this.hearts -= 1;
+        this.updateHearts();
+      }
+
+      if (this.sound.get('collision')) this.sound.play('collision', { volume: 0.5, detune: 200 });
+      this.cameras.main.shake(100, 0.005);
     }
 
-    // to do: asteroid destruction animation
-    if(asteroid.body) asteroid.destroy();
-
-    if (this.sound.get('collision')) this.sound.play('collision', { volume: 0.5, detune: 200 });
-    this.cameras.main.shake(100, 0.005);
   }
 
-  private spawnAsteroid() {
+  private spawnPowerUps(){
+      const screenWidth = this.game.canvas.width;
+      const screenHeight = this.game.canvas.height;
+      const padding = 50;
+
+      let x: number, y: number;
+      let targetX = screenWidth / 2;
+      let targetY = screenHeight / 2;
+
+      const edge = Phaser.Math.Between(0, 3);
+      switch (edge) {
+          case 0: // Top
+              x = Phaser.Math.Between(-padding, screenWidth + padding);
+              y = -padding;
+              break;
+          case 1: // Right
+              x = screenWidth + padding;
+              y = Phaser.Math.Between(-padding, screenHeight + padding);
+              break;
+          case 2: // Bottom
+              x = Phaser.Math.Between(-padding, screenWidth + padding);
+              y = screenHeight + padding;
+              break;
+          default: // Left
+              x = -padding;
+              y = Phaser.Math.Between(-padding, screenHeight + padding);
+      }
+
+      const keys = Object.keys(this.powerUpsList) as Array<keyof typeof this.powerUpsList>;
+      const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
+
+      const powerUp = this.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.5);
+      powerUp.body.setSize(powerUp.width, powerUp.height);
+      powerUp.setData('type', powerUpType);
+
+      this.physics.moveTo(powerUp, targetX, targetY, 100);
+      powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
+  }
+
+  private rocketEnhancement(ship: any, powerUp: any){
+    if(!ship.active || !powerUp.active || !powerUp.data) return;
+
+    const type = powerUp.data.get('type');
+    let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
+    let remainingTime = currentExpiry - this.time.now; // if remainingTime > 0
+    let speedBoostTime = remainingTime > 0 ? remainingTime + this.powerUpsList[type] : this.powerUpsList[type];
+    let newExpiry = this.time.now + speedBoostTime;
+
+    if(ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
+
+    ship.setData(type, true);
+    ship.setData(`${type}Expiry`, newExpiry);
+
+    let speedBoostTimer = this.time.delayedCall(speedBoostTime, () => {
+      ship.setData(type, false);
+      ship.setData(`${type}Expiry`, 0);
+    });
+
+    ship.setData(`${type}Timer`, speedBoostTimer);
+
+    if(powerUp.body) powerUp.destroy();
+  }
+
+  private spawnAsteroid(){
     const screenWidth = this.game.canvas.width;
     const screenHeight = this.game.canvas.height;
     const minDistanceFromShip = 300;
     const padding = 50;
 
     let x: number, y: number;
-    let edge = Phaser.Math.Between(0, 3); // 0=top, 1=right, 2=bottom, 3=left
+    let edge = Phaser.Math.Between(0, 3); // 0 = top, 1 = right, 2 = bottom, 3 = left
 
     switch(edge) {
       case 0: // Top
