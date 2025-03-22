@@ -44,9 +44,9 @@ export default class Intro extends Phaser.Scene {
     this.powerUps = this.physics.add.group();
     this.heartsGroup = this.add.group();
 
-    this.updateScore(this.score);
     this.createShip();
     this.updateHearts();
+    this.updateScore(this.score);
 
     this.physics.world.setBounds(50, 50, this.scale.width - 50 * 2, this.scale.height - 50 * 2);
     this.physics.world.enable(this._ship);
@@ -67,7 +67,12 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
-  private updateScore(score: number): void { this.score += score; this._scoreText.setText(`Score: ${this.score}`); }
+  private updateScore(score: number): void {
+    if(this._ship.data.get('doublePoints') == true) this.score += score * 2;
+    else this.score += score;
+
+    this._scoreText.setText(`Score: ${this.score}`);
+  }
 
   private createPowerUpIndicators() {
     Object.keys(GameInfo.powerUps).forEach((powerUp, index) => {
@@ -88,8 +93,7 @@ export default class Intro extends Phaser.Scene {
     body.setSize(this._ship.width, this._ship.height);
     body.setCollideWorldBounds(true);
 
-    this._ship.setData('shield', false);
-    this._ship.setData('speedBoost', false);
+    Object.keys(GameInfo.powerUps).forEach(type => { this._ship.setData(type, false); });
   }
 
   private updateShip(ship: any): void {
@@ -103,7 +107,6 @@ export default class Intro extends Phaser.Scene {
       if(this.hearts == 2){ this._ship.setTexture("ship-slight-damage"); }
       if(this.hearts == 1){ this._ship.setTexture("ship-damaged"); }
     }
-
   }
 
   update(time: number, delta: number){
