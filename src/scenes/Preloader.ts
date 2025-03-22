@@ -38,7 +38,7 @@ export default class Preloader extends Phaser.Scene {
       this._highestScore = this.add.text(this.game.canvas.width / 2, 300, `High Score: ${localStorage.getItem('score')}`)
         .setDepth(1001)
         .setOrigin(0.5, 1)
-        .setColor('#fff')
+        .setColor('#0099DB')
         .setFontSize(40)
         .setFontFamily(GameInfo.default.font);
     }
