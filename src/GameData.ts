@@ -54,6 +54,7 @@ export let GameData: gameData = {
 
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
     { name: "powerUp-speed", path: "assets/images/power-ups/speed.svg" },
+    { name: "powerUp-doublePoints", path: "assets/images/power-ups/double-points.svg" },
   ],
   atlas: [],
   sounds: [

@@ -64,7 +64,7 @@ export default class Intro extends Phaser.Scene {
 
     this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: 5000, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
   private updateScore(score: number): void { this.score += score; this._scoreText.setText(`Score: ${this.score}`); }
