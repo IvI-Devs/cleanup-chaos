@@ -1,4 +1,4 @@
-import { GameInfo } from "../GameInfo";
+import { GameInfo } from "../gameInfo";
 import WebFontFile from "../scenes/webFontFile";
 
 export default class Boot extends Phaser.Scene {
