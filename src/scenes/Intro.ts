@@ -1,5 +1,5 @@
 import { GameData } from "../GameData";
-import { GameInfo } from "../GameInfo";
+import { GameInfo } from "../gameInfo";
 
 export default class Intro extends Phaser.Scene {
   constructor(public registry: Phaser.Data.DataManager){ super({ key: "Intro" }); }

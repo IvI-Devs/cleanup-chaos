@@ -1,4 +1,4 @@
-import { GameInfo } from "../../GameInfo";
+import { GameInfo } from "../../gameInfo";
 import { GameData } from "../../GameData";
 
 export default class Exit extends Phaser.Scene {
