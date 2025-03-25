@@ -1,5 +1,5 @@
 import { GameData } from "../GameData";
-import { GameInfo } from "../gameInfo";
+import { GameInfo } from "../GameInfo";
 import WebFontFile from "../scenes/webFontFile";
 
 export default class Preloader extends Phaser.Scene {

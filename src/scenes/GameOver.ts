@@ -1,4 +1,4 @@
-import { GameInfo } from "../gameInfo";
+import { GameInfo } from "../GameInfo";
 
 export default class GameOver extends Phaser.Scene {
   constructor(public registry: Phaser.Data.DataManager){ super({ key: "GameOver" }) }
