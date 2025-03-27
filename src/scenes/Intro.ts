@@ -19,14 +19,6 @@ export default class Intro extends Phaser.Scene {
   private asteroidSpeed: number = 150;
   private trashSpeed: number = 150;
 
-  private _minimap: Phaser.GameObjects.Graphics;
-  private _minimapSize: number = 150;
-  private _minimapPadding: number = 20;
-  private _minimapBorder: number = 2;
-  private _minimapBg: Phaser.GameObjects.Rectangle;
-  private _minimapPlayerIndicator: Phaser.GameObjects.Arc;
-  private _minimapZoomFactor: number = 1;
-
   private powerUpsIndicators: Record<string, Phaser.GameObjects.Image> = {};
 
   private keys: {
@@ -36,73 +28,7 @@ export default class Intro extends Phaser.Scene {
     D: Phaser.Input.Keyboard.Key
   };
 
-  private createMinimap() {
-    this._minimapBg = this.add.rectangle(
-        this.scale.width - this._minimapPadding - this._minimapSize/2,
-        this._minimapPadding + this._minimapSize/2,
-        this._minimapSize + this._minimapBorder*2,
-        this._minimapSize + this._minimapBorder*2,
-        0x000000
-    ).setDepth(1000).setScrollFactor(0).setAlpha(0.7);
-
-    this._minimap = this.add.graphics({
-        x: this.scale.width - this._minimapPadding - this._minimapSize,
-        y: this._minimapPadding
-    }).setDepth(1001).setScrollFactor(0);
-
-    this._minimapPlayerIndicator = this.add.circle(
-        this.scale.width - this._minimapPadding - this._minimapSize/2,
-        this._minimapPadding + this._minimapSize/2,
-        5, 0x00ff00
-    ).setDepth(1002).setScrollFactor(0);
-}
-
-private updateMinimap() {
-    this._minimap.clear();
-    
-    this._minimap.lineStyle(2, 0xffffff, 1);
-    this._minimap.strokeRect(0, 0, this._minimapSize, this._minimapSize);
-
-    const worldBounds = this.physics.world.bounds;
-    const scaleX = this._minimapSize / worldBounds.width * this._minimapZoomFactor;
-    const scaleY = this._minimapSize / worldBounds.height * this._minimapZoomFactor;
-
-    this.drawMinimapObjects(this.asteroids, 0xff0000, 3, scaleX, scaleY, worldBounds);
-    this.drawMinimapObjects(this.trashGroup, 0x00ffff, 2, scaleX, scaleY, worldBounds);
-    this.drawMinimapObjects(this.powerUps, 0xffff00, 3, scaleX, scaleY, worldBounds);
-
-    const playerX = (this._ship.x - worldBounds.x) * scaleX;
-    const playerY = (this._ship.y - worldBounds.y) * scaleY;
-    
-    this._minimapPlayerIndicator.setPosition(
-        this.scale.width - this._minimapPadding - this._minimapSize + playerX,
-        this._minimapPadding + playerY
-    );
-}
-
-private drawMinimapObjects(
-    group: Phaser.Physics.Arcade.Group, 
-    color: number, 
-    size: number,
-    scaleX: number,
-    scaleY: number,
-    worldBounds: Phaser.Geom.Rectangle
-) {
-    group.getChildren().forEach((obj: Phaser.GameObjects.GameObject) => {
-        const sprite = obj as Phaser.GameObjects.Sprite;
-        const x = (sprite.x - worldBounds.x) * scaleX;
-        const y = (sprite.y - worldBounds.y) * scaleY;
-        
-        if (x >= 0 && x <= this._minimapSize && y >= 0 && y <= this._minimapSize) {
-            this._minimap.fillStyle(color, 1);
-            this._minimap.fillRect(x, y, size, size);
-        }
-    });
-}
-
   create(){
-    this.createMinimap();
-
     this.score = 0;
     this.hearts = 3;
     this.registry.set("score", 0);
@@ -184,7 +110,6 @@ private drawMinimapObjects(
   }
 
   update(time: number, delta: number){
-    this.updateMinimap(); 
 
     if(this.cursor.space.isDown && this._ship.getData('boost')) this._speed = 650;
     else this._speed = 250;
@@ -230,6 +155,7 @@ private drawMinimapObjects(
 
     if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       this._ship.angle = -135;
+      // body.setSize(this._ship.width - 50, this._ship.height - 50); // to update
     }
     if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       this._ship.angle = 135;
@@ -492,7 +418,6 @@ private drawMinimapObjects(
             Phaser.Math.Between(-padding, screenHeight / 2 - minDistanceFromShip);
       }
     }
-    
 
     const keys = Object.keys(GameInfo.trash) as Array<keyof typeof GameInfo.trash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
