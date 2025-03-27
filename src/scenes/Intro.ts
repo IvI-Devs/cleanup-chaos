@@ -65,6 +65,11 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+
+    this.input.keyboard.on("keydown-ESC", () => {
+      this.scene.pause();
+      this.scene.launch("PauseMenu");
+    });
   }
 
   private updateScore(score: number): void {

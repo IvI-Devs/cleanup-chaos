@@ -9,8 +9,10 @@ import Intro from "./scenes/Intro";
 import Options from "./scenes/screens/options";
 import Credits from "./scenes/screens/credits";
 import Exit from "./scenes/easter\ eggs/exit";
-import Minimap from "./scenes/minimap";
+import Minimap from "./scenes/Minimap";
+import PauseMenu from "./scenes/PauseMenu";
 import { GameData } from "./GameData"; // global game data
+
 
 window.addEventListener("load", () => {
   const config: Phaser.Types.Core.GameConfig = {
@@ -33,7 +35,8 @@ window.addEventListener("load", () => {
       Options,
       Credits,
       Exit,
-      Minimap
+      Minimap,
+      PauseMenu
     ],
     physics: {
       default: "arcade",
