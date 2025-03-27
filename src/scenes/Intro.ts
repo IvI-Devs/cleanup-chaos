@@ -62,14 +62,21 @@ export default class Intro extends Phaser.Scene {
       D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     };
 
-    this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
-
     this.input.keyboard.on("keydown-ESC", () => {
       this.scene.pause();
       this.scene.launch("PauseMenu");
     });
+
+    this.input.keyboard.on("keyup-SPACE", () => {
+      if (this.sound.get('boost')?.isPlaying) {
+          this.sound.stopByKey('boost');
+      }
+    });
+
+    this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+
   }
 
   private updateScore(score: number): void {
@@ -116,8 +123,18 @@ export default class Intro extends Phaser.Scene {
 
   update(time: number, delta: number){
 
-    if(this.cursor.space.isDown && this._ship.getData('boost')) this._speed = 650;
+    if(this.cursor.space.isDown && this._ship.getData('boost')){ 
+      this._speed = 650;
+
+      if (!this.sound.get('boost')?.isPlaying){
+        this.sound.play('boost', { loop: true, volume: 0.5 });
+      }
+    }
     else this._speed = 250;
+
+    if (!this.cursor.space.isDown && this.sound.get('boost')?.isPlaying){
+      this.sound.stopByKey('boost');
+    }
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
       this._ship.x -= this._speed * delta / 1000;
@@ -303,7 +320,11 @@ export default class Intro extends Phaser.Scene {
       ship.setData(`${type}Expiry`, 0);
       this.updateIndicators(ship);
       this.updateShip(ship);
-    });
+  
+      if (type === 'boost' && this.sound.get('boost')?.isPlaying) {
+          this.sound.stopByKey('boost');
+      }
+  });
 
     ship.setData(`${type}Timer`, powerUpTimer);
 
@@ -311,9 +332,6 @@ export default class Intro extends Phaser.Scene {
     
       if (type === 'shield'){
         this.sound.play('shield', { volume: 0.5 });
-      }
-      else if (type === 'boost'){
-        this.sound.play('boost', { volume: 0.5 });
       }
       else if (type == 'doublePoints') { 
         this.sound.play('doublePoints', { volume: 0.5 });
