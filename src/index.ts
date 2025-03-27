@@ -9,6 +9,7 @@ import Intro from "./scenes/Intro";
 import Options from "./scenes/screens/options";
 import Credits from "./scenes/screens/credits";
 import Exit from "./scenes/easter\ eggs/exit";
+import Minimap from "./scenes/minimap";
 import { GameData } from "./GameData"; // global game data
 
 window.addEventListener("load", () => {
@@ -31,7 +32,8 @@ window.addEventListener("load", () => {
       GameOver,
       Options,
       Credits,
-      Exit
+      Exit,
+      Minimap
     ],
     physics: {
       default: "arcade",
