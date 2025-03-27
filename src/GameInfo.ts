@@ -43,7 +43,7 @@ export let GameInfo = {
     powerUpsGenerationDelay: 7500,
     powerUps: {
       shield: 2500,
-      speed: 3000,
+      boost: 3000,
       doublePoints: 5000,
     }
 

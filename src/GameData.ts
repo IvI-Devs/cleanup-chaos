@@ -53,18 +53,16 @@ export let GameData: gameData = {
     { name: "tinStone", path: "assets/images/trash/tin-stone.svg" },
 
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
-    { name: "powerUp-speed", path: "assets/images/power-ups/speed.svg" },
+    { name: "powerUp-boost", path: "assets/images/power-ups/boost.svg" },
     { name: "powerUp-doublePoints", path: "assets/images/power-ups/double-points.svg" },
   ],
   atlas: [],
   sounds: [
-    /*{
-      name: "music",
-      paths: ["assets/sounds/intro.ogg", "assets/sounds/intro.m4a"],
-      volume: 1,
-      loop: true,
-      frame: 1,
-    }*/
+    { name: "pickup", paths: ["assets/sounds/pickup.mp3"] },
+    { name: "shield", paths: ["assets/sounds/shield.wav"] },
+    { name: "boost", paths: ["assets/sounds/boost.mp3"] },
+    { name: "doublePoints", paths: ["assets/sounds/doublePoints.mp3"] },
+    { name: "death", paths: ["assets/sounds/death.mp3"] },
   ],
 
   videos: [

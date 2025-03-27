@@ -186,7 +186,7 @@ private drawMinimapObjects(
   update(time: number, delta: number){
     this.updateMinimap(); 
 
-    if(this.cursor.space.isDown && this._ship.getData('speed')) this._speed = 650;
+    if(this.cursor.space.isDown && this._ship.getData('boost')) this._speed = 650;
     else this._speed = 250;
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
@@ -377,6 +377,17 @@ private drawMinimapObjects(
     ship.setData(`${type}Timer`, powerUpTimer);
 
     this.updateShip(ship);
+    
+      if (type === 'shield'){
+        this.sound.play('shield', { volume: 0.5 });
+      }
+      else if (type === 'boost'){
+        this.sound.play('boost', { volume: 0.5 });
+      }
+      else if (type == 'doublePoints') { 
+        this.sound.play('doublePoints', { volume: 0.5 });
+      }
+    
     if(powerUp.body) powerUp.destroy();
   }
 
