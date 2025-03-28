@@ -69,6 +69,9 @@ export default class Levels extends Phaser.Scene {
       this._levelsGroup.add(rectangle);
       this._levelsGroup.add(text);
     })
+    this.input.keyboard.on("keydown-ESC", () => {
+      this.goToMenu();
+    });
 
   }
 

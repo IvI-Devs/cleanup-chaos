@@ -127,15 +127,15 @@ export default class Intro extends Phaser.Scene {
   }
 
   update(time: number, delta: number){
-    if(this.cursor.space.isDown && Intro.ship.getData('boost')){
+    if (this.cursor.space.isDown && Intro.ship.getData('boost')) {
       this._speed = 650;
-
+  
       if (!this.sound.get('boost')?.isPlaying) {
         this.sound.play('boost', { loop: true, volume: 0.5 });
       }
     } else {
       this._speed = 250;
-
+  
       if (this.sound.get('boost')?.isPlaying) {
         this.sound.stopByKey('boost');
       }
