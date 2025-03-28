@@ -17,6 +17,13 @@ export default class PauseMenu extends Phaser.Scene {
     // Semi-clear background
     this.add.rectangle(0, 0, width, height, 0x000000, 0.5).setOrigin(0);
   
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
+
+    // Stop musics
+    if (music && music.isPlaying) {
+      music.pause();
+    }
+
     // Menu title
     this.add.text(width / 2, height / 2 - 150, "Pause Menu", {
       fontSize: "48px",
@@ -59,6 +66,9 @@ export default class PauseMenu extends Phaser.Scene {
     });
 
     this.input.keyboard.on("keydown-ESC", () => {
+      if (music) {
+        music.resume();
+      }
       this.scene.stop();
       this.scene.resume("Intro");
     });
@@ -77,17 +87,27 @@ export default class PauseMenu extends Phaser.Scene {
   }
 
   private selectItem(index: number) {
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
     switch (index) {
       case 0: // Resume
+        if (music && music.isPaused) {
+          music.resume();
+        }
         this.scene.stop();
         this.scene.resume("Intro");
         break;
       case 1: // Restart
+        if (music && music.isPlaying) {
+          music.stop();
+        }
         this.scene.stop();
         this.scene.stop("Intro");
         this.scene.start("Preloader");
         break;
       case 2: // Exit
+        if (music && music.isPlaying) {
+          music.stop();
+        }
         this.scene.stop("Intro");
         this.scene.start("Boot");
         break;

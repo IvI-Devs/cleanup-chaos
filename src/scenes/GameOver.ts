@@ -14,6 +14,11 @@ export default class GameOver extends Phaser.Scene {
     this.score = this.registry.get("score") || 0;
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
 
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
+    if (music && music.isPlaying) {
+      music.stop();
+    }
+
     if(this.score > parseInt(localStorage.getItem('score'))){
       localStorage.setItem('score', this.score.toString());
     }
