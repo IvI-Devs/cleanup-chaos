@@ -116,7 +116,7 @@ export default class Boot extends Phaser.Scene {
         break;
       case 'Options':
         this.scene.stop(this)
-        this.scene.start('Options');
+        this.scene.start('GameOver');
         break;
       case 'Credits':
         this.scene.stop(this)

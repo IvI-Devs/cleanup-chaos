@@ -37,7 +37,7 @@ export default class Preloader extends Phaser.Scene {
       GameData.sounds.forEach((sound) => {
         this.load.audio(sound.name, sound.paths);
       });
-    
+
     if(localStorage.getItem('score') === null){
       localStorage.setItem('score', '0');
     }
@@ -76,7 +76,7 @@ export default class Preloader extends Phaser.Scene {
       .setFontFamily(GameData.preloader.loadingTextFont);
 
     if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
-    else this._subtitle.setText(`Level: ${localStorage.getItem('level')}`);
+    else this._subtitle.setText(`Level ${localStorage.getItem('level')}`);
   }
 
   create() {
@@ -90,11 +90,11 @@ export default class Preloader extends Phaser.Scene {
 
   private goToMenu() {
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
-  
+
     if (music && music.isPlaying) {
       music.stop();
     }
-  
+
     this.scene.stop("Preloader");
     this.scene.start("Boot");
   }

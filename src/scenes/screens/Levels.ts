@@ -44,11 +44,8 @@ export default class Levels extends Phaser.Scene {
     this._background = this.add.image(0, 0, "bg-01").setOrigin(0, 0);
     this._levelsText.setText("Levels");
     this._highestScore.setFontFamily(GameInfo.default.font);
-
     this.currentLevel = Number(localStorage.getItem('level'));
-
     this._levelsGroup = this.physics.add.group();
-
     this._levelsGroup.clear(true, true);
 
     GameInfo.levels.forEach((level, index) => {
@@ -73,6 +70,7 @@ export default class Levels extends Phaser.Scene {
       this.goToMenu();
     });
 
+    this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
   }
 
   private goToMenu(){

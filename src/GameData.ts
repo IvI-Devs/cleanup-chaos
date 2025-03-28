@@ -32,6 +32,7 @@ export let GameData: gameData = {
     { name: "bg-01-wider", path: "assets/images/backgrounds/bg-01-wider.png" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
+    { name: "pixel-art-rectangle-2", path: "assets/images/other/pixel-art-rectangle-2.svg" },
 
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
