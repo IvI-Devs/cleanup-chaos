@@ -73,7 +73,7 @@ export let GameInfo = {
         }
       },
       {
-        name: "Cintura della follia",
+        name: "Corrente della distruzione",
         asteroidsGenerationDelay: 1000,
         trashGenerationDelay: 1000,
         powerUpsGenerationDelay: 7500,
@@ -84,7 +84,7 @@ export let GameInfo = {
         }
       },
       {
-        name: "Occhio del Chaos",
+        name: "Flusso insensato",
         asteroidsGenerationDelay: 750,
         trashGenerationDelay: 750,
         powerUpsGenerationDelay: 10000,

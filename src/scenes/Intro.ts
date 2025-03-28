@@ -343,21 +343,14 @@ export default class Intro extends Phaser.Scene {
       this.updateIndicators(ship);
       this.updateShip(ship);
 
-      if (type === 'boost' && this.sound.get('boost')?.isPlaying) {
-          this.sound.stopByKey('boost');
-      }
-  });
+      if(type === 'boost' && this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
+    });
 
     ship.setData(`${type}Timer`, powerUpTimer);
-
     this.updateShip(ship);
 
-      if (type === 'shield'){
-        this.sound.play('shield', { volume: 0.5 });
-      }
-      else if (type == 'doublePoints') {
-        this.sound.play('doublePoints', { volume: 0.5 });
-      }
+    if(type === 'shield') this.sound.play('shield', { volume: 0.5 });
+    else if (type == 'doublePoints') this.sound.play('doublePoints', { volume: 0.5 });
 
     if(powerUp.body) powerUp.destroy();
   }
@@ -464,9 +457,9 @@ export default class Intro extends Phaser.Scene {
       }
     }
 
-    const keys = Object.keys(GameInfo.trash) as Array<keyof typeof GameInfo.trash>;
-    const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
     const currentTrash = GameInfo.levels[this.currentLevel].trash;
+    const keys = Object.keys(GameInfo.levels[0].trash) as Array<keyof typeof currentTrash>;
+    const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
     const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
       .setInteractive().on('pointerdown', () => {
