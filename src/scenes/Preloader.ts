@@ -15,6 +15,9 @@ export default class Preloader extends Phaser.Scene {
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
     this._progress = this.add.graphics();
+    GameData.sounds.forEach((sound) => {
+      this.load.audio(sound.name, sound.paths);
+    });
     this.loadAssets();
   }
 
@@ -31,6 +34,10 @@ export default class Preloader extends Phaser.Scene {
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
 
+      GameData.sounds.forEach((sound) => {
+        this.load.audio(sound.name, sound.paths);
+      });
+    
     if(localStorage.getItem('score') === null){
       localStorage.setItem('score', '0');
     }
@@ -69,6 +76,12 @@ export default class Preloader extends Phaser.Scene {
       .setFontFamily(GameData.preloader.loadingTextFont);
   }
 
+  create() {
+    const music = this.sound.add('arcadeMusic', { loop: true, volume: 0.5 });
+    music.play();
+    this.registry.set('backgroundMusic', music);
+  }
+
   private goToMenu(){
     this.scene.stop(this);
     this.scene.start('Boot');
@@ -99,8 +112,15 @@ export default class Preloader extends Phaser.Scene {
           alpha: 0,
           duration: 500,
           onComplete: () => {
-            this.scene.stop("Preloader");
-            this.scene.start("Intro");
+
+            if(localStorage.getItem('gameMode') === 'arcade'){
+              this.scene.stop("Preloader");
+              this.scene.start("Intro");
+            }
+            else{
+              this.scene.stop("Preloader");
+              this.scene.start("Levels");
+            }
           },
         });
       });

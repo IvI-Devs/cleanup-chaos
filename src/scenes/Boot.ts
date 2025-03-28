@@ -9,6 +9,12 @@ export default class Boot extends Phaser.Scene {
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
 
+  preload(){
+    this.cameras.main.setBackgroundColor("000");
+    this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
+    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
+  }
+
   init(){
     this._gameTitle = this.add
       .text(this.game.canvas.width / 2, 250, "")
@@ -25,23 +31,20 @@ export default class Boot extends Phaser.Scene {
       localStorage.setItem('score', '0');
     }
     else{
-      this._highestScore = this.add.text(this.game.canvas.width / 2 + 300, 300, `High Score: ${localStorage.getItem('score')}`)
+      this._highestScore = this.add.text(this.game.canvas.width / 2 + 300, 300, "")
         .setDepth(1001)
         .setOrigin(0.5, 1)
         .setColor('#0099DB')
         .setFontSize(40)
         .setFontFamily(GameInfo.default.font);
     }
-  }
 
-  preload(){
-    this.cameras.main.setBackgroundColor("000");
-    this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
-    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
+    if (localStorage.getItem('gameMode') === null) localStorage.setItem('gameMode', 'arcade');
   }
 
   create() {
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    if(localStorage.getItem('score') != null) this._highestScore.setText(`High Score: ${localStorage.getItem('score')}`);
     this._gameTitle.setText(GameInfo.gameTitle.text);
 
     this._menuItems = [];

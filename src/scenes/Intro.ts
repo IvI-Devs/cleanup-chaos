@@ -38,6 +38,11 @@ export default class Intro extends Phaser.Scene {
     this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
+    if (music && !music.isPlaying){
+      music.play();
+    }
+
     this.createPowerUpIndicators();
 
     Intro.asteroids = this.physics.add.group();
@@ -77,7 +82,6 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
-
   }
 
   private updateScore(score: number): void {
@@ -125,15 +129,16 @@ export default class Intro extends Phaser.Scene {
   update(time: number, delta: number){
     if(this.cursor.space.isDown && Intro.ship.getData('boost')){ 
       this._speed = 650;
-
-      if (!this.sound.get('boost')?.isPlaying){
+  
+      if (!this.sound.get('boost')?.isPlaying) {
         this.sound.play('boost', { loop: true, volume: 0.5 });
       }
-    }
-    else this._speed = 250;
-
-    if (!this.cursor.space.isDown && this.sound.get('boost')?.isPlaying){
-      this.sound.stopByKey('boost');
+    } else {
+      this._speed = 250;
+  
+      if (this.sound.get('boost')?.isPlaying) {
+        this.sound.stopByKey('boost');
+      }
     }
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
@@ -300,17 +305,17 @@ export default class Intro extends Phaser.Scene {
       powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
   }
 
-  private rocketEnhancement(ship: any, powerUp: any){
-    if(!ship.active || !powerUp.active || !powerUp.data) return;
-
+  private rocketEnhancement(ship: any, powerUp: any) {
+    if (!ship.active || !powerUp.active || !powerUp.data) return;
+  
     const type = powerUp.data.get('type');
     let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
-    let remainingTime = currentExpiry - this.time.now; // if remainingTime > 0
+    let remainingTime = currentExpiry - this.time.now;
     let powerUpTime = remainingTime > 0 ? remainingTime + GameInfo.powerUps[type as keyof typeof GameInfo.powerUps] : GameInfo.powerUps[type as keyof typeof GameInfo.powerUps];
     let newExpiry = this.time.now + powerUpTime;
-
-    if(ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
-
+  
+    if (ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
+  
     ship.setData(type, true);
     ship.setData(`${type}Expiry`, newExpiry);
     ship.setData(`${type}FlashTime`, newExpiry - 1000);
@@ -321,7 +326,7 @@ export default class Intro extends Phaser.Scene {
       ship.setData(`${type}Expiry`, 0);
       this.updateIndicators(ship);
       this.updateShip(ship);
-  
+
       if (type === 'boost' && this.sound.get('boost')?.isPlaying) {
           this.sound.stopByKey('boost');
       }
@@ -330,14 +335,14 @@ export default class Intro extends Phaser.Scene {
     ship.setData(`${type}Timer`, powerUpTimer);
 
     this.updateShip(ship);
-    
+
       if (type === 'shield'){
         this.sound.play('shield', { volume: 0.5 });
       }
-      else if (type == 'doublePoints') { 
+      else if (type == 'doublePoints') {
         this.sound.play('doublePoints', { volume: 0.5 });
       }
-    
+
     if(powerUp.body) powerUp.destroy();
   }
 

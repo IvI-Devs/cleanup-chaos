@@ -52,7 +52,12 @@ export default class Options extends Phaser.Scene {
     const values = Object.values(GameInfo.options.items);
 
     for(let i = 0; i < keys.length; i++){
-      const item = `${keys[i]}: ${values[i] == true ? 'ON' : 'OFF'}`;
+      const item = `${keys[i]}: ${
+        values[i] === true ? 'ON' :
+        values[i] === false ? 'OFF' :
+        values[i] === true ? 'Arcade' :
+        values[i] === false ? 'Levels' : values[i]
+      }`;
       const x = this.game.canvas.width / 2;
       const y = 400 + i * 75;
 
@@ -93,11 +98,18 @@ export default class Options extends Phaser.Scene {
 
 
     for(let i = 0; i < this._menuItems.length; i++){
-      const item = `${keys[i]}: ${values[i] == true ? 'ON' : 'OFF'}`;
-      if(i === this._selectedIndex){
+      const item = `${keys[i]}: ${
+        values[i] === true ? 'ON' :
+        values[i] === false ? 'OFF' :
+        values[i] === 'Arcade' ? 'Arcade' :
+        values[i] === 'Levels' ? 'Levels' : values[i]
+      }`;
+
+      if (i === this._selectedIndex) {
         this._menuItems[i].setText(`> ${item} <`);
+      } else {
+        this._menuItems[i].setText(item);
       }
-      else this._menuItems[i].setText(item);
     }
   }
 
