@@ -5,6 +5,7 @@ export default class Exit extends Phaser.Scene {
   constructor(){ super({ key: "Exit" }) }
   private _text: Phaser.GameObjects.Text;
   private _hole: Phaser.GameObjects.Image;
+  private _music: Phaser.Sound.BaseSound;
 
   init(){
     this._text = this.add
@@ -25,6 +26,11 @@ export default class Exit extends Phaser.Scene {
   }
 
   create(){
+    const music = this.sound.add("easterEggMusic", { loop: true, volume: 0.5 });
+    music.play();
+
+    this.registry.set("easterEggMusic", music);
+
     this._hole = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 100, "hole-with-text")
       .setOrigin(0.5, 0.5)
       .setDepth(1000)
@@ -37,8 +43,12 @@ export default class Exit extends Phaser.Scene {
     this.input.keyboard.on('keydown-ENTER', () => { this.goBack(); });
   }
 
-  goBack(){
-    this.scene.stop(this);
+  goBack() {
+    if (this._music && this._music.isPlaying) {
+      this._music.stop();
+    }
+
+    this.scene.stop();
     this.scene.start("Boot");
   }
 
