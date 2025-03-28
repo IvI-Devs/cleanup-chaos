@@ -37,7 +37,7 @@ export default class Preloader extends Phaser.Scene {
       GameData.sounds.forEach((sound) => {
         this.load.audio(sound.name, sound.paths);
       });
-
+    
     if(localStorage.getItem('score') === null){
       localStorage.setItem('score', '0');
     }
@@ -81,10 +81,15 @@ export default class Preloader extends Phaser.Scene {
     music.play();
     this.registry.set('backgroundMusic', music);
   }
-
-  private goToMenu(){
-    this.scene.stop(this);
-    this.scene.start('Boot');
+  private goToMenu() {
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
+  
+    if (music && music.isPlaying) {
+      music.stop();
+    }
+  
+    this.scene.stop("Preloader");
+    this.scene.start("Boot");
   }
 
   loadAssets(): void {
