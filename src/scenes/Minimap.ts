@@ -27,6 +27,7 @@ export default class Minimap extends Phaser.Scene {
     private readonly minMargin: number = 100;
     private readonly navigationForce: number = 50;
     private readonly targetReachedThreshold: number = 50;
+    private targetMarker: Phaser.GameObjects.Image | null = null;
 
     create() {
       const camera = this.cameras.main;
@@ -54,6 +55,12 @@ export default class Minimap extends Phaser.Scene {
     private generateRandomTarget() {
       if (this.isTargetGenerated || !Intro.ship) return;
       const worldBounds = this.physics.world.bounds;
+        
+        // Rimuovi il marker precedente
+        if (this.targetMarker) {
+            this.targetMarker.destroy();
+            this.targetMarker = null;
+        }
       let attempts = 0;
       const maxAttempts = 100;
       let validPointFound = false;
@@ -83,6 +90,25 @@ export default class Minimap extends Phaser.Scene {
           Intro.ship.y + Math.sin(Phaser.Math.DegToRad(angle)) * this.minDistance
         );
       }
+        
+        // Crea il marker visibile nella scena principale
+        this.targetMarker = this.add.image(
+            this.targetPoint.x,
+            this.targetPoint.y,
+            'target-marker'
+        )
+        .setDepth(999)
+        .setScale(0.5)
+        .setAlpha(0.8);
+        
+        // Animazione pulsante del marker
+        this.tweens.add({
+            targets: this.targetMarker,
+            scale: 0.6,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1
+        });
 
       this.isTargetGenerated = true;
     }
@@ -123,12 +149,12 @@ export default class Minimap extends Phaser.Scene {
         this.targetPoint.y
       );
 
-      if (distance < this.targetReachedThreshold) {
-        body.setAcceleration(0, 0);
-        this.addScoreToMainScene(1000); // Aggiunge 1000 punti alla scena principale
-        this.resetTarget();
-        return;
-      }
+        if (distance < this.targetReachedThreshold) {
+            body.setAcceleration(0, 0);
+            this.addScoreToMainScene(1000); // Aggiunge 1000 punti alla scena principale
+            this.resetTarget();
+            return;
+        }
 
       // const angle = Phaser.Math.Angle.Between(Intro.ship.x, Intro.ship.y, this.targetPoint.x, this.targetPoint.y);
       // const forceX = Math.cos(angle) * this.navigationForce;
@@ -235,10 +261,11 @@ export default class Minimap extends Phaser.Scene {
       this.drawPlayerIndicator();
   }
 
-  public resetTarget(){
-    this.isTargetGenerated = false;
-    this.targetPoint = null;
-    if(Intro.ship?.body) (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
-  }
-
+    public resetTarget() {
+        this.isTargetGenerated = false;
+        this.targetPoint = null;
+        if (Intro.ship?.body) {
+            (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
+        }
+    }
 }
