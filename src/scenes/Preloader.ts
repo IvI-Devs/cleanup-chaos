@@ -99,8 +99,15 @@ export default class Preloader extends Phaser.Scene {
           alpha: 0,
           duration: 500,
           onComplete: () => {
-            this.scene.stop("Preloader");
-            this.scene.start("Intro");
+
+            if(localStorage.getItem('gameMode') === 'arcade'){
+              this.scene.stop("Preloader");
+              this.scene.start("Intro");
+            }
+            else{
+              this.scene.stop("Preloader");
+              this.scene.start("Levels");
+            }
           },
         });
       });

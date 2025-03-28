@@ -28,7 +28,7 @@ export let GameInfo = {
     },
 
     options: {
-      items: {"Music": true, "Sound Effects": false},
+      items: {"Music": true, "Sound Effects": false, "Game Mode": "Arcade"},
       font: "Pixelify Sans",
       align: 'center',
       fontSize: 50

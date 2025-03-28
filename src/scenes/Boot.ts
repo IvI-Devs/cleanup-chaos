@@ -9,6 +9,12 @@ export default class Boot extends Phaser.Scene {
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
 
+  preload(){
+    this.cameras.main.setBackgroundColor("000");
+    this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
+    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
+  }
+
   init(){
     this._gameTitle = this.add
       .text(this.game.canvas.width / 2, 250, "")
@@ -32,16 +38,13 @@ export default class Boot extends Phaser.Scene {
         .setFontSize(40)
         .setFontFamily(GameInfo.default.font);
     }
-  }
 
-  preload(){
-    this.cameras.main.setBackgroundColor("000");
-    this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
-    this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
+    if (localStorage.getItem('gameMode') === null) localStorage.setItem('gameMode', 'arcade');
   }
 
   create() {
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    this._highestScore.setFontFamily(GameInfo.default.font)
     this._gameTitle.setText(GameInfo.gameTitle.text);
 
     this._menuItems = [];

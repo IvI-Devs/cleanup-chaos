@@ -76,7 +76,6 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
-
   }
 
   private updateScore(score: number): void {
@@ -123,7 +122,7 @@ export default class Intro extends Phaser.Scene {
 
   update(time: number, delta: number){
 
-    if(this.cursor.space.isDown && this._ship.getData('boost')){ 
+    if(this.cursor.space.isDown && this._ship.getData('boost')){
       this._speed = 650;
 
       if (!this.sound.get('boost')?.isPlaying){
@@ -320,7 +319,7 @@ export default class Intro extends Phaser.Scene {
       ship.setData(`${type}Expiry`, 0);
       this.updateIndicators(ship);
       this.updateShip(ship);
-  
+
       if (type === 'boost' && this.sound.get('boost')?.isPlaying) {
           this.sound.stopByKey('boost');
       }
@@ -329,14 +328,14 @@ export default class Intro extends Phaser.Scene {
     ship.setData(`${type}Timer`, powerUpTimer);
 
     this.updateShip(ship);
-    
+
       if (type === 'shield'){
         this.sound.play('shield', { volume: 0.5 });
       }
-      else if (type == 'doublePoints') { 
+      else if (type == 'doublePoints') {
         this.sound.play('doublePoints', { volume: 0.5 });
       }
-    
+
     if(powerUp.body) powerUp.destroy();
   }
 
