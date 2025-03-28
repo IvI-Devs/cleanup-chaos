@@ -127,15 +127,15 @@ export default class Intro extends Phaser.Scene {
   }
 
   update(time: number, delta: number){
-    if(this.cursor.space.isDown && Intro.ship.getData('boost')){ 
+    if(this.cursor.space.isDown && Intro.ship.getData('boost')){
       this._speed = 650;
-  
+
       if (!this.sound.get('boost')?.isPlaying) {
         this.sound.play('boost', { loop: true, volume: 0.5 });
       }
     } else {
       this._speed = 250;
-  
+
       if (this.sound.get('boost')?.isPlaying) {
         this.sound.stopByKey('boost');
       }
@@ -307,15 +307,15 @@ export default class Intro extends Phaser.Scene {
 
   private rocketEnhancement(ship: any, powerUp: any) {
     if (!ship.active || !powerUp.active || !powerUp.data) return;
-  
+
     const type = powerUp.data.get('type');
     let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
     let remainingTime = currentExpiry - this.time.now;
     let powerUpTime = remainingTime > 0 ? remainingTime + GameInfo.powerUps[type as keyof typeof GameInfo.powerUps] : GameInfo.powerUps[type as keyof typeof GameInfo.powerUps];
     let newExpiry = this.time.now + powerUpTime;
-  
+
     if (ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
-  
+
     ship.setData(type, true);
     ship.setData(`${type}Expiry`, newExpiry);
     ship.setData(`${type}FlashTime`, newExpiry - 1000);
@@ -462,7 +462,7 @@ export default class Intro extends Phaser.Scene {
 
     this.physics.moveTo(trash, targetPoint.x, targetPoint.y, this.trashSpeed);
 
-    
+
     this.scene.launch("Minimap");
   }
 
