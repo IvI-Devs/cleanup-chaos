@@ -78,10 +78,12 @@ export default class PauseMenu extends Phaser.Scene {
 
   private updateMenu() {
     this._menuItems.forEach((menuItem, index) => {
+      const cleanText = menuItem.text.replace(/> | </g, "");
+  
       if (index === this._selectedIndex) {
-        menuItem.setText(`> ${menuItem.text} <`);
+        menuItem.setText(`> ${cleanText} <`);
       } else {
-        menuItem.setText(menuItem.text.replace(/> | </g, ""));
+        menuItem.setText(cleanText);
       }
     });
   }
