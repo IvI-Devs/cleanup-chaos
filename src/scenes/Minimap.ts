@@ -27,6 +27,7 @@ export default class Minimap extends Phaser.Scene {
     private readonly minMargin: number = 100;
     private readonly navigationForce: number = 50;
     private readonly targetReachedThreshold: number = 50;
+    private targetMarker: Phaser.GameObjects.Image | null = null;
 
     create() {
         const camera = this.cameras.main;
@@ -70,6 +71,12 @@ export default class Minimap extends Phaser.Scene {
 
         const worldBounds = this.physics.world.bounds;
         
+        // Rimuovi il marker precedente
+        if (this.targetMarker) {
+            this.targetMarker.destroy();
+            this.targetMarker = null;
+        }
+        
         let attempts = 0;
         const maxAttempts = 100;
         let validPointFound = false;
@@ -102,7 +109,51 @@ export default class Minimap extends Phaser.Scene {
             );
         }
         
+        // Crea il marker visibile nella scena principale
+        this.targetMarker = this.add.image(
+            this.targetPoint.x,
+            this.targetPoint.y,
+            'target-marker'
+        )
+        .setDepth(999)
+        .setScale(0.5)
+        .setAlpha(0.8);
+        
+        // Animazione pulsante del marker
+        this.tweens.add({
+            targets: this.targetMarker,
+            scale: 0.6,
+            duration: 1000,
+            yoyo: true,
+            repeat: -1
+        });
+        
         this.isTargetGenerated = true;
+    }
+
+    private addScoreToMainScene(points: number) {
+        const introScene = this.scene.get("Intro") as Intro;
+        if (introScene && introScene.updateScore) {
+            introScene.updateScore(points);
+            
+            // Animazione del punteggio aggiunto
+            const scorePopup = this.add.text(
+                this.scale.width / 2,
+                this.scale.height / 2,
+                `+${points}`,
+                { font: '48px Arial', color: '#00ff00' }
+            )
+            .setOrigin(0.5)
+            .setDepth(1001);
+
+            this.tweens.add({
+                targets: scorePopup,
+                y: this.scale.height / 2 - 100,
+                alpha: 0,
+                duration: 1000,
+                onComplete: () => scorePopup.destroy()
+            });
+        }
     }
 
     private navigateToTarget() {
@@ -110,13 +161,6 @@ export default class Minimap extends Phaser.Scene {
 
         const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
         
-        const angle = Phaser.Math.Angle.Between(
-            Intro.ship.x,
-            Intro.ship.y,
-            this.targetPoint.x,
-            this.targetPoint.y
-        );
-
         const distance = Phaser.Math.Distance.Between(
             Intro.ship.x,
             Intro.ship.y,
@@ -126,9 +170,17 @@ export default class Minimap extends Phaser.Scene {
 
         if (distance < this.targetReachedThreshold) {
             body.setAcceleration(0, 0);
+            this.addScoreToMainScene(1000);
             this.resetTarget();
             return;
         }
+
+        const angle = Phaser.Math.Angle.Between(
+            Intro.ship.x,
+            Intro.ship.y,
+            this.targetPoint.x,
+            this.targetPoint.y
+        );
 
         const forceX = Math.cos(angle) * this.navigationForce;
         const forceY = Math.sin(angle) * this.navigationForce;
@@ -257,6 +309,10 @@ export default class Minimap extends Phaser.Scene {
 
     public resetTarget() {
         this.isTargetGenerated = false;
+        if (this.targetMarker) {
+            this.targetMarker.destroy();
+            this.targetMarker = null;
+        }
         this.targetPoint = null;
         if (Intro.ship?.body) {
             (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);

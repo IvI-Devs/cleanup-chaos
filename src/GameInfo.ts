@@ -1,3 +1,16 @@
+type Trash = {
+  [key: string]: number;
+};
+
+type Level = {
+  name: string;
+  asteroidsGenerationDelay: number;
+  trashGenerationDelay: number;
+  powerUpsGenerationDelay: number;
+  trash?: Trash;
+};
+
+
 export let GameInfo = {
   title: "Cleanup Chaos",
   version: "1.0.0",
@@ -47,17 +60,23 @@ export let GameInfo = {
       doublePoints: 5000,
     },
 
-    levels:[
+    levels: [
       {
         name: "Zona Contaminata",
+        asteroidsGenerationDelay: 1500,
+        trashGenerationDelay: 1500,
+        powerUpsGenerationDelay: 5000,
         trash: {
-          // bottle: 45,
-          // pizzaCarton: 75,
-          // can: 30
+          nebula: 47,
+          sprayBottle: 84,
+          fuel: 100
         }
       },
       {
         name: "Cintura della follia",
+        asteroidsGenerationDelay: 1000,
+        trashGenerationDelay: 1000,
+        powerUpsGenerationDelay: 7500,
         trash: {
           // bottle: 45,
           // pizzaCarton: 75,
@@ -66,6 +85,9 @@ export let GameInfo = {
       },
       {
         name: "Occhio del Chaos",
+        asteroidsGenerationDelay: 750,
+        trashGenerationDelay: 750,
+        powerUpsGenerationDelay: 10000,
         trash: {
           // bottle: 45,
           // pizzaCarton: 75,
