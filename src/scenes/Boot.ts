@@ -36,7 +36,13 @@ export default class Boot extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setColor('#0099DB')
       .setFontSize(35)
-      .setFontFamily(GameInfo.default.font);
+      .setFontFamily(GameInfo.default.font)
+      .setInteractive()
+      .on("pointerdown", () => {
+        localStorage.setItem('gameMode', 'arcade');
+        this.scene.stop(this);
+        this.scene.start('Preloader');
+      });
 
     // if(localStorage.getItem('gameMode') === null) localStorage.setItem('gameMode', 'arcade');
   }
@@ -104,8 +110,9 @@ export default class Boot extends Phaser.Scene {
   selectItem(index: number){
     switch(GameInfo.menu.items[index]){
       case 'Start Game':
+        localStorage.setItem('gameMode', 'levels')
         this.scene.stop(this)
-        this.scene.start('Preloader');
+        this.scene.start('Levels');
         break;
       case 'Options':
         this.scene.stop(this)

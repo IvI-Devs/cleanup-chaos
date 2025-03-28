@@ -8,11 +8,18 @@ export default class Levels extends Phaser.Scene {
   private _backToMenu: Phaser.GameObjects.Text
   private _highestScore: Phaser.GameObjects.Text;
   private _menuItems: Phaser.GameObjects.Text[];
-  private _selectedIndex: number;
+  private currentLevel: number;
+
+  private _levelsGroup: Phaser.GameObjects.Group;
+
+  preload(){
+    this.load.image("bg-01", "assets/images/backgrounds/bg-01.svg");
+    this.load.image("pixel-art-rectangle", "assets/images/other/pixel-art-rectangle.svg");
+  }
 
   init(){
     this._levelsText = this.add
-      .text(this.game.canvas.width / 2, 250, "")
+      .text(this.game.canvas.width / 2, 200, "")
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
@@ -38,26 +45,41 @@ export default class Levels extends Phaser.Scene {
     this._levelsText.setText("Levels");
     this._highestScore.setFontFamily(GameInfo.default.font);
 
-    this._menuItems = [];
-    this._selectedIndex = 0;
+    this.currentLevel = Number(localStorage.getItem('level'));
 
-    this._menuItems.push(this.add.text(0, 0, "Level 1").setFontFamily(GameInfo.default.font));
-    this._menuItems.push(this.add.text(0, 0, "Level 2").setFontFamily(GameInfo.default.font));
-    this._menuItems.push(this.add.text(0, 0, "Level 3").setFontFamily(GameInfo.default.font));
+    this._levelsGroup = this.physics.add.group();
 
-    this._menuItems.forEach((item, index) => {
-      item.setOrigin(0.5, 0.5);
-      item.setPosition(this.game.canvas.width / 2, this.game.canvas.height / 2 + index * 50);
-    });
+    this._levelsGroup.clear(true, true);
 
-    this._menuItems[this._selectedIndex].setStyle({ fill: "#ff0000" });
+    GameInfo.levels.forEach((level, index) => {
+      let x = this.game.canvas.width / 4;
+      let y = this.game.canvas.height / 2 - 50;
+      const rectangle = this.add.image(x + (250 * index), y, 'pixel-art-rectangle').setOrigin(0, 0).setAlpha(0.3);
+      const text = this.add.text(x+70 + (250 * index), y + 55, (index+1).toString(), {
+          fontSize: '75px',
+          color: '#ffffff',
+          fontFamily: GameInfo.default.font
+      }).setOrigin(0, 0).setAlpha(0.3);
 
-    // this.input.keyboard.on("keydown", this.onKeyDown, this);
+      if(index < this.currentLevel){
+        text.setAlpha(1).setInteractive().on('pointerdown', () => { this.play() });
+        rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { this.play() });
+      }
+
+      this._levelsGroup.add(rectangle);
+      this._levelsGroup.add(text);
+    })
+
   }
 
   private goToMenu(){
     this.scene.stop(this);
     this.scene.start('Boot');
+  }
+
+  private play(){
+    this.scene.stop(this);
+    this.scene.start('Preloader');
   }
 
 }

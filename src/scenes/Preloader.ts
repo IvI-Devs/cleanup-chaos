@@ -10,7 +10,7 @@ export default class Preloader extends Phaser.Scene {
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
   private _backToMenu: Phaser.GameObjects.Text;
-  private _highestScore: Phaser.GameObjects.Text;
+  private _subtitle: Phaser.GameObjects.Text;
 
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
@@ -42,7 +42,7 @@ export default class Preloader extends Phaser.Scene {
       localStorage.setItem('score', '0');
     }
     else{
-      this._highestScore = this.add.text(this.game.canvas.width / 2, 300, `High Score: ${localStorage.getItem('score')}`)
+      this._subtitle = this.add.text(this.game.canvas.width / 2, 300, "")
         .setDepth(1001)
         .setOrigin(0.5, 1)
         .setColor('#0099DB')
@@ -74,6 +74,9 @@ export default class Preloader extends Phaser.Scene {
       .setColor('#fff')
       .setFontSize(40)
       .setFontFamily(GameData.preloader.loadingTextFont);
+
+    if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
+    else this._subtitle.setText(`Level: ${localStorage.getItem('level')}`);
   }
 
   create() {
@@ -112,15 +115,8 @@ export default class Preloader extends Phaser.Scene {
           alpha: 0,
           duration: 500,
           onComplete: () => {
-
-            if(localStorage.getItem('gameMode') === 'arcade'){
-              this.scene.stop("Preloader");
-              this.scene.start("Intro");
-            }
-            else{
-              this.scene.stop("Preloader");
-              this.scene.start("Levels");
-            }
+            this.scene.stop("Preloader");
+            this.scene.start("Intro");
           },
         });
       });
