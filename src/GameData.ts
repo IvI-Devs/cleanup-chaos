@@ -64,7 +64,7 @@ export let GameData: gameData = {
     { name: "shield", paths: ["assets/sounds/shield.wav"] },
     { name: "boost", paths: ["assets/sounds/boost.mp3"] },
     { name: "doublePoints", paths: ["assets/sounds/doublePoints.wav"] },
-    { name: "death", paths: ["assets/sounds/death.mp3"] },
+    { name: "death", paths: ["assets/sounds/explosion.mp3"] },
     { name: "arcadeMusic", paths: ["assets/music/arcade.mp3"], },
     { name: "easterEggMusic", paths: ["assets/music/easterEgg.mp3"], },
     { name: "creditsMusic", paths: ["assets/music/credits.mp3"], },
