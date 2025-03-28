@@ -20,16 +20,18 @@ export default class Exit extends Phaser.Scene {
       .setFontFamily(GameInfo.gameTitle.font);
   }
 
+
   preload(){
     this.cameras.main.setBackgroundColor("fff");
     this.load.image("hole-with-text", "assets/images/other/hole-with-text.png");
+    GameData.sounds.forEach((sound) => {
+      this.load.audio("easterEggMusic", "../../assets/music/easterEgg.mp3");
+    });
   }
 
   create(){
-    const music = this.sound.add("easterEggMusic", { loop: true, volume: 0.5 });
-    music.play();
-
-    this.registry.set("easterEggMusic", music);
+    this._music = this.sound.add("easterEggMusic", { loop: true, volume: 0.5 });
+    this._music.play();
 
     this._hole = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 100, "hole-with-text")
       .setOrigin(0.5, 0.5)
