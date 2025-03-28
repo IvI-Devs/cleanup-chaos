@@ -55,8 +55,8 @@ export default class Options extends Phaser.Scene {
       const item = `${keys[i]}: ${
         values[i] === true ? 'ON' :
         values[i] === false ? 'OFF' :
-        values[i] === true ? 'Arcade' :
-        values[i] === false ? 'Levels' : values[i]
+        keys[i] === 'Game Mode' ? (values[i] === true ? 'Arcade' : 'Levels') : 
+        values[i]
       }`;
       const x = this.game.canvas.width / 2;
       const y = 400 + i * 75;
@@ -96,13 +96,12 @@ export default class Options extends Phaser.Scene {
     const keys = Object.keys(GameInfo.options.items);
     const values = Object.values(GameInfo.options.items);
 
-
     for(let i = 0; i < this._menuItems.length; i++){
       const item = `${keys[i]}: ${
         values[i] === true ? 'ON' :
         values[i] === false ? 'OFF' :
-        values[i] === true ? 'Arcade' :
-        values[i] === false ? 'Levels' : values[i]
+        keys[i] === 'Game Mode' ? (values[i] === true ? 'Arcade' : 'Levels') : 
+        values[i]
       }`;
 
       if (i === this._selectedIndex) {
@@ -124,17 +123,19 @@ export default class Options extends Phaser.Scene {
       case 'Sound Effects':
         GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
         break;
+      case 'Game Mode':
+        GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
+        break;
       case 'Exit':
         this.game.destroy(true);
         break;
     }
 
-    this.updateMenu()
+    this.updateMenu();
   }
 
   goBack(){
     this.scene.stop(this);
     this.scene.start("Boot");
   }
-
 }

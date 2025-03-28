@@ -111,6 +111,7 @@ export default class PauseMenu extends Phaser.Scene {
           music.stop();
         }
         this.scene.stop("Intro");
+        this.scene.stop("Minimap")
         this.scene.start("Boot");
         break;
     }
