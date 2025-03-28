@@ -7,6 +7,7 @@ export default class Minimap extends Phaser.Scene {
         this.cameraHeight = 0;
     }
 
+    // Configurazione minimappa
     private minimap: Phaser.GameObjects.Graphics;
     private readonly minimapSize: number = 150;
     private readonly minimapPadding: number = 20;
@@ -18,6 +19,7 @@ export default class Minimap extends Phaser.Scene {
     private cameraWidth: number;
     private cameraHeight: number;
 
+    // Gestione traiettoria
     private targetPoint: Phaser.Geom.Point | null = null;
     private pathGraphics: Phaser.GameObjects.Graphics;
     private isTargetGenerated: boolean = false;
@@ -31,6 +33,7 @@ export default class Minimap extends Phaser.Scene {
         this.cameraWidth = camera.width;
         this.cameraHeight = camera.height;
 
+        // Sfondo minimappa
         this.minimapBg = this.add.rectangle(
             this.scale.width - this.minimapPadding - this.minimapSize/2,
             this.minimapPadding + this.minimapSize/2,
@@ -43,16 +46,19 @@ export default class Minimap extends Phaser.Scene {
         .setAlpha(0.7)
         .setVisible(true);
 
+        // Minimappa principale
         this.minimap = this.add.graphics()
             .setDepth(1001)
             .setScrollFactor(0)
             .setVisible(true);
 
+        // Indicatore del player
         this.minimapPlayerIndicator = this.add.graphics()
             .setDepth(1002)
             .setScrollFactor(0)
             .setVisible(true);
 
+        // Grafica per la traiettoria
         this.pathGraphics = this.add.graphics()
             .setDepth(1001)
             .setScrollFactor(0)
@@ -99,18 +105,36 @@ export default class Minimap extends Phaser.Scene {
         this.isTargetGenerated = true;
     }
 
+    private addScoreToMainScene(points: number) {
+        const introScene = this.scene.get("Intro") as Intro;
+        if (introScene && introScene.updateScore) {
+            introScene.updateScore(points);
+            
+            // Animazione del punteggio aggiunto
+            const scorePopup = this.add.text(
+                this.scale.width / 2,
+                this.scale.height / 2,
+                `+${points}`,
+                { font: '48px Arial', color: '#00ff00' }
+            )
+            .setOrigin(0.5)
+            .setDepth(1001);
+
+            this.tweens.add({
+                targets: scorePopup,
+                y: this.scale.height / 2 - 100,
+                alpha: 0,
+                duration: 1000,
+                onComplete: () => scorePopup.destroy()
+            });
+        }
+    }
+
     private navigateToTarget() {
         if (!this.targetPoint || !Intro.ship?.body) return;
 
         const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
         
-        const angle = Phaser.Math.Angle.Between(
-            Intro.ship.x,
-            Intro.ship.y,
-            this.targetPoint.x,
-            this.targetPoint.y
-        );
-
         const distance = Phaser.Math.Distance.Between(
             Intro.ship.x,
             Intro.ship.y,
@@ -120,9 +144,17 @@ export default class Minimap extends Phaser.Scene {
 
         if (distance < this.targetReachedThreshold) {
             body.setAcceleration(0, 0);
+            this.addScoreToMainScene(1000); // Aggiunge 1000 punti alla scena principale
             this.resetTarget();
             return;
         }
+
+        const angle = Phaser.Math.Angle.Between(
+            Intro.ship.x,
+            Intro.ship.y,
+            this.targetPoint.x,
+            this.targetPoint.y
+        );
 
         const forceX = Math.cos(angle) * this.navigationForce;
         const forceY = Math.sin(angle) * this.navigationForce;
@@ -221,12 +253,15 @@ export default class Minimap extends Phaser.Scene {
             return;
         }
 
+        // Genera target se necessario
         if (!this.isTargetGenerated) {
             this.generateRandomTarget();
         }
 
+        // Naviga verso il target
         this.navigateToTarget();
 
+        // Prepara minimappa
         this.minimap.clear()
             .lineStyle(2, 0xffffff, 1)
             .strokeRect(
@@ -236,10 +271,12 @@ export default class Minimap extends Phaser.Scene {
                 this.minimapSize
             );
 
+        // Disegna elementi
         this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
         this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
         this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
         
+        // Disegna traiettoria e player
         this.drawPath();
         this.drawPlayerIndicator();
     }
