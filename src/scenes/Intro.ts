@@ -93,7 +93,7 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
-  private updateScore(score: number): void {
+  public updateScore(score: number): void {
     if(Intro.ship.data.get('doublePoints') == true) this.score += score * 2;
     else this.score += score;
 
