@@ -57,10 +57,10 @@ export default class GameOver extends Phaser.Scene {
       .setFontFamily(GameInfo.default.font)
       .setInteractive().on('pointerdown', () => this.playAgain() );
 
-    this._playAgainRectangle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 90, 'pixel-art-rectangle-2')
-      .setAlpha(1)
-      .setOrigin(0.5, 1)
-      .setInteractive().on('pointerdown', () => this.playAgain() );
+    // this._playAgainRectangle = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 90, 'pixel-art-rectangle-3')
+    //   .setAlpha(1)
+    //   .setOrigin(0.5, 1)
+    //   .setInteractive().on('pointerdown', () => this.playAgain() );
 
     this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
     this.input.keyboard.on('keydown-SPACE', () => { this.playAgain(); });
