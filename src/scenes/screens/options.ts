@@ -101,13 +101,15 @@ export default class Options extends Phaser.Scene {
       const item = `${keys[i]}: ${
         values[i] === true ? 'ON' :
         values[i] === false ? 'OFF' :
-        values[i] === true ? 'Arcade' :
-        values[i] === false ? 'Levels' : values[i]
+        values[i] === 'Arcade' ? 'Arcade' :
+        values[i] === 'Levels' ? 'Levels' : values[i]
       }`;
-      if(i === this._selectedIndex){
+
+      if (i === this._selectedIndex) {
         this._menuItems[i].setText(`> ${item} <`);
+      } else {
+        this._menuItems[i].setText(item);
       }
-      else this._menuItems[i].setText(item);
     }
   }
 

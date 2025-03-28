@@ -4,9 +4,9 @@ export let GameInfo = {
   authors: ["pH@nto.m", "p1x3lc4t", "Z3n0x", "T1g3r", "pAKo3549", "A.P."],
   description: "...",
   credits: [
-      "Designed by: P4K0, A.P.",
-      "Developed by: pH@ntom, p1x3lc4t, Z3n0x, T1g3r",
-      "Music by: pH@nto.m, T1g3r",
+      "Designed by: P4K0, A.P., Z3n0x",
+      "Developed by: pH@ntom, p1x3lc4t",
+      "Music by: P4K0, T1g3r",
   ],
 
     default: {
