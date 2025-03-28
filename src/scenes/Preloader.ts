@@ -10,7 +10,7 @@ export default class Preloader extends Phaser.Scene {
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
   private _backToMenu: Phaser.GameObjects.Text;
-  private _highestScore: Phaser.GameObjects.Text;
+  private _subtitle: Phaser.GameObjects.Text;
 
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
@@ -37,12 +37,12 @@ export default class Preloader extends Phaser.Scene {
       GameData.sounds.forEach((sound) => {
         this.load.audio(sound.name, sound.paths);
       });
-    
+
     if(localStorage.getItem('score') === null){
       localStorage.setItem('score', '0');
     }
     else{
-      this._highestScore = this.add.text(this.game.canvas.width / 2, 300, `High Score: ${localStorage.getItem('score')}`)
+      this._subtitle = this.add.text(this.game.canvas.width / 2, 300, "")
         .setDepth(1001)
         .setOrigin(0.5, 1)
         .setColor('#0099DB')
@@ -74,17 +74,29 @@ export default class Preloader extends Phaser.Scene {
       .setColor('#fff')
       .setFontSize(40)
       .setFontFamily(GameData.preloader.loadingTextFont);
+
+    if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
+    else this._subtitle.setText(`Level ${localStorage.getItem('level')}`);
   }
 
   create() {
     const music = this.sound.add('arcadeMusic', { loop: true, volume: 0.5 });
     music.play();
     this.registry.set('backgroundMusic', music);
+    this.input.keyboard.on('keydown-ESC', () => {
+      this.goToMenu();
+    });
   }
 
-  private goToMenu(){
-    this.scene.stop(this);
-    this.scene.start('Boot');
+  private goToMenu() {
+    const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
+
+    if (music && music.isPlaying) {
+      music.stop();
+    }
+
+    this.scene.stop("Preloader");
+    this.scene.start("Boot");
   }
 
   loadAssets(): void {
@@ -122,6 +134,8 @@ export default class Preloader extends Phaser.Scene {
               this.scene.stop("Preloader");
               this.scene.start("Levels");
             }
+            this.scene.stop("Preloader");
+            this.scene.start("Intro");
           },
         });
       });

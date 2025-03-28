@@ -1,0 +1,58 @@
+<svg width="230" height="110" viewBox="0 0 230 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="20" width="10" height="10" fill="white"/>
+<rect x="30" width="10" height="10" fill="white"/>
+<rect x="40" width="10" height="10" fill="white"/>
+<rect x="50" width="10" height="10" fill="white"/>
+<rect x="60" width="10" height="10" fill="white"/>
+<rect x="70" width="10" height="10" fill="white"/>
+<rect x="80" width="10" height="10" fill="white"/>
+<rect x="90" width="10" height="10" fill="white"/>
+<rect x="100" width="10" height="10" fill="white"/>
+<rect x="110" width="10" height="10" fill="white"/>
+<rect x="120" width="10" height="10" fill="white"/>
+<rect x="130" width="10" height="10" fill="white"/>
+<rect x="140" width="10" height="10" fill="white"/>
+<rect x="150" width="10" height="10" fill="white"/>
+<rect x="160" width="10" height="10" fill="white"/>
+<rect x="170" width="10" height="10" fill="white"/>
+<rect x="180" width="10" height="10" fill="white"/>
+<rect x="190" width="10" height="10" fill="white"/>
+<rect x="200" width="10" height="10" fill="white"/>
+<rect x="210" y="10" width="10" height="10" fill="white"/>
+<rect width="10" height="10" transform="matrix(-1 0 0 1 20 10)" fill="white"/>
+<rect x="20" y="100" width="10" height="10" fill="white"/>
+<rect x="30" y="100" width="10" height="10" fill="white"/>
+<rect x="40" y="100" width="10" height="10" fill="white"/>
+<rect x="50" y="100" width="10" height="10" fill="white"/>
+<rect x="60" y="100" width="10" height="10" fill="white"/>
+<rect x="70" y="100" width="10" height="10" fill="white"/>
+<rect x="80" y="100" width="10" height="10" fill="white"/>
+<rect x="90" y="100" width="10" height="10" fill="white"/>
+<rect x="100" y="100" width="10" height="10" fill="white"/>
+<rect x="110" y="100" width="10" height="10" fill="white"/>
+<rect x="120" y="100" width="10" height="10" fill="white"/>
+<rect x="130" y="100" width="10" height="10" fill="white"/>
+<rect x="230" y="20" width="10" height="10" transform="rotate(90 230 20)" fill="white"/>
+<rect x="140" y="100" width="10" height="10" fill="white"/>
+<rect x="230" y="30" width="10" height="10" transform="rotate(90 230 30)" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 20)" fill="white"/>
+<rect x="230" y="40" width="10" height="10" transform="rotate(90 230 40)" fill="white"/>
+<rect x="150" y="100" width="10" height="10" fill="white"/>
+<rect x="230" y="50" width="10" height="10" transform="rotate(90 230 50)" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 30)" fill="white"/>
+<rect x="230" y="60" width="10" height="10" transform="rotate(90 230 60)" fill="white"/>
+<rect x="160" y="100" width="10" height="10" fill="white"/>
+<rect x="230" y="70" width="10" height="10" transform="rotate(90 230 70)" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 40)" fill="white"/>
+<rect x="230" y="80" width="10" height="10" transform="rotate(90 230 80)" fill="white"/>
+<rect x="210" y="90" width="10" height="10" fill="white"/>
+<rect x="170" y="100" width="10" height="10" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 50)" fill="white"/>
+<rect x="180" y="100" width="10" height="10" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 60)" fill="white"/>
+<rect x="190" y="100" width="10" height="10" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 70)" fill="white"/>
+<rect x="200" y="100" width="10" height="10" fill="white"/>
+<rect width="10" height="10" transform="matrix(4.37114e-08 1 1 -4.37114e-08 0 80)" fill="white"/>
+<rect width="10" height="10" transform="matrix(-1 0 0 1 20 90)" fill="white"/>
+</svg>

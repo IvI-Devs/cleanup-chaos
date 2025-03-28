@@ -8,6 +8,7 @@ export default class Credits extends Phaser.Scene {
   private _backArrow: Phaser.GameObjects.Text;
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
+  private _music: Phaser.Sound.BaseSound;
 
   init(){
     this._backArrow = this.add.text(50, 75, "<").setAlpha(1)
@@ -35,11 +36,15 @@ export default class Credits extends Phaser.Scene {
 
   preload(){
     this.load.image("bg-02", "assets/images/backgrounds/bg-02.svg");
+    this.load.audio("credits", "../../assets/music/credits.mp3");
   }
 
   create(){
     this._background = this.add.image(0, 0, "bg-02").setOrigin(0, 0);
     this._title.setText("Credits");
+
+    this._music = this.sound.add("credits", { loop: true, volume: 0.5 });
+    this._music.play();
 
     this._menuItems = [];
     this._selectedIndex = 0;
@@ -64,8 +69,12 @@ export default class Credits extends Phaser.Scene {
     }
   }
 
-  goBack(){
-    this.scene.stop(this);
+  goBack() {
+    if (this._music && this._music.isPlaying) {
+      this._music.stop();
+    }
+
+    this.scene.stop();
     this.scene.start("Boot");
   }
 

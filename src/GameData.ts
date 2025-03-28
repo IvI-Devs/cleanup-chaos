@@ -28,9 +28,11 @@ export let GameData: gameData = {
     { name: "bg-01", path: "assets/images/backgrounds/bg-01.svg" },
     { name: "bg-02", path: "assets/images/backgrounds/bg-02.svg" },
     { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
+    { name: "bg-04", path: "assets/images/backgrounds/bg-04.svg" },
     { name: "bg-01-wider", path: "assets/images/backgrounds/bg-01-wider.png" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
+    { name: "pixel-art-rectangle-3", path: "assets/images/other/pixel-art-rectangle-3.svg" },
 
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
@@ -65,6 +67,7 @@ export let GameData: gameData = {
     { name: "death", paths: ["assets/sounds/death.mp3"] },
     { name: "arcadeMusic", paths: ["assets/music/arcade.mp3"], },
     { name: "easterEggMusic", paths: ["assets/music/easterEgg.mp3"], },
+    { name: "creditsMusic", paths: ["assets/music/credits.mp3"], },
   ],
 
   videos: [
