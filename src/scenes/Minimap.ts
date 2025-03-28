@@ -8,7 +8,9 @@ export default class Minimap extends Phaser.Scene {
     private minimapPadding: number = 20;
     private minimapBorder: number = 2;
     private minimapBg: Phaser.GameObjects.Rectangle;
-    private minimapPlayerIndicator: Phaser.GameObjects.Arc;
+    private minimapPlayerIndicator: Phaser.GameObjects.Graphics;
+    private triangleSize: number = 12; // Base del triangolo
+    private triangleHeight: number = 14; // Altezza del triangolo
     private minimapZoomFactor: number = 1;
 
     create() {
@@ -35,14 +37,37 @@ export default class Minimap extends Phaser.Scene {
         .setDepth(1001)
         .setScrollFactor(0);
 
-        this.minimapPlayerIndicator = this.add.circle(
-            this.scale.width - this.minimapPadding - this.minimapSize/2,
-            this.minimapPadding + this.minimapSize/2,
-            5, 
-            0x00ff00
-        )
-        .setDepth(1002)
-        .setScrollFactor(0);
+        this.minimapPlayerIndicator = this.add.graphics()
+            .setDepth(1002)
+            .setScrollFactor(0);
+    }
+
+    private drawRotatedTriangle(x: number, y: number, rotation: number) {
+        const halfBase = this.triangleSize / 2;
+        
+        // Punti del triangolo isoscele (punta verso l'alto inizialmente)
+        const points = [
+            { x: 0, y: -this.triangleHeight/2 },  // Punta
+            { x: -halfBase, y: this.triangleHeight/2 },  // Base sinistra
+            { x: halfBase, y: this.triangleHeight/2 }     // Base destra
+        ];
+
+        // Ruota i punti
+        const rotatedPoints = points.map(p => {
+            return {
+                x: x + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
+                y: y + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
+            };
+        });
+
+        // Disegna il triangolo ruotato
+        this.minimapPlayerIndicator.clear()
+            .fillStyle(0xffffff, 1)
+            .fillTriangle(
+                rotatedPoints[0].x, rotatedPoints[0].y,
+                rotatedPoints[1].x, rotatedPoints[1].y,
+                rotatedPoints[2].x, rotatedPoints[2].y
+            );
     }
 
     private drawMinimapObjects(
@@ -74,7 +99,7 @@ export default class Minimap extends Phaser.Scene {
         this.minimapPlayerIndicator.setVisible(false);
         return;
     }
-
+    
     if (!Intro.asteroids || !Intro.trashGroup || !Intro.powerUps || !Intro.ship) {
         return;
     }
@@ -88,16 +113,22 @@ export default class Minimap extends Phaser.Scene {
         const scaleX = this.minimapSize / worldBounds.width * this.minimapZoomFactor;
         const scaleY = this.minimapSize / worldBounds.height * this.minimapZoomFactor;
 
-        if (Intro.asteroids) { this.drawMinimapObjects(Intro.asteroids, 0xff0000, 3, scaleX, scaleY, worldBounds); }
-        if (Intro.trashGroup) { this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 2, scaleX, scaleY, worldBounds); }
-        if (Intro.powerUps) { this.drawMinimapObjects(Intro.powerUps, 0xffff00, 3, scaleX, scaleY, worldBounds); }
+        if (Intro.asteroids) { this.drawMinimapObjects(Intro.asteroids, 0xff0000, 5, scaleX, scaleY, worldBounds); }
+        if (Intro.trashGroup) { this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 5, scaleX, scaleY, worldBounds); }
+        if (Intro.powerUps) { this.drawMinimapObjects(Intro.powerUps, 0xffff00, 5, scaleX, scaleY, worldBounds); }
         if (Intro.ship) {
             const playerX = (Intro.ship.x - worldBounds.x) * scaleX;
             const playerY = (Intro.ship.y - worldBounds.y) * scaleY;
             
-            this.minimapPlayerIndicator.setPosition(
-                this.scale.width - this.minimapPadding - this.minimapSize + playerX,
-                this.minimapPadding + playerY
+            // Posizione nella minimappa
+            const screenX = this.scale.width - this.minimapPadding - this.minimapSize + playerX;
+            const screenY = this.minimapPadding + playerY;
+            
+            // 3. Disegna il triangolo ruotato
+            this.drawRotatedTriangle(
+                screenX, 
+                screenY, 
+                Intro.ship.rotation // Usa l'angolo di rotazione della nave
             );
         }
     }
