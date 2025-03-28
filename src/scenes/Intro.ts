@@ -22,6 +22,8 @@ export default class Intro extends Phaser.Scene {
 
   private powerUpsIndicators: Record<string, Phaser.GameObjects.Image> = {};
 
+  private isBoostSoundPlaying: boolean = false; // Variabile di stato
+
   private keys: {
     W: Phaser.Input.Keyboard.Key,
     A: Phaser.Input.Keyboard.Key,
@@ -126,18 +128,24 @@ export default class Intro extends Phaser.Scene {
     }
   }
 
-  update(time: number, delta: number){
+  update(time: number, delta: number) {
     if (this.cursor.space.isDown && Intro.ship.getData('boost')) {
       this._speed = 650;
   
-      if (!this.sound.get('boost')?.isPlaying) {
+      if (!this.isBoostSoundPlaying) {
         this.sound.play('boost', { loop: true, volume: 0.5 });
+        this.isBoostSoundPlaying = true;
       }
     } else {
       this._speed = 250;
   
-      if (this.sound.get('boost')?.isPlaying) {
-        this.sound.stopByKey('boost');
+      if (this.isBoostSoundPlaying) {
+        const boostSound = this.sound.get('boost');
+        if (boostSound) {
+          boostSound.stop();
+          this.sound.removeByKey('boost');
+        }
+        this.isBoostSoundPlaying = false;
       }
     }
 
