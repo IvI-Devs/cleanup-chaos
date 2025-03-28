@@ -45,6 +45,33 @@ export let GameInfo = {
       shield: 2500,
       boost: 3000,
       doublePoints: 5000,
-    }
+    },
+
+    levels:[
+      {
+        name: "Zona Contaminata",
+        trash: {
+          // bottle: 45,
+          // pizzaCarton: 75,
+          // can: 30
+        }
+      },
+      {
+        name: "Cintura della follia",
+        trash: {
+          // bottle: 45,
+          // pizzaCarton: 75,
+          // can: 30
+        }
+      },
+      {
+        name: "Occhio del Chaos",
+        trash: {
+          // bottle: 45,
+          // pizzaCarton: 75,
+          // can: 30
+        }
+      },
+    ]
 
 };

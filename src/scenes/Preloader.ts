@@ -37,7 +37,7 @@ export default class Preloader extends Phaser.Scene {
       GameData.sounds.forEach((sound) => {
         this.load.audio(sound.name, sound.paths);
       });
-    
+
     if(localStorage.getItem('score') === null){
       localStorage.setItem('score', '0');
     }
