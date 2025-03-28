@@ -33,6 +33,7 @@ export let GameData: gameData = {
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
     { name: "pixel-art-rectangle-3", path: "assets/images/other/pixel-art-rectangle-3.svg" },
+    { name: "flag", path: "assets/images/other/flag.svg" },
 
     { name: "ship-base", path: "assets/images/ships/base.svg" },
     { name: "ship-slight-damage", path: "assets/images/ships/slight-damage.svg" },
@@ -54,9 +55,15 @@ export let GameData: gameData = {
     { name: "glassBottle", path: "assets/images/trash/glass-bottle.svg" },
     { name: "tinStone", path: "assets/images/trash/tin-stone.svg" },
 
+    { name: "nebula", path: "assets/images/trash/nebula.svg" },
+    { name: "sprayBottle", path: "assets/images/trash/spray-bottle.svg" },
+    { name: "fuel", path: "assets/images/trash/fuel.svg" },
+
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
     { name: "powerUp-boost", path: "assets/images/power-ups/boost.svg" },
     { name: "powerUp-doublePoints", path: "assets/images/power-ups/double-points.svg" },
+
+
   ],
   atlas: [],
   sounds: [

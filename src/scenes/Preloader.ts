@@ -15,9 +15,7 @@ export default class Preloader extends Phaser.Scene {
   preload() {
     this.cameras.main.setBackgroundColor(GameData.globals.bgColor);
     this._progress = this.add.graphics();
-    GameData.sounds.forEach((sound) => {
-      this.load.audio(sound.name, sound.paths);
-    });
+    GameData.sounds.forEach((sound) => { this.load.audio(sound.name, sound.paths) });
     this.loadAssets();
   }
 

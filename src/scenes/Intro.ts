@@ -12,6 +12,7 @@ export default class Intro extends Phaser.Scene {
   private _scoreText: Phaser.GameObjects.Text;
   private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
   private _speed: number = 250;
+  private currentLevel: number = null;
 
   public static asteroids: Phaser.Physics.Arcade.Group;
   public static trashGroup: Phaser.Physics.Arcade.Group;
@@ -21,8 +22,7 @@ export default class Intro extends Phaser.Scene {
   private trashSpeed: number = 150;
 
   private powerUpsIndicators: Record<string, Phaser.GameObjects.Image> = {};
-
-  private isBoostSoundPlaying: boolean = false; // Variabile di stato
+  private isBoostSoundPlaying: boolean = false;
 
   private keys: {
     W: Phaser.Input.Keyboard.Key,
@@ -30,6 +30,13 @@ export default class Intro extends Phaser.Scene {
     S: Phaser.Input.Keyboard.Key,
     D: Phaser.Input.Keyboard.Key
   };
+
+  init(){
+    if(localStorage.getItem('gameMode') !== 'arcade'){
+      this.currentLevel = parseInt(localStorage.getItem('level'));
+    }
+    else this.currentLevel = 0;
+  }
 
   create(){
     this.score = 0;
@@ -131,14 +138,14 @@ export default class Intro extends Phaser.Scene {
   update(time: number, delta: number) {
     if (this.cursor.space.isDown && Intro.ship.getData('boost')) {
       this._speed = 650;
-  
+
       if (!this.isBoostSoundPlaying) {
         this.sound.play('boost', { loop: true, volume: 0.5 });
         this.isBoostSoundPlaying = true;
       }
     } else {
       this._speed = 250;
-  
+
       if (this.isBoostSoundPlaying) {
         const boostSound = this.sound.get('boost');
         if (boostSound) {
@@ -245,7 +252,8 @@ export default class Intro extends Phaser.Scene {
   pickUpTrash(ship: any, trash: any){
     if(!ship.active || !trash.active) return;
     if(trash.body) trash.destroy();
-    this.updateScore(GameInfo.trash[trash.texture.key as keyof typeof GameInfo.trash]);
+    const currentTrash = GameInfo.levels[0].trash;
+    this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
   }
 
   handleCollision(ship: any, asteroid:any){
@@ -458,9 +466,13 @@ export default class Intro extends Phaser.Scene {
 
     const keys = Object.keys(GameInfo.trash) as Array<keyof typeof GameInfo.trash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
+    const currentTrash = GameInfo.levels[this.currentLevel].trash;
 
     const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
-      .setInteractive().on('pointerdown', () => { trash.destroy(); this.updateScore(GameInfo.trash[randomTrash]); });
+      .setInteractive().on('pointerdown', () => {
+        trash.destroy();
+        this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
+      });
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 
     const targetPoint = new Phaser.Math.Vector2(
