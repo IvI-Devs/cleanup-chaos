@@ -32,7 +32,6 @@ export default class Intro extends Phaser.Scene {
   };
 
   init(){
-
     if(localStorage.getItem('gameMode') !== 'arcade' && localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
@@ -85,11 +84,96 @@ export default class Intro extends Phaser.Scene {
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].powerUpsGenerationDelay ?? GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
+  private checkLevelCompletion() {
+    if (this.currentLevel !== 0 && localStorage.getItem('gameMode') !== 'arcade' && this.score >= 1000) {
+        this.time.removeAllEvents();
+        
+        Intro.asteroids.clear(true, true);
+        Intro.trashGroup.clear(true, true);
+        Intro.powerUps.clear(true, true);
+        
+        this.registry.set("score", this.score);
+        
+        const nextLevel = this.currentLevel + 1;
+        
+        if (nextLevel < GameInfo.levels.length) {
+            localStorage.setItem('selectedLevel', nextLevel.toString());
+            
+            this.showLevelCompleteMessage();
+            
+            this.time.delayedCall(2000, () => {
+                this.scene.restart();
+            });
+        } else {
+            this.showVictoryMessage();
+            this.time.delayedCall(2000, () => {
+                this.scene.stop("Minimap");
+                this.scene.start("GameOver", { victory: true });
+            });
+        }
+    }
+}
+
+  private showLevelCompleteMessage() {
+    const style = {
+      fontFamily: GameInfo.default.font,
+      fontSize: '48px',
+      color: '#ffffff',
+      stroke: '#000000',
+      strokeThickness: 4,
+      shadow: { blur: 0, stroke: false, fill: false }
+    };
+    
+    const text = this.add.text(
+      this.scale.width / 2, 
+      this.scale.height / 2, 
+      `Level ${this.currentLevel} Complete!`, 
+      style
+    ).setOrigin(0.5).setDepth(10000);
+    
+    this.tweens.add({
+      targets: text,
+      scale: { from: 0.5, to: 1 },
+      alpha: { from: 0, to: 1 },
+      duration: 500,
+      ease: 'Power2'
+    });
+    
+  }
+
+  private showVictoryMessage() {
+    const style = {
+      fontFamily: GameInfo.default.font,
+      fontSize: '48px',
+      color: '#ffff00',
+      stroke: '#000000',
+      strokeThickness: 4,
+      shadow: { blur: 0, stroke: false, fill: false }
+    };
+    
+    const text = this.add.text(
+      this.scale.width / 2, 
+      this.scale.height / 2, 
+      'You Won!', 
+      style
+    ).setOrigin(0.5).setDepth(10000);
+    
+    this.tweens.add({
+      targets: text,
+      scale: { from: 0.5, to: 1.2 },
+      alpha: { from: 0, to: 1 },
+      duration: 800,
+      ease: 'Elastic'
+    });
+    
+  }
+
   public updateScore(score: number): void {
     if(Intro.ship.data.get('doublePoints') == true) this.score += score * 2;
     else this.score += score;
 
     this._scoreText.setText(`Score: ${this.score}`);
+    this.checkLevelCompletion();
   }
 
   private createPowerUpIndicators() {
@@ -179,7 +263,7 @@ export default class Intro extends Phaser.Scene {
           if (elapsed % flashInterval < flashInterval / 2) this.powerUpsIndicators[type].setAlpha(0);
           else this.powerUpsIndicators[type].setAlpha(1);
 
-          this.flashObject(Intro.ship, flashInterval); // to fix
+          this.flashObject(Intro.ship, flashInterval);
         }
       }
     });
@@ -189,7 +273,6 @@ export default class Intro extends Phaser.Scene {
 
     if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       Intro.ship.angle = -135;
-      // body.setSize(Intro.ship.width - 50, Intro.ship.height - 50); // to update
     }
     if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
       Intro.ship.angle = 135;
@@ -222,13 +305,6 @@ export default class Intro extends Phaser.Scene {
   }
 
   private updateHearts(){
-    if(this.hearts <= 0){
-      this.registry.set("score", this.score);
-      this.scene.stop(this);
-      this.scene.stop("Minimap")
-      this.scene.start("GameOver");
-    }
-
     this.heartsGroup.clear(true, true);
     const startX = 75;
     const startY = 125;
@@ -250,7 +326,7 @@ export default class Intro extends Phaser.Scene {
 
   handleCollision(ship: any, asteroid:any){
     if(!ship.active || !asteroid.active) return;
-    if(asteroid.body) asteroid.destroy(); // to do: asteroid destruction animation
+    if(asteroid.body) asteroid.destroy();
 
     if(Intro.ship.getData('shield') == false){
       this.time.addEvent({
@@ -271,46 +347,52 @@ export default class Intro extends Phaser.Scene {
       if (this.sound.get('collision')) this.sound.play('collision', { volume: 0.5, detune: 200 });
       this.cameras.main.shake(100, 0.005);
     }
-
+    
+    if(this.hearts <= 0){
+      this.registry.set("score", this.score);
+      this.scene.stop(this);
+      this.scene.stop("Minimap")
+      this.scene.start("GameOver");
+    }
   }
 
   private spawnPowerUps(){
-      const screenWidth = this.game.canvas.width;
-      const screenHeight = this.game.canvas.height;
-      const padding = 50;
+    const screenWidth = this.game.canvas.width;
+    const screenHeight = this.game.canvas.height;
+    const padding = 50;
 
-      let x: number, y: number;
-      let targetX = screenWidth / 2;
-      let targetY = screenHeight / 2;
+    let x: number, y: number;
+    let targetX = screenWidth / 2;
+    let targetY = screenHeight / 2;
 
-      const edge = Phaser.Math.Between(0, 3);
-      switch (edge) {
-        case 0: // Top
-          x = Phaser.Math.Between(-padding, screenWidth + padding);
-          y = -padding;
-          break;
-        case 1: // Right
-          x = screenWidth + padding;
-          y = Phaser.Math.Between(-padding, screenHeight + padding);
-          break;
-        case 2: // Bottom
-          x = Phaser.Math.Between(-padding, screenWidth + padding);
-          y = screenHeight + padding;
-          break;
-        default: // Left
-          x = -padding;
-          y = Phaser.Math.Between(-padding, screenHeight + padding);
-      }
+    const edge = Phaser.Math.Between(0, 3);
+    switch (edge) {
+      case 0: // Top
+        x = Phaser.Math.Between(-padding, screenWidth + padding);
+        y = -padding;
+        break;
+      case 1: // Right
+        x = screenWidth + padding;
+        y = Phaser.Math.Between(-padding, screenHeight + padding);
+        break;
+      case 2: // Bottom
+        x = Phaser.Math.Between(-padding, screenWidth + padding);
+        y = screenHeight + padding;
+        break;
+      default: // Left
+        x = -padding;
+        y = Phaser.Math.Between(-padding, screenHeight + padding);
+    }
 
-      const keys = Object.keys(GameInfo.powerUps) as Array<keyof typeof GameInfo.powerUps>;
-      const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
+    const keys = Object.keys(GameInfo.powerUps) as Array<keyof typeof GameInfo.powerUps>;
+    const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
 
-      const powerUp = Intro.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
-      powerUp.body.setSize(powerUp.width, powerUp.height);
-      powerUp.setData('type', powerUpType);
+    const powerUp = Intro.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
+    powerUp.body.setSize(powerUp.width, powerUp.height);
+    powerUp.setData('type', powerUpType);
 
-      this.physics.moveTo(powerUp, targetX, targetY, 100);
-      powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
+    this.physics.moveTo(powerUp, targetX, targetY, 100);
+    powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
   }
 
   private rocketEnhancement(ship: any, powerUp: any) {
@@ -354,7 +436,7 @@ export default class Intro extends Phaser.Scene {
     const padding = 50;
 
     let x: number, y: number;
-    let edge = Phaser.Math.Between(0, 3); // 0 = top, 1 = right, 2 = bottom, 3 = left
+    let edge = Phaser.Math.Between(0, 3);
 
     switch(edge) {
       case 0: // Top
@@ -413,7 +495,7 @@ export default class Intro extends Phaser.Scene {
     const padding = 50;
 
     let x: number, y: number;
-    let edge = Phaser.Math.Between(0, 3); // 0=top, 1=right, 2=bottom, 3=left
+    let edge = Phaser.Math.Between(0, 3);
 
     switch(edge) {
       case 0: // Top
@@ -456,7 +538,7 @@ export default class Intro extends Phaser.Scene {
     const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
       .setInteractive().on('pointerdown', () => {
         trash.destroy();
-        this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
+        this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
       });
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 
@@ -467,8 +549,6 @@ export default class Intro extends Phaser.Scene {
 
     this.physics.moveTo(trash, targetPoint.x, targetPoint.y, this.trashSpeed);
 
-
     this.scene.launch("Minimap");
   }
-
 }

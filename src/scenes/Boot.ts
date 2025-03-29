@@ -33,7 +33,7 @@ export default class Boot extends Phaser.Scene {
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
 
-    if(localStorage.getItem('level') === null) localStorage.setItem('level', '1');
+    if(localStorage.getItem('level') === null) localStorage.setItem('level', '4');
 
     if(localStorage.getItem('score') === null) localStorage.setItem('score', '0');
     this._arcadeMode = this.add.text(this.game.canvas.width - 175, this.game.canvas.height - 50, "")

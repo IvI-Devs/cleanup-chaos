@@ -1,3 +1,4 @@
+import { GameInfo } from "../GameInfo";
 import Intro from "./Intro";
 
 export default class Minimap extends Phaser.Scene {
@@ -108,7 +109,7 @@ export default class Minimap extends Phaser.Scene {
           this.scale.width / 2,
           this.scale.height / 2,
           `+${points}`,
-          { font: '48px Arial', color: '#00ff00' }
+          { font: '48px', color: '#00ff00', fontFamily: GameInfo.default.font }
         )
         .setOrigin(0.5)
         .setDepth(1001);
