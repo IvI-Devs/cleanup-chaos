@@ -93,6 +93,7 @@ export let GameInfo = {
       },
       {
         name: "Flusso insensato",
+        background: "bg-07",
         asteroidsGenerationDelay: 750,
         trashGenerationDelay: 750,
         powerUpsGenerationDelay: 10000,

@@ -74,7 +74,7 @@ export default class Preloader extends Phaser.Scene {
     if(localStorage.getItem('gameMode') === 'arcade'){
       this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
     }
-    else this._subtitle.setText(`Level ${localStorage.getItem('selectedLevel')}`);
+    else this._subtitle.setText(`Level ${parseInt(localStorage.getItem('selectedLevel'))+1}`);
   }
 
   create() {

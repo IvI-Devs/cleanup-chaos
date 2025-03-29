@@ -24,7 +24,7 @@ export default class Minimap extends Phaser.Scene {
     private isTargetGenerated: boolean = false;
     private readonly minDistance: number = 300;
     private readonly minMargin: number = 100;
-    private readonly navigationForce: number = 10;
+    private readonly navigationForce: number = -10;
     private readonly targetReachedThreshold: number = 50;
     private targetMarker: Phaser.GameObjects.Image | null = null;
 
@@ -137,7 +137,7 @@ export default class Minimap extends Phaser.Scene {
 
         if (distance < this.targetReachedThreshold) {
             body.setAcceleration(0, 0);
-            this.addScoreToMainScene(1000); 
+            this.addScoreToMainScene(1000);
             this.resetTarget();
             return;
         }
@@ -150,32 +150,32 @@ export default class Minimap extends Phaser.Scene {
 
     private drawMinimapObjects(group: Phaser.Physics.Arcade.Group | undefined, color: number, size: number) {
       if (!group?.getChildren || !Intro.ship) return;
-  
+
       const worldBounds = this.physics.world.bounds;
       const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
-      
+
       const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
       const centerY = this.minimapPadding + this.minimapSize / 2;
-  
+
       const offsetX = (worldBounds.width * scale) / 2;
       const offsetY = (worldBounds.height * scale) / 2;
-  
+
       group.getChildren().forEach((obj: Phaser.GameObjects.GameObject) => {
           const sprite = obj as Phaser.GameObjects.Sprite;
-  
+
           const minimapX = centerX - offsetX + (sprite.x * scale);
           const minimapY = centerY - offsetY + (sprite.y * scale);
-  
-          if (minimapX >= centerX - this.minimapSize/2 && 
+
+          if (minimapX >= centerX - this.minimapSize/2 &&
               minimapX <= centerX + this.minimapSize/2 &&
-              minimapY >= centerY - this.minimapSize/2 && 
+              minimapY >= centerY - this.minimapSize/2 &&
               minimapY <= centerY + this.minimapSize/2) {
-              
+
               this.minimap.fillStyle(color, 1);
               this.minimap.fillRect(
-                  minimapX - size/2, 
-                  minimapY - size/2, 
-                  size, 
+                  minimapX - size/2,
+                  minimapY - size/2,
+                  size,
                   size
               );
           }
@@ -184,24 +184,24 @@ export default class Minimap extends Phaser.Scene {
 
   private drawPath() {
     if (this.currentLevel !== 0 || !this.targetPoint || !Intro.ship) return;
-  
+
     const worldBounds = this.physics.world.bounds;
     const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
     const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
     const centerY = this.minimapPadding + this.minimapSize / 2;
-  
+
     const offsetX = (worldBounds.width * scale) / 2;
     const offsetY = (worldBounds.height * scale) / 2;
     const playerMinimapX = centerX - offsetX + (Intro.ship.x * scale);
     const playerMinimapY = centerY - offsetY + (Intro.ship.y * scale);
-  
+
     const targetMinimapX = centerX - offsetX + (this.targetPoint.x * scale);
     const targetMinimapY = centerY - offsetY + (this.targetPoint.y * scale);
-  
+
     this.pathGraphics.clear()
       .lineStyle(4, 0x33ff33, 0.9)
       .beginPath()
-      .moveTo(playerMinimapX, playerMinimapY) 
+      .moveTo(playerMinimapX, playerMinimapY)
       .lineTo(targetMinimapX, targetMinimapY)
       .strokePath()
       .fillStyle(0x33ff33, 0.9)
@@ -212,31 +212,31 @@ export default class Minimap extends Phaser.Scene {
 
     private drawPlayerIndicator() {
       if (!Intro.ship) return;
-  
+
       const worldBounds = this.physics.world.bounds;
       const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
       const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
       const centerY = this.minimapPadding + this.minimapSize / 2;
-  
+
       const offsetX = (worldBounds.width * scale) / 2;
       const offsetY = (worldBounds.height * scale) / 2;
       const minimapX = centerX - offsetX + (Intro.ship.x * scale);
       const minimapY = centerY - offsetY + (Intro.ship.y * scale);
-  
+
       const rotation = Intro.ship.rotation;
-  
+
       const halfBase = this.triangleSize / 2;
       const points = [
           { x: 0, y: -this.triangleHeight / 2 },
           { x: -halfBase, y: this.triangleHeight / 2 },
           { x: halfBase, y: this.triangleHeight / 2 }
       ];
-  
+
       const rotatedPoints = points.map(p => ({
           x: minimapX + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
           y: minimapY + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
       }));
-  
+
       this.minimapPlayerIndicator.clear().fillStyle(0xffffff, 1)
           .fillTriangle(
               rotatedPoints[0].x, rotatedPoints[0].y,
@@ -248,18 +248,18 @@ export default class Minimap extends Phaser.Scene {
     update(){
       const sceneActive = this.scene.get("Intro").scene.isActive();
       [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
-    
+
       if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
         if (!sceneActive) this.isTargetGenerated = false;
         return;
       }
-    
+
       if(!this.isTargetGenerated) this.generateRandomTarget();
-      
+
       if (this.currentLevel === 0) {
         this.navigateToTarget();
       }
-    
+
       this.minimap.clear().lineStyle(2, 0xffffff, 1)
       .strokeRect(
         this.scale.width - this.minimapPadding - this.minimapSize,
@@ -267,11 +267,11 @@ export default class Minimap extends Phaser.Scene {
         this.minimapSize,
         this.minimapSize
       );
-    
+
       this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
       this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
       this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
-    
+
       this.drawPath();
       this.drawPlayerIndicator();
     }
