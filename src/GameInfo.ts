@@ -47,12 +47,6 @@ export let GameInfo = {
       fontSize: 50
     },
 
-    trash: {
-      bottle: 45,
-      pizzaCarton: 75,
-      can: 30
-    },
-
     powerUpsGenerationDelay: 7500,
     powerUps: {
       shield: 2500,
@@ -103,9 +97,8 @@ export let GameInfo = {
         trashGenerationDelay: 750,
         powerUpsGenerationDelay: 10000,
         trash: {
-          // bottle: 45,
-          // pizzaCarton: 75,
-          // can: 30
+          shuttle: 150,
+          battery: 25,
         }
       },
     ]

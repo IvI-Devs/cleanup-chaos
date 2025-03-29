@@ -65,6 +65,8 @@ export let GameData: gameData = {
     { name: "computer", path: "assets/images/trash/computer.svg" },
     { name: "floppy", path: "assets/images/trash/floppy.svg" },
     { name: "disc", path: "assets/images/trash/disc.svg" },
+    { name: "shuttle", path: "assets/images/trash/shuttle.svg" },
+    { name: "battery", path: "assets/images/trash/battery.svg" },
 
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
     { name: "powerUp-boost", path: "assets/images/power-ups/boost.svg" },
