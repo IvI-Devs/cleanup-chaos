@@ -32,13 +32,11 @@ export default class Preloader extends Phaser.Scene {
       .setFontSize(100)
       .setFontFamily(GameInfo.gameTitle.font);
 
-      GameData.sounds.forEach((sound) => {
-        this.load.audio(sound.name, sound.paths);
-      });
+    GameData.sounds.forEach((sound) => {
+      this.load.audio(sound.name, sound.paths);
+    });
 
-    if(localStorage.getItem('score') === null){
-      localStorage.setItem('score', '0');
-    }
+    if(localStorage.getItem('score') === null) localStorage.setItem('score', '0');
     else{
       this._subtitle = this.add.text(this.game.canvas.width / 2, 300, "")
         .setDepth(1001)
@@ -73,25 +71,23 @@ export default class Preloader extends Phaser.Scene {
       .setFontSize(40)
       .setFontFamily(GameData.preloader.loadingTextFont);
 
-    if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
-    else this._subtitle.setText(`Level ${localStorage.getItem('level')}`);
+    if(localStorage.getItem('gameMode') === 'arcade'){
+      this._subtitle.setText(`High Score: ${localStorage.getItem('score')}`);
+    }
+    else this._subtitle.setText(`Level ${localStorage.getItem('selectedLevel')}`);
   }
 
   create() {
     const music = this.sound.add('arcadeMusic', { loop: true, volume: 0.5 });
     music.play();
     this.registry.set('backgroundMusic', music);
-    this.input.keyboard.on('keydown-ESC', () => {
-      this.goToMenu();
-    });
+    this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
   }
 
   private goToMenu() {
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
 
-    if (music && music.isPlaying) {
-      music.stop();
-    }
+    if(music && music.isPlaying) music.stop();
 
     this.scene.stop("Preloader");
     this.scene.start("Boot");

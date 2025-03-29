@@ -32,8 +32,8 @@ export default class Intro extends Phaser.Scene {
   };
 
   init(){
-    if(localStorage.getItem('gameMode') !== 'arcade'){
-      this.currentLevel = parseInt(localStorage.getItem('level'));
+    if(localStorage.getItem('selectedLevel') !== null){
+      this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
     else this.currentLevel = 0;
   }
@@ -48,9 +48,7 @@ export default class Intro extends Phaser.Scene {
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
-    if (music && !music.isPlaying){
-      music.play();
-    }
+    if(music && !music.isPlaying) music.play();
 
     this.createPowerUpIndicators();
 
@@ -77,20 +75,14 @@ export default class Intro extends Phaser.Scene {
       D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     };
 
-    this.input.keyboard.on("keydown-ESC", () => {
-      this.scene.pause();
-      this.scene.launch("PauseMenu");
-    });
-
+    this.input.keyboard.on("keydown-ESC", () => { this.scene.pause(); this.scene.launch("PauseMenu"); });
     this.input.keyboard.on("keyup-SPACE", () => {
-      if (this.sound.get('boost')?.isPlaying) {
-          this.sound.stopByKey('boost');
-      }
+      if(this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
     });
 
-    this.time.addEvent({ delay: 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].asteroidsGenerationDelay ?? 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].asteroidsGenerationDelay ?? 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].powerUpsGenerationDelay ?? GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
   public updateScore(score: number): void {
@@ -414,7 +406,7 @@ export default class Intro extends Phaser.Scene {
     this.physics.moveTo(asteroid, targetPoint.x, targetPoint.y, this.asteroidSpeed);
   }
 
-  private spawnTrash() {
+  private spawnTrash(){
     const screenWidth = this.game.canvas.width;
     const screenHeight = this.game.canvas.height;
     const minDistanceFromShip = 300;

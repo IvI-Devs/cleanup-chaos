@@ -63,6 +63,7 @@ export let GameInfo = {
     levels: [
       {
         name: "Zona Contaminata",
+        background: "bg-05",
         asteroidsGenerationDelay: 1500,
         trashGenerationDelay: 1500,
         powerUpsGenerationDelay: 5000,

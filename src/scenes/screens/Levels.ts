@@ -59,8 +59,8 @@ export default class Levels extends Phaser.Scene {
       }).setOrigin(0, 0).setAlpha(0.3);
 
       if(index < this.currentLevel){
-        text.setAlpha(1).setInteractive().on('pointerdown', () => { this.play() });
-        rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { this.play() });
+        text.setAlpha(1).setInteractive().on('pointerdown', () => { this.play(index) });
+        rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { this.play(index) });
       }
 
       this._levelsGroup.add(rectangle);
@@ -78,7 +78,8 @@ export default class Levels extends Phaser.Scene {
     this.scene.start('Boot');
   }
 
-  private play(){
+  private play(levelNumber: number){
+    localStorage.setItem('selectedLevel', (levelNumber+1).toString())
     this.scene.stop(this);
     this.scene.start('Preloader');
   }

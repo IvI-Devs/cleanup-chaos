@@ -29,6 +29,7 @@ export let GameData: gameData = {
     { name: "bg-02", path: "assets/images/backgrounds/bg-02.svg" },
     { name: "bg-03", path: "assets/images/backgrounds/bg-03.svg" },
     { name: "bg-04", path: "assets/images/backgrounds/bg-04.svg" },
+    { name: "bg-05", path: "assets/images/backgrounds/bg-05.svg" },
     { name: "bg-01-wider", path: "assets/images/backgrounds/bg-01-wider.png" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
