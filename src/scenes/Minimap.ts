@@ -51,7 +51,7 @@ export default class Minimap extends Phaser.Scene {
     }
 
     private generateRandomTarget() {
-      if (this.isTargetGenerated || !Intro.ship) return;
+      if(this.isTargetGenerated || !Intro.ship) return;
       const worldBounds = this.physics.world.bounds;
       if(this.targetMarker){ this.targetMarker.destroy(); this.targetMarker = null; }
       let attempts = 0;
@@ -250,14 +250,13 @@ export default class Minimap extends Phaser.Scene {
       [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
 
       if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
-        if (!sceneActive) this.isTargetGenerated = false;
+        if(!sceneActive) this.isTargetGenerated = false;
         return;
       }
 
-      if(!this.isTargetGenerated) this.generateRandomTarget();
-
-      if (this.currentLevel === 0) {
-        this.navigateToTarget();
+      if(localStorage.getItem('gameMode') === 'arcade'){
+        if(!this.isTargetGenerated) this.generateRandomTarget();
+        if(this.currentLevel === 0) this.navigateToTarget();
       }
 
       this.minimap.clear().lineStyle(2, 0xffffff, 1)
@@ -272,7 +271,7 @@ export default class Minimap extends Phaser.Scene {
       this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
       this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
 
-      this.drawPath();
+      if(localStorage.getItem('gameMode') === 'arcade') this.drawPath();
       this.drawPlayerIndicator();
     }
 
