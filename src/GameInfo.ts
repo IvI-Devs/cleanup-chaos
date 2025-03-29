@@ -75,6 +75,7 @@ export let GameInfo = {
       },
       {
         name: "Corrente della distruzione",
+        background: "bg-06",
         asteroidsGenerationDelay: 1000,
         trashGenerationDelay: 1000,
         powerUpsGenerationDelay: 7500,

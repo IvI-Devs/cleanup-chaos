@@ -12,7 +12,7 @@ export default class Intro extends Phaser.Scene {
   private _scoreText: Phaser.GameObjects.Text;
   private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
   private _speed: number = 250;
-  private currentLevel: number = null;
+  private currentLevel: number = 0;
 
   public static asteroids: Phaser.Physics.Arcade.Group;
   public static trashGroup: Phaser.Physics.Arcade.Group;
@@ -35,7 +35,6 @@ export default class Intro extends Phaser.Scene {
     if(localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
-    else this.currentLevel = 0;
   }
 
   create(){
@@ -43,7 +42,7 @@ export default class Intro extends Phaser.Scene {
     this.hearts = 3;
     this.registry.set("score", 0);
     this.cursor = this.input.keyboard.createCursorKeys();
-    this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, 'bg-01-wider').setOrigin(0, 0);
+    this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, `${GameInfo.levels[this.currentLevel-1].background ?? 'bg-01'}-wider`).setOrigin(0, 0);
     this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
@@ -81,7 +80,7 @@ export default class Intro extends Phaser.Scene {
     });
 
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].asteroidsGenerationDelay ?? 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
-    this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].asteroidsGenerationDelay ?? 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
+    this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].trashGenerationDelay ?? 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].powerUpsGenerationDelay ?? GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
   }
 
@@ -244,8 +243,8 @@ export default class Intro extends Phaser.Scene {
   pickUpTrash(ship: any, trash: any){
     if(!ship.active || !trash.active) return;
     if(trash.body) trash.destroy();
-    const currentTrash = GameInfo.levels[0].trash;
-    this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
+    const currentTrash = GameInfo.levels[this.currentLevel-1].trash;
+    this.updateScore(GameInfo.levels[this.currentLevel-1].trash?.[trash.texture.key as keyof typeof currentTrash]);
   }
 
   handleCollision(ship: any, asteroid:any){
@@ -449,8 +448,8 @@ export default class Intro extends Phaser.Scene {
       }
     }
 
-    const currentTrash = GameInfo.levels[this.currentLevel].trash;
-    const keys = Object.keys(GameInfo.levels[0].trash) as Array<keyof typeof currentTrash>;
+    const currentTrash = GameInfo.levels[this.currentLevel-1].trash;
+    const keys = Object.keys(currentTrash) as Array<keyof typeof currentTrash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
     const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))

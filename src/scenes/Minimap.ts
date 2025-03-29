@@ -25,21 +25,20 @@ export default class Minimap extends Phaser.Scene {
     private isTargetGenerated: boolean = false;
     private readonly minDistance: number = 300;
     private readonly minMargin: number = 100;
-    private readonly navigationForce: number = 50;
+    private readonly navigationForce: number = 10;
     private readonly targetReachedThreshold: number = 50;
     private targetMarker: Phaser.GameObjects.Image | null = null;
 
-    create() {
+    create(){
       const camera = this.cameras.main;
       this.cameraWidth = camera.width;
       this.cameraHeight = camera.height;
 
-      // Sfondo minimappa
       this.minimapBg = this.add.rectangle(
-        this.scale.width - this.minimapPadding - this.minimapSize/2,
-        this.minimapPadding + this.minimapSize/2,
-        this.minimapSize + this.minimapBorder*2,
-        this.minimapSize + this.minimapBorder*2,
+        this.scale.width - this.minimapPadding - this.minimapSize / 2,
+        this.minimapPadding + this.minimapSize / 2,
+        this.minimapSize + this.minimapBorder * 2,
+        this.minimapSize + this.minimapBorder * 2,
         0x000000
       )
       .setDepth(1000)
@@ -55,12 +54,7 @@ export default class Minimap extends Phaser.Scene {
     private generateRandomTarget() {
       if (this.isTargetGenerated || !Intro.ship) return;
       const worldBounds = this.physics.world.bounds;
-        
-        // Rimuovi il marker precedente
-        if (this.targetMarker) {
-            this.targetMarker.destroy();
-            this.targetMarker = null;
-        }
+      if(this.targetMarker){ this.targetMarker.destroy(); this.targetMarker = null; }
       let attempts = 0;
       const maxAttempts = 100;
       let validPointFound = false;
@@ -79,7 +73,6 @@ export default class Minimap extends Phaser.Scene {
         );
 
         if(distance >= this.minDistance) validPointFound = true;
-
         attempts++;
       }
 
@@ -90,17 +83,12 @@ export default class Minimap extends Phaser.Scene {
           Intro.ship.y + Math.sin(Phaser.Math.DegToRad(angle)) * this.minDistance
         );
       }
-        
-        // Crea il marker visibile nella scena principale
-        this.targetMarker = this.add.image(
-            this.targetPoint.x,
-            this.targetPoint.y,
-            'target-marker'
-        )
+
+        this.targetMarker = this.add.image(this.targetPoint.x, this.targetPoint.y, 'target-marker')
         .setDepth(999)
         .setScale(0.5)
         .setAlpha(0.8);
-        
+
         // Animazione pulsante del marker
         this.tweens.add({
             targets: this.targetMarker,
@@ -156,10 +144,10 @@ export default class Minimap extends Phaser.Scene {
             return;
         }
 
-      // const angle = Phaser.Math.Angle.Between(Intro.ship.x, Intro.ship.y, this.targetPoint.x, this.targetPoint.y);
-      // const forceX = Math.cos(angle) * this.navigationForce;
-      // const forceY = Math.sin(angle) * this.navigationForce;
-      // body.setAcceleration(forceX, forceY);
+      const angle = Phaser.Math.Angle.Between(Intro.ship.x, Intro.ship.y, this.targetPoint.x, this.targetPoint.y);
+      const forceX = Math.cos(angle) * this.navigationForce;
+      const forceY = Math.sin(angle) * this.navigationForce;
+      body.setAcceleration(forceX, forceY);
     }
 
     private drawMinimapObjects(group: Phaser.Physics.Arcade.Group | undefined, color: number, size: number){
@@ -207,65 +195,63 @@ export default class Minimap extends Phaser.Scene {
     }
 
     private drawPlayerIndicator(){
-        if (!Intro.ship) return;
+      if (!Intro.ship) return;
 
-        const centerX = this.scale.width - this.minimapPadding - this.minimapSize/2;
-        const centerY = this.minimapPadding + this.minimapSize/2;
-        const rotation = Intro.ship.rotation;
+      const centerX = this.scale.width - this.minimapPadding - this.minimapSize/2;
+      const centerY = this.minimapPadding + this.minimapSize/2;
+      const rotation = Intro.ship.rotation;
 
-        const halfBase = this.triangleSize / 2;
-        const points = [
-          { x: 0, y: -this.triangleHeight/2 },
-          { x: -halfBase, y: this.triangleHeight/2 },
-          { x: halfBase, y: this.triangleHeight/2 }
-        ];
+      const halfBase = this.triangleSize / 2;
+      const points = [
+        { x: 0, y: -this.triangleHeight / 2 },
+        { x: -halfBase, y: this.triangleHeight / 2 },
+        { x: halfBase, y: this.triangleHeight / 2 }
+      ];
 
-        const rotatedPoints = points.map(p => ({
-          x: centerX + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
-          y: centerY + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
-        }));
+      const rotatedPoints = points.map(p => ({
+        x: centerX + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
+        y: centerY + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
+      }));
 
-        this.minimapPlayerIndicator.clear().fillStyle(0xffffff, 1)
-          .fillTriangle(
-              rotatedPoints[0].x, rotatedPoints[0].y,
-              rotatedPoints[1].x, rotatedPoints[1].y,
-              rotatedPoints[2].x, rotatedPoints[2].y
-          );
+      this.minimapPlayerIndicator.clear().fillStyle(0xffffff, 1)
+        .fillTriangle(
+          rotatedPoints[0].x, rotatedPoints[0].y,
+          rotatedPoints[1].x, rotatedPoints[1].y,
+          rotatedPoints[2].x, rotatedPoints[2].y
+        );
     }
 
-    update(){
-      const sceneActive = this.scene.get("Intro").scene.isActive();
-      [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
+  update(){
+    const sceneActive = this.scene.get("Intro").scene.isActive();
+    [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
 
-      if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
-        if (!sceneActive) this.isTargetGenerated = false;
-        return;
-      }
+    if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
+      if (!sceneActive) this.isTargetGenerated = false;
+      return;
+    }
 
-      if(!this.isTargetGenerated) this.generateRandomTarget();
-      this.navigateToTarget();
+    if(!this.isTargetGenerated) this.generateRandomTarget();
+    this.navigateToTarget();
 
-      this.minimap.clear().lineStyle(2, 0xffffff, 1)
-        .strokeRect(
-          this.scale.width - this.minimapPadding - this.minimapSize,
-          this.minimapPadding,
-          this.minimapSize,
-          this.minimapSize
-        );
+    this.minimap.clear().lineStyle(2, 0xffffff, 1)
+    .strokeRect(
+      this.scale.width - this.minimapPadding - this.minimapSize,
+      this.minimapPadding,
+      this.minimapSize,
+      this.minimapSize
+    );
 
-      this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
-      this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
-      this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
+    this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
+    this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
+    this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
 
-      this.drawPath();
-      this.drawPlayerIndicator();
+    this.drawPath();
+    this.drawPlayerIndicator();
   }
 
     public resetTarget() {
-        this.isTargetGenerated = false;
-        this.targetPoint = null;
-        if (Intro.ship?.body) {
-            (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
-        }
+      this.isTargetGenerated = false;
+      this.targetPoint = null;
+      if(Intro.ship?.body) (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
     }
 }
