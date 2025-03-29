@@ -67,7 +67,7 @@ export default class GameOver extends Phaser.Scene {
     this.input.keyboard.on('keydown-ENTER', () => { this.playAgain(); });
 
     if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`Your score: ${this.score}`);
-    else this._subtitle.setText(`Level ${parseInt(localStorage.getItem('selectedLevel'))+1}`)
+    else this._subtitle.setText(`Level ${parseInt(localStorage.getItem('selectedLevel'))+1}`);
   }
 
   private playAgain(){

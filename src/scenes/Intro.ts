@@ -35,6 +35,7 @@ export default class Intro extends Phaser.Scene {
     if(localStorage.getItem('gameMode') !== 'arcade' && localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
+    else this.currentLevel = 0;
   }
 
   create(){
@@ -85,31 +86,28 @@ export default class Intro extends Phaser.Scene {
   }
 
   private checkLevelCompletion() {
-    if (localStorage.getItem('gameMode') == 'levels' && this.score >= 400) {
+    if(localStorage.getItem('gameMode') == 'levels' && this.score >= 2500){
         this.time.removeAllEvents();
-        
+
         Intro.asteroids.clear(true, true);
         Intro.trashGroup.clear(true, true);
         Intro.powerUps.clear(true, true);
-        
+
         this.registry.set("score", this.score);
-        
+
         const nextLevel = this.currentLevel + 1;
-        
-        if (nextLevel < GameInfo.levels.length) {
-            localStorage.setItem('selectedLevel', nextLevel.toString());
-            
-            this.showLevelCompleteMessage();
-            
-            this.time.delayedCall(2000, () => {
-                this.scene.restart();
-            });
-        } else {
-            this.showVictoryMessage();
-            this.time.delayedCall(2000, () => {
-                this.scene.stop("Minimap");
-                this.scene.start("GameOver", { victory: true });
-            });
+
+        if(nextLevel < GameInfo.levels.length){
+          localStorage.setItem('selectedLevel', nextLevel.toString());
+          this.showLevelCompleteMessage();
+          this.time.delayedCall(2000, () => { this.scene.restart(); });
+        }
+        else{
+          this.showVictoryMessage();
+          this.time.delayedCall(2000, () => {
+              this.scene.stop("Minimap");
+              this.scene.start("GameOver", { victory: true });
+          });
         }
     }
 }
@@ -123,14 +121,14 @@ export default class Intro extends Phaser.Scene {
       strokeThickness: 4,
       shadow: { blur: 0, stroke: false, fill: false }
     };
-    
+
     const text = this.add.text(
-      this.scale.width / 2, 
-      this.scale.height / 2, 
-      `Level ${this.currentLevel+1} Complete!`, 
+      this.scale.width / 2,
+      this.scale.height / 2,
+      `Level ${this.currentLevel+1} Complete!`,
       style
     ).setOrigin(0.5).setDepth(10000);
-    
+
     this.tweens.add({
       targets: text,
       scale: { from: 0.5, to: 1 },
@@ -138,7 +136,7 @@ export default class Intro extends Phaser.Scene {
       duration: 500,
       ease: 'Power2'
     });
-    
+
   }
 
   private showVictoryMessage() {
@@ -150,14 +148,14 @@ export default class Intro extends Phaser.Scene {
       strokeThickness: 4,
       shadow: { blur: 0, stroke: false, fill: false }
     };
-    
+
     const text = this.add.text(
-      this.scale.width / 2, 
-      this.scale.height / 2, 
-      'You Won!', 
+      this.scale.width / 2,
+      this.scale.height / 2,
+      'You Won!',
       style
     ).setOrigin(0.5).setDepth(10000);
-    
+
     this.tweens.add({
       targets: text,
       scale: { from: 0.5, to: 1.2 },
@@ -165,7 +163,7 @@ export default class Intro extends Phaser.Scene {
       duration: 800,
       ease: 'Elastic'
     });
-    
+
   }
 
   public updateScore(score: number): void {
@@ -347,7 +345,7 @@ export default class Intro extends Phaser.Scene {
       if (this.sound.get('collision')) this.sound.play('collision', { volume: 0.5, detune: 200 });
       this.cameras.main.shake(100, 0.005);
     }
-    
+
     if(this.hearts <= 0){
       this.registry.set("score", this.score);
       this.scene.stop(this);

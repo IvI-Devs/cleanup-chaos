@@ -126,9 +126,7 @@ export default class Minimap extends Phaser.Scene {
 
     private navigateToTarget(){
       if (!this.targetPoint || !Intro.ship?.body) return;
-
       const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
-
       const distance = Phaser.Math.Distance.Between(
         Intro.ship.x,
         Intro.ship.y,
@@ -136,12 +134,12 @@ export default class Minimap extends Phaser.Scene {
         this.targetPoint.y
       );
 
-        if (distance < this.targetReachedThreshold) {
-            body.setAcceleration(0, 0);
-            this.addScoreToMainScene(1000);
-            this.resetTarget();
-            return;
-        }
+      if (distance < this.targetReachedThreshold) {
+        body.setAcceleration(0, 0);
+        this.addScoreToMainScene(1000);
+        this.resetTarget();
+        return;
+      }
 
       const angle = Phaser.Math.Angle.Between(Intro.ship.x, Intro.ship.y, this.targetPoint.x, this.targetPoint.y);
       const forceX = Math.cos(angle) * this.navigationForce;
