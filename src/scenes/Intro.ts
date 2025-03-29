@@ -32,7 +32,8 @@ export default class Intro extends Phaser.Scene {
   };
 
   init(){
-    if(localStorage.getItem('selectedLevel') !== null){
+
+    if(localStorage.getItem('gameMode') !== 'arcade' && localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
   }
@@ -42,7 +43,7 @@ export default class Intro extends Phaser.Scene {
     this.hearts = 3;
     this.registry.set("score", 0);
     this.cursor = this.input.keyboard.createCursorKeys();
-    this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, `${GameInfo.levels[this.currentLevel-1].background ?? 'bg-01'}-wider`).setOrigin(0, 0);
+    this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, `${GameInfo.levels[this.currentLevel].background ?? 'bg-01'}-wider`).setOrigin(0, 0);
     this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
@@ -243,8 +244,8 @@ export default class Intro extends Phaser.Scene {
   pickUpTrash(ship: any, trash: any){
     if(!ship.active || !trash.active) return;
     if(trash.body) trash.destroy();
-    const currentTrash = GameInfo.levels[this.currentLevel-1].trash;
-    this.updateScore(GameInfo.levels[this.currentLevel-1].trash?.[trash.texture.key as keyof typeof currentTrash]);
+    const currentTrash = GameInfo.levels[this.currentLevel].trash;
+    this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
   }
 
   handleCollision(ship: any, asteroid:any){
@@ -448,7 +449,7 @@ export default class Intro extends Phaser.Scene {
       }
     }
 
-    const currentTrash = GameInfo.levels[this.currentLevel-1].trash;
+    const currentTrash = GameInfo.levels[this.currentLevel].trash;
     const keys = Object.keys(currentTrash) as Array<keyof typeof currentTrash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 

@@ -62,6 +62,18 @@ export let GameInfo = {
 
     levels: [
       {
+        name: "Arcade",
+        background: "bg-01",
+        asteroidsGenerationDelay: 1500,
+        trashGenerationDelay: 1500,
+        powerUpsGenerationDelay: 5000,
+        trash: {
+          bottle: 45,
+          pizzaCarton: 75,
+          can: 30
+        }
+      },
+      {
         name: "Zona Contaminata",
         background: "bg-05",
         asteroidsGenerationDelay: 1500,

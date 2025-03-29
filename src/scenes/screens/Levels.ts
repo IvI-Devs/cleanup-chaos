@@ -49,13 +49,13 @@ export default class Levels extends Phaser.Scene {
     this._levelsGroup.clear(true, true);
 
     GameInfo.levels.forEach((level, index) => {
-      let x = this.game.canvas.width / 4;
+      let x = this.game.canvas.width / 6 - 25;
       let y = this.game.canvas.height / 2 - 50;
       const rectangle = this.add.image(x + (250 * index), y, 'pixel-art-rectangle').setOrigin(0, 0).setAlpha(0.3);
       const text = this.add.text(x+70 + (250 * index), y + 55, (index+1).toString(), {
-          fontSize: '75px',
-          color: '#ffffff',
-          fontFamily: GameInfo.default.font
+        fontSize: '75px',
+        color: '#ffffff',
+        fontFamily: GameInfo.default.font
       }).setOrigin(0, 0).setAlpha(0.3);
 
       if(index < this.currentLevel){
@@ -66,10 +66,7 @@ export default class Levels extends Phaser.Scene {
       this._levelsGroup.add(rectangle);
       this._levelsGroup.add(text);
     })
-    this.input.keyboard.on("keydown-ESC", () => {
-      this.goToMenu();
-    });
-
+    this.input.keyboard.on("keydown-ESC", () => { this.goToMenu(); });
     this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
   }
 
