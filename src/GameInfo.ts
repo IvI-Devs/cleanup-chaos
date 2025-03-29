@@ -100,6 +100,12 @@ export let GameInfo = {
         trash: {
           shuttle: 150,
           battery: 25,
+          computer: 75,
+          floppy: 25,
+          disc: 15,
+          nebula: 47,
+          sprayBottle: 84,
+          fuel: 100
         }
       },
     ]
