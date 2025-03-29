@@ -85,7 +85,7 @@ export default class Intro extends Phaser.Scene {
   }
 
   private checkLevelCompletion() {
-    if (this.currentLevel !== 0 && localStorage.getItem('gameMode') !== 'arcade' && this.score >= 1000) {
+    if (localStorage.getItem('gameMode') == 'levels' && this.score >= 400) {
         this.time.removeAllEvents();
         
         Intro.asteroids.clear(true, true);
@@ -127,7 +127,7 @@ export default class Intro extends Phaser.Scene {
     const text = this.add.text(
       this.scale.width / 2, 
       this.scale.height / 2, 
-      `Level ${this.currentLevel} Complete!`, 
+      `Level ${this.currentLevel+1} Complete!`, 
       style
     ).setOrigin(0.5).setDepth(10000);
     
