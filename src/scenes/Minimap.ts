@@ -7,7 +7,6 @@ export default class Minimap extends Phaser.Scene {
       this.cameraHeight = 0;
     }
 
-    // Minimap configs
     private minimap: Phaser.GameObjects.Graphics;
     private readonly minimapSize: number = 150;
     private readonly minimapPadding: number = 20;
@@ -18,8 +17,8 @@ export default class Minimap extends Phaser.Scene {
     private readonly triangleHeight: number = 14;
     private cameraWidth: number;
     private cameraHeight: number;
+    private currentLevel: number = 0;
 
-    // Path management
     private targetPoint: Phaser.Geom.Point | null = null;
     private pathGraphics: Phaser.GameObjects.Graphics;
     private isTargetGenerated: boolean = false;
@@ -89,7 +88,6 @@ export default class Minimap extends Phaser.Scene {
         .setScale(0.5)
         .setAlpha(0.8);
 
-        // Animazione pulsante del marker
         this.tweens.add({
             targets: this.targetMarker,
             scale: 0.6,
@@ -139,7 +137,7 @@ export default class Minimap extends Phaser.Scene {
 
         if (distance < this.targetReachedThreshold) {
             body.setAcceleration(0, 0);
-            this.addScoreToMainScene(1000); // Aggiunge 1000 punti alla scena principale
+            this.addScoreToMainScene(1000); 
             this.resetTarget();
             return;
         }
@@ -150,104 +148,133 @@ export default class Minimap extends Phaser.Scene {
       body.setAcceleration(forceX, forceY);
     }
 
-    private drawMinimapObjects(group: Phaser.Physics.Arcade.Group | undefined, color: number, size: number){
+    private drawMinimapObjects(group: Phaser.Physics.Arcade.Group | undefined, color: number, size: number) {
       if (!group?.getChildren || !Intro.ship) return;
-
+  
       const worldBounds = this.physics.world.bounds;
-      const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height) * 2;
-      const centerX = this.scale.width - this.minimapPadding - this.minimapSize/2;
-      const centerY = this.minimapPadding + this.minimapSize/2;
-
+      const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
+      
+      const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
+      const centerY = this.minimapPadding + this.minimapSize / 2;
+  
+      const offsetX = (worldBounds.width * scale) / 2;
+      const offsetY = (worldBounds.height * scale) / 2;
+  
       group.getChildren().forEach((obj: Phaser.GameObjects.GameObject) => {
-        const sprite = obj as Phaser.GameObjects.Sprite;
-
-        const relX = (sprite.x - Intro.ship.x) * scale;
-        const relY = (sprite.y - Intro.ship.y) * scale;
-
-        if (Math.abs(relX) < this.minimapSize/2 && Math.abs(relY) < this.minimapSize/2) {
-          this.minimap.fillStyle(color, 1);
-          this.minimap.fillRect(centerX + relX - size/2, centerY + relY - size/2, size, size);
-        }
+          const sprite = obj as Phaser.GameObjects.Sprite;
+  
+          const minimapX = centerX - offsetX + (sprite.x * scale);
+          const minimapY = centerY - offsetY + (sprite.y * scale);
+  
+          if (minimapX >= centerX - this.minimapSize/2 && 
+              minimapX <= centerX + this.minimapSize/2 &&
+              minimapY >= centerY - this.minimapSize/2 && 
+              minimapY <= centerY + this.minimapSize/2) {
+              
+              this.minimap.fillStyle(color, 1);
+              this.minimap.fillRect(
+                  minimapX - size/2, 
+                  minimapY - size/2, 
+                  size, 
+                  size
+              );
+          }
       });
-    }
+  }
 
-    private drawPath() {
-      if (!this.targetPoint || !Intro.ship) return;
+  private drawPath() {
+    if (this.currentLevel !== 0 || !this.targetPoint || !Intro.ship) return;
+  
+    const worldBounds = this.physics.world.bounds;
+    const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
+    const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
+    const centerY = this.minimapPadding + this.minimapSize / 2;
+  
+    const offsetX = (worldBounds.width * scale) / 2;
+    const offsetY = (worldBounds.height * scale) / 2;
+    const playerMinimapX = centerX - offsetX + (Intro.ship.x * scale);
+    const playerMinimapY = centerY - offsetY + (Intro.ship.y * scale);
+  
+    const targetMinimapX = centerX - offsetX + (this.targetPoint.x * scale);
+    const targetMinimapY = centerY - offsetY + (this.targetPoint.y * scale);
+  
+    this.pathGraphics.clear()
+      .lineStyle(4, 0x33ff33, 0.9)
+      .beginPath()
+      .moveTo(playerMinimapX, playerMinimapY) 
+      .lineTo(targetMinimapX, targetMinimapY)
+      .strokePath()
+      .fillStyle(0x33ff33, 0.9)
+      .fillCircle(targetMinimapX, targetMinimapY, 6)
+      .lineStyle(2, 0xffffff, 1)
+      .strokeCircle(targetMinimapX, targetMinimapY, 6);
+}
 
-      const worldBounds = this.physics.world.bounds;
-      const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height) * 2;
-      const centerX = this.scale.width - this.minimapPadding - this.minimapSize/2;
-      const centerY = this.minimapPadding + this.minimapSize/2;
-
-      const relTargetX = (this.targetPoint.x - Intro.ship.x) * scale;
-      const relTargetY = (this.targetPoint.y - Intro.ship.y) * scale;
-
-      this.pathGraphics.clear()
-        .lineStyle(4, 0x33ff33, 0.9)
-        .beginPath()
-        .moveTo(centerX, centerY)
-        .lineTo(centerX + relTargetX, centerY + relTargetY)
-        .strokePath()
-        .fillStyle(0x33ff33, 0.9)
-        .fillCircle(centerX + relTargetX, centerY + relTargetY, 6)
-        .lineStyle(2, 0xffffff, 1)
-        .strokeCircle(centerX + relTargetX, centerY + relTargetY, 6);
-    }
-
-    private drawPlayerIndicator(){
+    private drawPlayerIndicator() {
       if (!Intro.ship) return;
-
-      const centerX = this.scale.width - this.minimapPadding - this.minimapSize/2;
-      const centerY = this.minimapPadding + this.minimapSize/2;
+  
+      const worldBounds = this.physics.world.bounds;
+      const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
+      const centerX = this.scale.width - this.minimapPadding - this.minimapSize / 2;
+      const centerY = this.minimapPadding + this.minimapSize / 2;
+  
+      const offsetX = (worldBounds.width * scale) / 2;
+      const offsetY = (worldBounds.height * scale) / 2;
+      const minimapX = centerX - offsetX + (Intro.ship.x * scale);
+      const minimapY = centerY - offsetY + (Intro.ship.y * scale);
+  
       const rotation = Intro.ship.rotation;
-
+  
       const halfBase = this.triangleSize / 2;
       const points = [
-        { x: 0, y: -this.triangleHeight / 2 },
-        { x: -halfBase, y: this.triangleHeight / 2 },
-        { x: halfBase, y: this.triangleHeight / 2 }
+          { x: 0, y: -this.triangleHeight / 2 },
+          { x: -halfBase, y: this.triangleHeight / 2 },
+          { x: halfBase, y: this.triangleHeight / 2 }
       ];
-
+  
       const rotatedPoints = points.map(p => ({
-        x: centerX + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
-        y: centerY + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
+          x: minimapX + (p.x * Math.cos(rotation) - p.y * Math.sin(rotation)),
+          y: minimapY + (p.x * Math.sin(rotation) + p.y * Math.cos(rotation))
       }));
-
+  
       this.minimapPlayerIndicator.clear().fillStyle(0xffffff, 1)
-        .fillTriangle(
-          rotatedPoints[0].x, rotatedPoints[0].y,
-          rotatedPoints[1].x, rotatedPoints[1].y,
-          rotatedPoints[2].x, rotatedPoints[2].y
-        );
-    }
-
-  update(){
-    const sceneActive = this.scene.get("Intro").scene.isActive();
-    [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
-
-    if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
-      if (!sceneActive) this.isTargetGenerated = false;
-      return;
-    }
-
-    if(!this.isTargetGenerated) this.generateRandomTarget();
-    this.navigateToTarget();
-
-    this.minimap.clear().lineStyle(2, 0xffffff, 1)
-    .strokeRect(
-      this.scale.width - this.minimapPadding - this.minimapSize,
-      this.minimapPadding,
-      this.minimapSize,
-      this.minimapSize
-    );
-
-    this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
-    this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
-    this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
-
-    this.drawPath();
-    this.drawPlayerIndicator();
+          .fillTriangle(
+              rotatedPoints[0].x, rotatedPoints[0].y,
+              rotatedPoints[1].x, rotatedPoints[1].y,
+              rotatedPoints[2].x, rotatedPoints[2].y
+          );
   }
+
+    update(){
+      const sceneActive = this.scene.get("Intro").scene.isActive();
+      [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
+    
+      if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
+        if (!sceneActive) this.isTargetGenerated = false;
+        return;
+      }
+    
+      if(!this.isTargetGenerated) this.generateRandomTarget();
+      
+      if (this.currentLevel === 0) {
+        this.navigateToTarget();
+      }
+    
+      this.minimap.clear().lineStyle(2, 0xffffff, 1)
+      .strokeRect(
+        this.scale.width - this.minimapPadding - this.minimapSize,
+        this.minimapPadding,
+        this.minimapSize,
+        this.minimapSize
+      );
+    
+      this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
+      this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
+      this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
+    
+      this.drawPath();
+      this.drawPlayerIndicator();
+    }
 
     public resetTarget() {
       this.isTargetGenerated = false;
