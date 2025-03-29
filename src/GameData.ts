@@ -62,6 +62,10 @@ export let GameData: gameData = {
     { name: "sprayBottle", path: "assets/images/trash/spray-bottle.svg" },
     { name: "fuel", path: "assets/images/trash/fuel.svg" },
 
+    { name: "computer", path: "assets/images/trash/computer.svg" },
+    { name: "floppy", path: "assets/images/trash/floppy.svg" },
+    { name: "disc", path: "assets/images/trash/disc.svg" },
+
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
     { name: "powerUp-boost", path: "assets/images/power-ups/boost.svg" },
     { name: "powerUp-doublePoints", path: "assets/images/power-ups/double-points.svg" },

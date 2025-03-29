@@ -76,7 +76,7 @@ export default class Levels extends Phaser.Scene {
   }
 
   private play(levelNumber: number){
-    localStorage.setItem('selectedLevel', (levelNumber+1).toString())
+    localStorage.setItem('selectedLevel', (levelNumber).toString())
     this.scene.stop(this);
     this.scene.start('Preloader');
   }

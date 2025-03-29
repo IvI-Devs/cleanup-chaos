@@ -456,7 +456,7 @@ export default class Intro extends Phaser.Scene {
     const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
       .setInteractive().on('pointerdown', () => {
         trash.destroy();
-        this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
+        this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
       });
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 

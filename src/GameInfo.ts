@@ -92,9 +92,9 @@ export let GameInfo = {
         trashGenerationDelay: 1000,
         powerUpsGenerationDelay: 7500,
         trash: {
-          // bottle: 45,
-          // pizzaCarton: 75,
-          // can: 30
+          computer: 75,
+          floppy: 25,
+          disc: 15
         }
       },
       {
