@@ -33,6 +33,7 @@ export let GameData: gameData = {
     { name: "bg-01-wider", path: "assets/images/backgrounds/bg-01-wider.png" },
     { name: "bg-05-wider", path: "assets/images/backgrounds/bg-05-wider.png" },
     { name: "bg-06-wider", path: "assets/images/backgrounds/bg-06-wider.png" },
+    { name: "bg-07-wider", path: "assets/images/backgrounds/bg-07-wider.png" },
 
     { name: "hole-with-text", path: "assets/images/other/hole-with-text.png" },
     { name: "pixel-art-rectangle-3", path: "assets/images/other/pixel-art-rectangle-3.svg" },
@@ -65,6 +66,7 @@ export let GameData: gameData = {
     { name: "computer", path: "assets/images/trash/computer.svg" },
     { name: "floppy", path: "assets/images/trash/floppy.svg" },
     { name: "disc", path: "assets/images/trash/disc.svg" },
+
     { name: "shuttle", path: "assets/images/trash/shuttle.svg" },
     { name: "battery", path: "assets/images/trash/battery.svg" },
 
