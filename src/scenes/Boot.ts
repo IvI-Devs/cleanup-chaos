@@ -36,6 +36,11 @@ export default class Boot extends Phaser.Scene {
     if(localStorage.getItem('level') === null) localStorage.setItem('level', '4');
 
     if(localStorage.getItem('score') === null) localStorage.setItem('score', '0');
+
+    if (localStorage.getItem('musicEnabled') === null) localStorage.setItem('musicEnabled', 'true');
+    
+    if (localStorage.getItem('soundEffectsEnabled') === null) localStorage.setItem('soundEffectsEnabled', 'true');
+
     this._arcadeMode = this.add.text(this.game.canvas.width - 175, this.game.canvas.height - 50, "")
       .setDepth(1001)
       .setOrigin(0.5, 1)

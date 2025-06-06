@@ -79,7 +79,10 @@ export default class Preloader extends Phaser.Scene {
 
   create() {
     const music = this.sound.add('arcadeMusic', { loop: true, volume: 0.5 });
-    music.play();
+    const musicEnabled = localStorage.getItem('musicEnabled');
+    if (musicEnabled === null || musicEnabled === 'true') {
+      music.play();
+    }
     this.registry.set('backgroundMusic', music);
     this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
   }

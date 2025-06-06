@@ -19,7 +19,7 @@ export default class PauseMenu extends Phaser.Scene {
   
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
 
-    // Stop musics
+    // Stop music
     if (music && music.isPlaying) {
       music.pause();
     }
@@ -66,7 +66,7 @@ export default class PauseMenu extends Phaser.Scene {
     });
 
     this.input.keyboard.on("keydown-ESC", () => {
-      if (music) {
+      if (music && localStorage.getItem('musicEnabled') !== 'false') {
         music.resume();
       }
       this.scene.stop();
@@ -92,7 +92,7 @@ export default class PauseMenu extends Phaser.Scene {
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
     switch (index) {
       case 0: // Resume
-        if (music && music.isPaused) {
+        if (localStorage.getItem('musicEnabled') !== 'false' && music && music.isPaused) {
           music.resume();
         }
         this.scene.stop();

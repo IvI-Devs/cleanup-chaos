@@ -30,8 +30,11 @@ export default class Exit extends Phaser.Scene {
   }
 
   create(){
-    this._music = this.sound.add("easterEggMusic", { loop: true, volume: 0.5 });
-    this._music.play();
+    const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
+    if (musicEnabled) {
+        this._music = this.sound.add("easterEggMusic", { loop: true, volume: 0.5 });
+        this._music.play();
+    }
 
     this._hole = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 100, "hole-with-text")
       .setOrigin(0.5, 0.5)

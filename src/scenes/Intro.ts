@@ -48,7 +48,7 @@ export default class Intro extends Phaser.Scene {
       .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
 
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
-    if(music && !music.isPlaying) music.play();
+    if (localStorage.getItem('musicEnabled') !== 'false' && music && !music.isPlaying) music.play();
 
     this.createPowerUpIndicators();
 
@@ -322,37 +322,40 @@ export default class Intro extends Phaser.Scene {
     this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
   }
 
-  handleCollision(ship: any, asteroid:any){
-    if(!ship.active || !asteroid.active) return;
-    if(asteroid.body) asteroid.destroy();
+handleCollision(ship: any, asteroid: any) {
+    if (!ship.active || !asteroid.active) return;
+    if (asteroid.body) asteroid.destroy();
 
-    if(Intro.ship.getData('shield') == false){
-      this.time.addEvent({
-        delay: 150,
-        repeat: 1,
-        callback: () => {
-          if (Intro.ship.tintFill) Intro.ship.clearTint();
-          else Intro.ship.setTintFill(0xff0000);
-        },
-        callbackScope: this,
-      });
+    if (Intro.ship.getData('shield') == false) {
+        this.time.addEvent({
+            delay: 150,
+            repeat: 1,
+            callback: () => {
+                if (Intro.ship.tintFill) Intro.ship.clearTint();
+                else Intro.ship.setTintFill(0xff0000);
+            },
+            callbackScope: this,
+        });
 
-      if(this.hearts > 0){
-        this.hearts -= 1;
-        this.updateHearts();
-      }
+        if (this.hearts > 0) {
+            this.hearts -= 1;
+            this.updateHearts();
+        }
 
-      if (this.sound.get('collision')) this.sound.play('collision', { volume: 0.5, detune: 200 });
-      this.cameras.main.shake(100, 0.005);
+        const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+        if (soundEffectsEnabled && this.sound.get('collision')) {
+            this.sound.play('collision', { volume: 0.5, detune: 200 });
+        }
+        this.cameras.main.shake(100, 0.005);
     }
 
-    if(this.hearts <= 0){
-      this.registry.set("score", this.score);
-      this.scene.stop(this);
-      this.scene.stop("Minimap")
-      this.scene.start("GameOver");
+    if (this.hearts <= 0) {
+        this.registry.set("score", this.score);
+        this.scene.stop(this);
+        this.scene.stop("Minimap");
+        this.scene.start("GameOver");
     }
-  }
+}
 
   private spawnPowerUps(){
     const screenWidth = this.game.canvas.width;
@@ -393,7 +396,7 @@ export default class Intro extends Phaser.Scene {
     powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
   }
 
-  private rocketEnhancement(ship: any, powerUp: any) {
+private rocketEnhancement(ship: any, powerUp: any) {
     if (!ship.active || !powerUp.active || !powerUp.data) return;
 
     const type = powerUp.data.get('type');
@@ -410,22 +413,25 @@ export default class Intro extends Phaser.Scene {
     this.updateIndicators(ship);
 
     let powerUpTimer = this.time.delayedCall(powerUpTime, () => {
-      ship.setData(type, false);
-      ship.setData(`${type}Expiry`, 0);
-      this.updateIndicators(ship);
-      this.updateShip(ship);
+        ship.setData(type, false);
+        ship.setData(`${type}Expiry`, 0);
+        this.updateIndicators(ship);
+        this.updateShip(ship);
 
-      if(type === 'boost' && this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
+        if (type === 'boost' && this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
     });
 
     ship.setData(`${type}Timer`, powerUpTimer);
     this.updateShip(ship);
 
-    if(type === 'shield') this.sound.play('shield', { volume: 0.5 });
-    else if (type == 'doublePoints') this.sound.play('doublePoints', { volume: 0.5 });
+    const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+    if (soundEffectsEnabled) {
+        if (type === 'shield') this.sound.play('shield', { volume: 0.5 });
+        else if (type === 'doublePoints') this.sound.play('doublePoints', { volume: 0.5 });
+    }
 
-    if(powerUp.body) powerUp.destroy();
-  }
+    if (powerUp.body) powerUp.destroy();
+}
 
   private spawnAsteroid(){
     const screenWidth = this.game.canvas.width;

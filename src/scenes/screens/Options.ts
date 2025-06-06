@@ -99,20 +99,26 @@ export default class Options extends Phaser.Scene {
     }
   }
 
-  selectItem(index: number){
+selectItem(index: number) {
     const keys = Object.keys(GameInfo.options.items);
     const selectedKey = keys[index];
 
-    switch(selectedKey){
-      case 'Music':
-        GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
-        break;
-      case 'Sound Effects':
-        GameInfo.options.items[selectedKey] = !GameInfo.options.items[selectedKey];
-        break;
-      case 'Exit':
-        this.game.destroy(true);
-        break;
+    switch (selectedKey) {
+        case 'Music':
+            const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
+            localStorage.setItem('musicEnabled', (!musicEnabled).toString());
+            GameInfo.options.items[selectedKey] = !musicEnabled;
+            break;
+
+        case 'Sound Effects':
+            const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+            localStorage.setItem('soundEffectsEnabled', (!soundEffectsEnabled).toString());
+            GameInfo.options.items[selectedKey] = !soundEffectsEnabled;
+            break;
+
+        case 'Exit':
+            this.game.destroy(true);
+            break;
     }
 
     this.updateMenu();

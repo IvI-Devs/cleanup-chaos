@@ -43,8 +43,11 @@ export default class Credits extends Phaser.Scene {
     this._background = this.add.image(0, 0, "bg-02").setOrigin(0, 0);
     this._title.setText("Credits");
 
-    this._music = this.sound.add("credits", { loop: true, volume: 0.5 });
-    this._music.play();
+    const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
+    if (musicEnabled) {
+        this._music = this.sound.add("credits", { loop: true, volume: 0.5 });
+        this._music.play();
+    }
 
     this._menuItems = [];
     this._selectedIndex = 0;
