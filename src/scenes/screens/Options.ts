@@ -10,6 +10,8 @@ export default class Options extends Phaser.Scene {
   private _selectedIndex = 0;
 
   init(){
+    GameInfo.options.items['Music'] = localStorage.getItem('musicEnabled') === 'true';
+    GameInfo.options.items['Sound Effects'] = localStorage.getItem('soundEffectsEnabled') === 'true';
     this._backArrow = this.add.text(50, 75, "<").setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)

@@ -73,8 +73,7 @@ export let GameData: gameData = {
     { name: "powerUp-shield", path: "assets/images/power-ups/shield.svg" },
     { name: "powerUp-boost", path: "assets/images/power-ups/boost.svg" },
     { name: "powerUp-doublePoints", path: "assets/images/power-ups/double-points.svg" },
-    { name: "powerUp-heart", path: "assets/images/power-ups/heart.svg" },
-
+    { name: "powerUp-heart", path: "assets/images/hearts/white.svg" },
 
   ],
   atlas: [],
