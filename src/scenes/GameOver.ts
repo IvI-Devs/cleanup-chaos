@@ -20,6 +20,11 @@ export default class GameOver extends Phaser.Scene {
       music.stop();
     }
 
+    const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+    if (soundEffectsEnabled) {
+        this.sound.play('death', { volume: 0.5 });
+    }
+
     if(this.score > parseInt(localStorage.getItem('score'))) localStorage.setItem('score', this.score.toString());
 
     this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
