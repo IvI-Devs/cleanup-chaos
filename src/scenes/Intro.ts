@@ -322,11 +322,39 @@ export default class Intro extends Phaser.Scene {
     this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
   }
 
+  private activateInvulnerability(duration: number) {
+    Intro.ship.setData('invulnerable', true);
+
+    this.time.delayedCall(duration, () => {
+        Intro.ship.setData('invulnerable', false);
+    });
+}
+
 handleCollision(ship: any, asteroid: any) {
     if (!ship.active || !asteroid.active) return;
+
+    if (ship.getData('invulnerable')) {
+        if (asteroid.body) asteroid.destroy();
+
+        const proximityRadius = 100;
+        Intro.asteroids.getChildren().forEach((otherAsteroid: any) => {
+            const distance = Phaser.Math.Distance.Between(
+                ship.x, ship.y,
+                otherAsteroid.x, otherAsteroid.y
+            );
+            if (distance <= proximityRadius && otherAsteroid.active) {
+                otherAsteroid.destroy();
+            }
+        });
+
+        return;
+    }
+
     if (asteroid.body) asteroid.destroy();
 
     if (Intro.ship.getData('shield') == false) {
+        this.activateInvulnerability(1000);
+
         this.time.addEvent({
             delay: 150,
             repeat: 1,
