@@ -52,6 +52,7 @@ export let GameInfo = {
       shield: 5000,
       boost: 3000,
       doublePoints: 5000,
+      heart: 0
     },
 
     levels: [
