@@ -330,7 +330,7 @@ export default class Intro extends Phaser.Scene {
     });
 }
 
-handleCollision(ship: any, asteroid: any) {
+  handleCollision(ship: any, asteroid: any) {
     if (!ship.active || !asteroid.active) return;
 
     if (ship.getData('invulnerable')) {
@@ -383,7 +383,7 @@ handleCollision(ship: any, asteroid: any) {
         this.scene.stop("Minimap");
         this.scene.start("GameOver");
     }
-}
+  }
 
   private spawnPowerUps(){
     const screenWidth = this.game.canvas.width;
