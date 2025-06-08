@@ -1,8 +1,8 @@
 import { GameInfo } from "../GameInfo";
 import WebFontFile from "../scenes/webFontFile";
 
-export default class Boot extends Phaser.Scene {
-  constructor(){ super({ key: "Boot" }) }
+export default class MainMenuScene extends Phaser.Scene {
+  constructor(){ super({ key: "MainMenuScene" }) }
   private _background: Phaser.GameObjects.Image;
   private _gameTitle: Phaser.GameObjects.Text;
   private _arcadeMode: Phaser.GameObjects.Text;
@@ -123,19 +123,19 @@ export default class Boot extends Phaser.Scene {
       case 'Start Game':
         localStorage.setItem('gameMode', 'levels')
         this.scene.stop(this)
-        this.scene.start('Levels');
+        this.scene.start('LevelSelectScene');
         break;
       case 'Options':
         this.scene.stop(this)
-        this.scene.start('Options');
+        this.scene.start('OptionsScene');
         break;
       case 'Credits':
         this.scene.stop(this)
-        this.scene.start('Credits');
+        this.scene.start('CreditsScene');
         break;
       case 'Exit':
         this.scene.stop(this)
-        this.scene.start('Exit');
+        this.scene.start('ExitScene');
         // this.game.destroy(true);
         break;
     }

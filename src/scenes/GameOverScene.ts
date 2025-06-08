@@ -1,7 +1,7 @@
 import { GameInfo } from "../GameInfo";
 
-export default class GameOver extends Phaser.Scene {
-  constructor(public registry: Phaser.Data.DataManager){ super({ key: "GameOver" }) }
+export default class GameOverScene extends Phaser.Scene {
+  constructor(public registry: Phaser.Data.DataManager){ super({ key: "GameOverScene" }) }
   private _gameOverText: Phaser.GameObjects.Text;
   private _playAgainButton: Phaser.GameObjects.Text;
   private _subtitle: Phaser.GameObjects.Text;
@@ -82,7 +82,7 @@ export default class GameOver extends Phaser.Scene {
 
   private goToMenu(){
     this.scene.stop(this);
-    this.scene.start('Boot');
+    this.scene.start('MainMenuScene');
   }
 
 }

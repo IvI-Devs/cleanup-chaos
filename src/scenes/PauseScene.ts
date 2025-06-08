@@ -1,11 +1,11 @@
 import { GameInfo } from "../GameInfo";
 
-export default class PauseMenu extends Phaser.Scene {
+export default class PauseScene extends Phaser.Scene {
   private _menuItems: Phaser.GameObjects.Text[] = [];
   private _selectedIndex: number = 0;
 
   constructor() {
-    super({ key: "PauseMenu" });
+    super({ key: "PauseScene" });
   }
 
   create() {
@@ -70,7 +70,7 @@ export default class PauseMenu extends Phaser.Scene {
         music.resume();
       }
       this.scene.stop();
-      this.scene.resume("Intro");
+      this.scene.resume("MainMenuScene");
     });
   
     this.updateMenu();
@@ -96,23 +96,23 @@ export default class PauseMenu extends Phaser.Scene {
           music.resume();
         }
         this.scene.stop();
-        this.scene.resume("Intro");
+        this.scene.resume("MainMenuScene");
         break;
       case 1: // Restart
         if (music && music.isPlaying) {
           music.stop();
         }
         this.scene.stop();
-        this.scene.stop("Intro");
+        this.scene.stop("MainMenuScene");
         this.scene.start("Preloader");
         break;
       case 2: // Exit
         if (music && music.isPlaying) {
           music.stop();
         }
-        this.scene.stop("Intro");
-        this.scene.stop("Minimap")
-        this.scene.start("Boot");
+        this.scene.stop("GameScene");
+        this.scene.stop("MinimapOverlay")
+        this.scene.start("MainMenuScene");
         break;
     }
   }

@@ -1,17 +1,15 @@
 import "phaser";
 // scenes
-import Boot from "./scenes/Boot";
-import Hud from "./scenes/Hud";
+import MainMenuScene from "./scenes/MainMenuScene";
 import Preloader from "./scenes/Preloader";
-import GamePlay from "./scenes/GamePlay";
-import GameOver from "./scenes/GameOver";
-import Intro from "./scenes/Intro";
-import Options from "./scenes/screens/Options";
-import Credits from "./scenes/screens/Credits";
-import Exit from "./scenes/easter\ eggs/Exit";
-import Levels from "./scenes/screens/Levels";
-import Minimap from "./scenes/Minimap";
-import PauseMenu from "./scenes/PauseMenu";
+import GameOverScene from "./scenes/GameOverScene";
+import GameScene from "./scenes/GameScene";
+import OptionsScene from "./scenes/OptionsScene";
+import CreditsScene from "./scenes/CreditsScene";
+import ExitScene from "./scenes/ExitScene";
+import LevelSelectScene from "./scenes/LevelSelectScene";
+import MinimapOverlay from "./scenes/MinimapOverlay";
+import PauseScene from "./scenes/PauseScene";
 import { GameData } from "./GameData"; // global game data
 
 
@@ -27,18 +25,16 @@ window.addEventListener("load", () => {
       height: GameData.globals.gameHeight,
     },
     scene: [
-      Boot,
-      Hud,
+      MainMenuScene,
       Preloader,
-      Intro,
-      GamePlay,
-      GameOver,
-      Options,
-      Credits,
-      Exit,
-      Minimap,
-      PauseMenu,
-      Levels
+      GameScene,
+      GameOverScene,
+      OptionsScene,
+      CreditsScene,
+      ExitScene,
+      MinimapOverlay,
+      PauseScene,
+      LevelSelectScene
     ],
     physics: {
       default: "arcade",

@@ -1,8 +1,8 @@
-import { GameInfo } from "../../GameInfo";
-import { GameData } from "../../GameData";
+import { GameInfo } from "../GameInfo";
+import { GameData } from "../GameData";
 
-export default class Credits extends Phaser.Scene {
-  constructor(){ super({ key: "Credits" }) }
+export default class CreditsScene extends Phaser.Scene {
+  constructor(){ super({ key: "CreditsScene" }) }
   private _background: Phaser.GameObjects.Image;
   private _title: Phaser.GameObjects.Text;
   private _backArrow: Phaser.GameObjects.Text;
@@ -78,7 +78,7 @@ export default class Credits extends Phaser.Scene {
     }
 
     this.scene.stop();
-    this.scene.start("Boot");
+    this.scene.start("MainMenuScene");
   }
 
 }

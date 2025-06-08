@@ -1,8 +1,8 @@
-import { GameInfo } from "../../GameInfo";
-import { GameData } from "../../GameData";
+import { GameInfo } from "../GameInfo";
+import { GameData } from "../GameData";
 
-export default class Options extends Phaser.Scene {
-  constructor(){ super({ key: "Options" }) }
+export default class OptionsScene extends Phaser.Scene {
+  constructor(){ super({ key: "OptionsScene" }) }
   private _background: Phaser.GameObjects.Image;
   private _title: Phaser.GameObjects.Text;
   private _backArrow: Phaser.GameObjects.Text;
@@ -128,6 +128,6 @@ selectItem(index: number) {
 
   goBack(){
     this.scene.stop(this);
-    this.scene.start("Boot");
+    this.scene.start("MainMenuScene");
   }
 }

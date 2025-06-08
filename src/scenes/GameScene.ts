@@ -1,9 +1,9 @@
 import { GameData } from "../GameData";
 import { GameInfo } from "../GameInfo";
-import Minimap from "./Minimap";
+import MinimapOverlay from "./MinimapOverlay";
 
-export default class Intro extends Phaser.Scene {
-  constructor(public registry: Phaser.Data.DataManager){ super({ key: "Intro" }); }
+export default class GameScene extends Phaser.Scene {
+  constructor(public registry: Phaser.Data.DataManager){ super({ key: "GameScene" }); }
   public score: number = 0;
   public hearts: number = 3;
 
@@ -52,9 +52,9 @@ export default class Intro extends Phaser.Scene {
 
     this.createPowerUpIndicators();
 
-    Intro.asteroids = this.physics.add.group();
-    Intro.trashGroup = this.physics.add.group();
-    Intro.powerUps = this.physics.add.group();
+    GameScene.asteroids = this.physics.add.group();
+    GameScene.trashGroup = this.physics.add.group();
+    GameScene.powerUps = this.physics.add.group();
     this.heartsGroup = this.add.group();
 
     this.createShip();
@@ -62,11 +62,11 @@ export default class Intro extends Phaser.Scene {
     this.updateScore(this.score);
 
     this.physics.world.setBounds(50, 50, this.scale.width - 50 * 2, this.scale.height - 50 * 2);
-    this.physics.world.enable(Intro.ship);
+    this.physics.world.enable(GameScene.ship);
 
-    this.physics.add.overlap(Intro.ship, Intro.asteroids, (ship, asteroid) => this.handleCollision(ship, asteroid), undefined, this);
-    this.physics.add.overlap(Intro.ship, Intro.trashGroup, (ship, trash) => this.pickUpTrash(ship, trash), undefined, this);
-    this.physics.add.overlap(Intro.ship, Intro.powerUps, (ship, powerUp) => this.rocketEnhancement(ship, powerUp), undefined, this);
+    this.physics.add.overlap(GameScene.ship, GameScene.asteroids, (ship, asteroid) => this.handleCollision(ship, asteroid), undefined, this);
+    this.physics.add.overlap(GameScene.ship, GameScene.trashGroup, (ship, trash) => this.pickUpTrash(ship, trash), undefined, this);
+    this.physics.add.overlap(GameScene.ship, GameScene.powerUps, (ship, powerUp) => this.rocketEnhancement(ship, powerUp), undefined, this);
 
     this.keys = {
       W: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -89,9 +89,9 @@ export default class Intro extends Phaser.Scene {
     if(localStorage.getItem('gameMode') == 'levels' && this.score >= 2500){
         this.time.removeAllEvents();
 
-        Intro.asteroids.clear(true, true);
-        Intro.trashGroup.clear(true, true);
-        Intro.powerUps.clear(true, true);
+        GameScene.asteroids.clear(true, true);
+        GameScene.trashGroup.clear(true, true);
+        GameScene.powerUps.clear(true, true);
 
         this.registry.set("score", this.score);
 
@@ -105,8 +105,8 @@ export default class Intro extends Phaser.Scene {
         else{
           this.showVictoryMessage();
           this.time.delayedCall(2000, () => {
-              this.scene.stop("Minimap");
-              this.scene.start("GameOver", { victory: true });
+              this.scene.stop("MinimapOverlay");
+              this.scene.start("GameOverScene", { victory: true });
           });
         }
     }
@@ -167,7 +167,7 @@ export default class Intro extends Phaser.Scene {
   }
 
   public updateScore(score: number): void {
-    if(Intro.ship.data.get('doublePoints') == true) this.score += score * 2;
+    if(GameScene.ship.data.get('doublePoints') == true) this.score += score * 2;
     else this.score += score;
 
     this._scoreText.setText(`Score: ${this.score}`);
@@ -188,29 +188,29 @@ export default class Intro extends Phaser.Scene {
   }
 
   private createShip(): void {
-    Intro.ship = this.physics.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "ship-base").setScale(0.5);
-    const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
-    body.setSize(Intro.ship.width, Intro.ship.height);
+    GameScene.ship = this.physics.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "ship-base").setScale(0.5);
+    const body = GameScene.ship.body as Phaser.Physics.Arcade.Body;
+    body.setSize(GameScene.ship.width, GameScene.ship.height);
     body.setCollideWorldBounds(true);
 
-    Object.keys(GameInfo.powerUps).forEach(type => { Intro.ship.setData(type, false); });
+    Object.keys(GameInfo.powerUps).forEach(type => { GameScene.ship.setData(type, false); });
   }
 
   private updateShip(ship: any): void {
     if(ship.data.get('shield') !== false){
       if(this.hearts == 3){ ship.setTexture("ship-base-shielded"); }
-      if(this.hearts == 2){ Intro.ship.setTexture("ship-slight-damage-shielded"); }
-      if(this.hearts == 1){ Intro.ship.setTexture("ship-damaged-shielded"); }
+      if(this.hearts == 2){ GameScene.ship.setTexture("ship-slight-damage-shielded"); }
+      if(this.hearts == 1){ GameScene.ship.setTexture("ship-damaged-shielded"); }
     }
     else{
-      if(this.hearts == 3){ Intro.ship.setTexture("ship-base"); }
-      if(this.hearts == 2){ Intro.ship.setTexture("ship-slight-damage"); }
-      if(this.hearts == 1){ Intro.ship.setTexture("ship-damaged"); }
+      if(this.hearts == 3){ GameScene.ship.setTexture("ship-base"); }
+      if(this.hearts == 2){ GameScene.ship.setTexture("ship-slight-damage"); }
+      if(this.hearts == 1){ GameScene.ship.setTexture("ship-damaged"); }
     }
   }
 
   update(time: number, delta: number) {
-    if (this.cursor.space.isDown && Intro.ship.getData('boost')) {
+    if (this.cursor.space.isDown && GameScene.ship.getData('boost')) {
       this._speed = 650;
 
       if (!this.isBoostSoundPlaying) {
@@ -231,29 +231,29 @@ export default class Intro extends Phaser.Scene {
     }
 
     if(this.cursor.left.isDown || this.keys.A.isDown){
-      Intro.ship.x -= this._speed * delta / 1000;
+      GameScene.ship.x -= this._speed * delta / 1000;
       this._background.tilePositionX -= this._speed * delta / 2000;
-      Intro.ship.angle = -90;
+      GameScene.ship.angle = -90;
     }
     if(this.cursor.right.isDown || this.keys.D.isDown){
-      Intro.ship.x += this._speed * delta / 1000;
+      GameScene.ship.x += this._speed * delta / 1000;
       this._background.tilePositionX += this._speed * delta / 2000;
-      Intro.ship.angle = 90;
+      GameScene.ship.angle = 90;
     }
     if(this.cursor.up.isDown || this.keys.W.isDown){
-      Intro.ship.y -= this._speed * delta / 1000;
+      GameScene.ship.y -= this._speed * delta / 1000;
       this._background.tilePositionY -= this._speed * delta / 2000;
-      Intro.ship.angle = 0;
+      GameScene.ship.angle = 0;
     }
     if(this.cursor.down.isDown || this.keys.S.isDown){
-      Intro.ship.y += this._speed * delta / 1000;
+      GameScene.ship.y += this._speed * delta / 1000;
       this._background.tilePositionY += this._speed * delta / 2000;
-      Intro.ship.angle = 180;
+      GameScene.ship.angle = 180;
     }
 
     Object.entries(GameInfo.powerUps).forEach(([type]) => {
-      if(Intro.ship.data.get(`${type}Expiry`) > this.time.now){
-        let flashStart = Intro.ship.data.get(`${type}FlashTime`);
+      if(GameScene.ship.data.get(`${type}Expiry`) > this.time.now){
+        let flashStart = GameScene.ship.data.get(`${type}FlashTime`);
         if(flashStart && this.time.now >= flashStart){
           let elapsed = this.time.now - flashStart;
           let flashInterval = 250;
@@ -261,28 +261,28 @@ export default class Intro extends Phaser.Scene {
           if (elapsed % flashInterval < flashInterval / 2) this.powerUpsIndicators[type].setAlpha(0);
           else this.powerUpsIndicators[type].setAlpha(1);
 
-          this.flashObject(Intro.ship, flashInterval);
+          this.flashObject(GameScene.ship, flashInterval);
         }
       }
     });
 
-    const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
-    body.setSize(Intro.ship.width, Intro.ship.height);
+    const body = GameScene.ship.body as Phaser.Physics.Arcade.Body;
+    body.setSize(GameScene.ship.width, GameScene.ship.height);
 
     if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
-      Intro.ship.angle = -135;
+      GameScene.ship.angle = -135;
     }
     if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.down.isDown || this.keys.S.isDown)){
-      Intro.ship.angle = 135;
-      body.setSize(Intro.ship.width - 50, Intro.ship.height - 50);
-      body.setOffset(-Intro.ship.width / 2, -Intro.ship.height / 2);
+      GameScene.ship.angle = 135;
+      body.setSize(GameScene.ship.width - 50, GameScene.ship.height - 50);
+      body.setOffset(-GameScene.ship.width / 2, -GameScene.ship.height / 2);
     }
-    if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.up.isDown || this.keys.W.isDown)) Intro.ship.angle = -45;
-    if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.up.isDown || this.keys.W.isDown)) Intro.ship.angle = 45;
+    if((this.cursor.left.isDown || this.keys.A.isDown) && (this.cursor.up.isDown || this.keys.W.isDown)) GameScene.ship.angle = -45;
+    if((this.cursor.right.isDown || this.keys.D.isDown) && (this.cursor.up.isDown || this.keys.W.isDown)) GameScene.ship.angle = 45;
 
     body.setOffset(0, 0);
 
-    Intro.asteroids.getChildren().forEach((asteroid: any) => {
+    GameScene.asteroids.getChildren().forEach((asteroid: any) => {
       if(asteroid.x < -100 || asteroid.x > this.game.canvas.width + 100 ||
         asteroid.y < -100 || asteroid.y > this.game.canvas.height + 100){
         asteroid.destroy();
@@ -312,7 +312,7 @@ export default class Intro extends Phaser.Scene {
       const heart = this.add.image(startX + (i * spacing), startY, 'heart-white').setScale(0.5).setScrollFactor(0).setDepth(1000);
       this.heartsGroup.add(heart);
     }
-    this.updateShip(Intro.ship);
+    this.updateShip(GameScene.ship);
   }
 
   pickUpTrash(ship: any, trash: any){
@@ -323,10 +323,10 @@ export default class Intro extends Phaser.Scene {
   }
 
   private activateInvulnerability(duration: number) {
-    Intro.ship.setData('invulnerable', true);
+    GameScene.ship.setData('invulnerable', true);
 
     this.time.delayedCall(duration, () => {
-        Intro.ship.setData('invulnerable', false);
+        GameScene.ship.setData('invulnerable', false);
     });
 }
 
@@ -337,7 +337,7 @@ export default class Intro extends Phaser.Scene {
         if (asteroid.body) asteroid.destroy();
 
         const proximityRadius = 100;
-        Intro.asteroids.getChildren().forEach((otherAsteroid: any) => {
+        GameScene.asteroids.getChildren().forEach((otherAsteroid: any) => {
             const distance = Phaser.Math.Distance.Between(
                 ship.x, ship.y,
                 otherAsteroid.x, otherAsteroid.y
@@ -352,15 +352,15 @@ export default class Intro extends Phaser.Scene {
 
     if (asteroid.body) asteroid.destroy();
 
-    if (Intro.ship.getData('shield') == false) {
+    if (GameScene.ship.getData('shield') == false) {
         this.activateInvulnerability(1000);
 
         this.time.addEvent({
             delay: 150,
             repeat: 1,
             callback: () => {
-                if (Intro.ship.tintFill) Intro.ship.clearTint();
-                else Intro.ship.setTintFill(0xff0000);
+                if (GameScene.ship.tintFill) GameScene.ship.clearTint();
+                else GameScene.ship.setTintFill(0xff0000);
             },
             callbackScope: this,
         });
@@ -380,8 +380,8 @@ export default class Intro extends Phaser.Scene {
     if (this.hearts <= 0) {
         this.registry.set("score", this.score);
         this.scene.stop(this);
-        this.scene.stop("Minimap");
-        this.scene.start("GameOver");
+        this.scene.stop("MinimapOverlay");
+        this.scene.start("GameOverScene");
     }
   }
 
@@ -416,7 +416,7 @@ export default class Intro extends Phaser.Scene {
     const keys = Object.keys(GameInfo.powerUps) as Array<keyof typeof GameInfo.powerUps>;
     const powerUpType = keys[Phaser.Math.Between(0, keys.length - 1)];
 
-    const powerUp = Intro.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
+    const powerUp = GameScene.powerUps.create(x, y, `powerUp-${powerUpType}`).setScale(0.25);
     powerUp.body.setSize(powerUp.width, powerUp.height);
     powerUp.setData('type', powerUpType);
 
@@ -498,7 +498,7 @@ private rocketEnhancement(ship: any, powerUp: any) {
         y = Phaser.Math.Between(-padding, screenHeight + padding);
     }
 
-    const distanceToShip = Phaser.Math.Distance.Between(x, y, Intro.ship.x, Intro.ship.y);
+    const distanceToShip = Phaser.Math.Distance.Between(x, y, GameScene.ship.x, GameScene.ship.y);
 
     if(distanceToShip < minDistanceFromShip){
       switch(edge){
@@ -514,7 +514,7 @@ private rocketEnhancement(ship: any, powerUp: any) {
       }
     }
 
-    const asteroid = Intro.asteroids.create(x, y, 'asteroid').setScale(Phaser.Math.FloatBetween(0.1, 0.5));
+    const asteroid = GameScene.asteroids.create(x, y, 'asteroid').setScale(Phaser.Math.FloatBetween(0.1, 0.5));
     asteroid.setAngularVelocity(Phaser.Math.Between(-50, 50));
     asteroid.body.setSize(asteroid.width, asteroid.height);
     asteroid.body.setOffset(
@@ -557,7 +557,7 @@ private rocketEnhancement(ship: any, powerUp: any) {
         y = Phaser.Math.Between(-padding, screenHeight + padding);
     }
 
-    const distanceToShip = Phaser.Math.Distance.Between(x, y, Intro.ship.x, Intro.ship.y);
+    const distanceToShip = Phaser.Math.Distance.Between(x, y, GameScene.ship.x, GameScene.ship.y);
 
     if(distanceToShip < minDistanceFromShip){
       switch(edge){
@@ -577,7 +577,7 @@ private rocketEnhancement(ship: any, powerUp: any) {
     const keys = Object.keys(currentTrash) as Array<keyof typeof currentTrash>;
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
-    const trash = Intro.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
+    const trash = GameScene.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
       .setInteractive().on('pointerdown', () => {
         trash.destroy();
         this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
@@ -591,6 +591,6 @@ private rocketEnhancement(ship: any, powerUp: any) {
 
     this.physics.moveTo(trash, targetPoint.x, targetPoint.y, this.trashSpeed);
 
-    this.scene.launch("Minimap");
+    this.scene.launch("MinimapOverlay");
   }
 }

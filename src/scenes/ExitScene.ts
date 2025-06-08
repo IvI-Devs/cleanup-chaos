@@ -1,8 +1,8 @@
-import { GameInfo } from "../../GameInfo";
-import { GameData } from "../../GameData";
+import { GameInfo } from "../GameInfo";
+import { GameData } from "../GameData";
 
-export default class Exit extends Phaser.Scene {
-  constructor(){ super({ key: "Exit" }) }
+export default class ExitScene extends Phaser.Scene {
+  constructor(){ super({ key: "ExitScene" }) }
   private _text: Phaser.GameObjects.Text;
   private _hole: Phaser.GameObjects.Image;
   private _music: Phaser.Sound.BaseSound;
@@ -54,7 +54,7 @@ export default class Exit extends Phaser.Scene {
     }
 
     this.scene.stop();
-    this.scene.start("Boot");
+    this.scene.start("MainMenuScene");
   }
 
 }

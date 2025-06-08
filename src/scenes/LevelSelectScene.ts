@@ -1,7 +1,7 @@
-import { GameInfo } from "../../GameInfo";
+import { GameInfo } from "../GameInfo";
 
-export default class Levels extends Phaser.Scene {
-  constructor(){ super({ key: "Levels" }); }
+export default class LevelSelectScene extends Phaser.Scene {
+  constructor(){ super({ key: "LevelSelectScene" }); }
 
   private _background: Phaser.GameObjects.Image;
   private _levelsText: Phaser.GameObjects.Text;
@@ -72,7 +72,7 @@ export default class Levels extends Phaser.Scene {
 
   private goToMenu(){
     this.scene.stop(this);
-    this.scene.start('Boot');
+    this.scene.start('MainMenuScene');
   }
 
   private play(levelNumber: number){

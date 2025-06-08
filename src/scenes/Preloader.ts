@@ -93,7 +93,7 @@ export default class Preloader extends Phaser.Scene {
     if(music && music.isPlaying) music.stop();
 
     this.scene.stop("Preloader");
-    this.scene.start("Boot");
+    this.scene.start("MainMenuScene");
   }
 
   loadAssets(): void {
@@ -112,7 +112,7 @@ export default class Preloader extends Phaser.Scene {
 
       this.input.keyboard.on('keydown-ESC', () => {
         this.scene.stop("Preloader");
-        this.scene.start("Boot");
+        this.scene.start("MainMenuScene");
       });
 
       this.input.keyboard.on("keydown", () => {
@@ -122,8 +122,8 @@ export default class Preloader extends Phaser.Scene {
           duration: 500,
           onComplete: () => {
             this.scene.stop("Preloader");
-            this.scene.start("Minimap");
-            this.scene.start("Intro");
+            this.scene.start("MinimapOverlay");
+            this.scene.start("GameScene");
           },
         });
       });

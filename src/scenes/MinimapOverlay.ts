@@ -1,9 +1,9 @@
 import { GameInfo } from "../GameInfo";
-import Intro from "./Intro";
+import GameScene from "./GameScene";
 
 export default class Minimap extends Phaser.Scene {
     constructor(){
-      super({ key: "Minimap" });
+      super({ key: "MinimapOverlay" });
       this.cameraWidth = 0;
       this.cameraHeight = 0;
     }
@@ -52,7 +52,7 @@ export default class Minimap extends Phaser.Scene {
     }
 
     private generateRandomTarget() {
-      if(this.isTargetGenerated || !Intro.ship) return;
+      if(this.isTargetGenerated || !GameScene.ship) return;
       const worldBounds = this.physics.world.bounds;
       if(this.targetMarker){ this.targetMarker.destroy(); this.targetMarker = null; }
       let attempts = 0;
@@ -66,8 +66,8 @@ export default class Minimap extends Phaser.Scene {
         );
 
         const distance = Phaser.Math.Distance.Between(
-          Intro.ship.x,
-          Intro.ship.y,
+          GameScene.ship.x,
+          GameScene.ship.y,
           this.targetPoint.x,
           this.targetPoint.y
         );
@@ -79,8 +79,8 @@ export default class Minimap extends Phaser.Scene {
       if (!validPointFound) {
         const angle = Phaser.Math.Between(0, 360);
         this.targetPoint = new Phaser.Geom.Point(
-          Intro.ship.x + Math.cos(Phaser.Math.DegToRad(angle)) * this.minDistance,
-          Intro.ship.y + Math.sin(Phaser.Math.DegToRad(angle)) * this.minDistance
+          GameScene.ship.x + Math.cos(Phaser.Math.DegToRad(angle)) * this.minDistance,
+          GameScene.ship.y + Math.sin(Phaser.Math.DegToRad(angle)) * this.minDistance
         );
       }
 
@@ -101,7 +101,7 @@ export default class Minimap extends Phaser.Scene {
     }
 
     private addScoreToMainScene(points: number){
-      const introScene = this.scene.get("Intro") as Intro;
+      const introScene = this.scene.get("GameScene") as GameScene;
       if (introScene && introScene.updateScore) {
         introScene.updateScore(points);
 
@@ -125,11 +125,11 @@ export default class Minimap extends Phaser.Scene {
     }
 
     private navigateToTarget(){
-      if (!this.targetPoint || !Intro.ship?.body) return;
-      const body = Intro.ship.body as Phaser.Physics.Arcade.Body;
+      if (!this.targetPoint || !GameScene.ship?.body) return;
+      const body = GameScene.ship.body as Phaser.Physics.Arcade.Body;
       const distance = Phaser.Math.Distance.Between(
-        Intro.ship.x,
-        Intro.ship.y,
+        GameScene.ship.x,
+        GameScene.ship.y,
         this.targetPoint.x,
         this.targetPoint.y
       );
@@ -141,14 +141,14 @@ export default class Minimap extends Phaser.Scene {
         return;
       }
 
-      const angle = Phaser.Math.Angle.Between(Intro.ship.x, Intro.ship.y, this.targetPoint.x, this.targetPoint.y);
+      const angle = Phaser.Math.Angle.Between(GameScene.ship.x, GameScene.ship.y, this.targetPoint.x, this.targetPoint.y);
       const forceX = Math.cos(angle) * this.navigationForce;
       const forceY = Math.sin(angle) * this.navigationForce;
       body.setAcceleration(forceX, forceY);
     }
 
     private drawMinimapObjects(group: Phaser.Physics.Arcade.Group | undefined, color: number, size: number) {
-      if (!group?.getChildren || !Intro.ship) return;
+      if (!group?.getChildren || !GameScene.ship) return;
 
       const worldBounds = this.physics.world.bounds;
       const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
@@ -182,7 +182,7 @@ export default class Minimap extends Phaser.Scene {
   }
 
   private drawPath() {
-    if (this.currentLevel !== 0 || !this.targetPoint || !Intro.ship) return;
+    if (this.currentLevel !== 0 || !this.targetPoint || !GameScene.ship) return;
 
     const worldBounds = this.physics.world.bounds;
     const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
@@ -191,8 +191,8 @@ export default class Minimap extends Phaser.Scene {
 
     const offsetX = (worldBounds.width * scale) / 2;
     const offsetY = (worldBounds.height * scale) / 2;
-    const playerMinimapX = centerX - offsetX + (Intro.ship.x * scale);
-    const playerMinimapY = centerY - offsetY + (Intro.ship.y * scale);
+    const playerMinimapX = centerX - offsetX + (GameScene.ship.x * scale);
+    const playerMinimapY = centerY - offsetY + (GameScene.ship.y * scale);
 
     const targetMinimapX = centerX - offsetX + (this.targetPoint.x * scale);
     const targetMinimapY = centerY - offsetY + (this.targetPoint.y * scale);
@@ -210,7 +210,7 @@ export default class Minimap extends Phaser.Scene {
 }
 
     private drawPlayerIndicator() {
-      if (!Intro.ship) return;
+      if (!GameScene.ship) return;
 
       const worldBounds = this.physics.world.bounds;
       const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
@@ -219,10 +219,10 @@ export default class Minimap extends Phaser.Scene {
 
       const offsetX = (worldBounds.width * scale) / 2;
       const offsetY = (worldBounds.height * scale) / 2;
-      const minimapX = centerX - offsetX + (Intro.ship.x * scale);
-      const minimapY = centerY - offsetY + (Intro.ship.y * scale);
+      const minimapX = centerX - offsetX + (GameScene.ship.x * scale);
+      const minimapY = centerY - offsetY + (GameScene.ship.y * scale);
 
-      const rotation = Intro.ship.rotation;
+      const rotation = GameScene.ship.rotation;
 
       const halfBase = this.triangleSize / 2;
       const points = [
@@ -245,10 +245,10 @@ export default class Minimap extends Phaser.Scene {
   }
 
     update(){
-      const sceneActive = this.scene.get("Intro").scene.isActive();
+      const sceneActive = this.scene.get("GameScene").scene.isActive();
       [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
 
-      if (!sceneActive || !Intro.ship || !Intro.asteroids || !Intro.trashGroup || !Intro.powerUps) {
+      if (!sceneActive || !GameScene.ship || !GameScene.asteroids || !GameScene.trashGroup || !GameScene.powerUps) {
         if(!sceneActive) this.isTargetGenerated = false;
         return;
       }
@@ -266,9 +266,9 @@ export default class Minimap extends Phaser.Scene {
         this.minimapSize
       );
 
-      this.drawMinimapObjects(Intro.asteroids, 0xff0000, 4);
-      this.drawMinimapObjects(Intro.trashGroup, 0x00ffff, 4);
-      this.drawMinimapObjects(Intro.powerUps, 0xffff00, 4);
+      this.drawMinimapObjects(GameScene.asteroids, 0xff0000, 4);
+      this.drawMinimapObjects(GameScene.trashGroup, 0x00ffff, 4);
+      this.drawMinimapObjects(GameScene.powerUps, 0xffff00, 4);
 
       if(localStorage.getItem('gameMode') === 'arcade') this.drawPath();
       this.drawPlayerIndicator();
@@ -277,6 +277,6 @@ export default class Minimap extends Phaser.Scene {
     public resetTarget() {
       this.isTargetGenerated = false;
       this.targetPoint = null;
-      if(Intro.ship?.body) (Intro.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
+      if(GameScene.ship?.body) (GameScene.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
     }
 }
