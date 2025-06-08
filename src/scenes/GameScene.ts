@@ -33,6 +33,7 @@ export default class GameScene extends Phaser.Scene {
 
   preload() {
     this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
+    this.load.audio("pickup", "assets/sounds/pickup.wav");
     this.load.audio("collision", "assets/sounds/collision.mp3");
     this.load.audio("boost", "assets/sounds/boost.mp3");
     this.load.audio("shield", "assets/sounds/shield.wav");
@@ -330,12 +331,19 @@ export default class GameScene extends Phaser.Scene {
     this.updateShip(GameScene.ship);
   }
 
-  pickUpTrash(ship: any, trash: any){
-    if(!ship.active || !trash.active) return;
-    if(trash.body) trash.destroy();
+pickUpTrash(ship: any, trash: any) {
+    if (!ship.active || !trash.active) return;
+
+    if (trash.body) trash.destroy();
+
+    const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+    if (soundEffectsEnabled) {
+        this.sound.play('pickup', { volume: 0.5 });
+    }
+
     const currentTrash = GameInfo.levels[this.currentLevel].trash;
     this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
-  }
+}
 
   private activateInvulnerability(duration: number) {
     GameScene.ship.setData('invulnerable', true);
@@ -554,7 +562,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.moveTo(asteroid, targetPoint.x, targetPoint.y, this.asteroidSpeed);
   }
 
-  private spawnTrash(){
+  private spawnTrash() {
     const screenWidth = this.game.canvas.width;
     const screenHeight = this.game.canvas.height;
     const minDistanceFromShip = 300;
@@ -563,38 +571,38 @@ export default class GameScene extends Phaser.Scene {
     let x: number, y: number;
     let edge = Phaser.Math.Between(0, 3);
 
-    switch(edge) {
-      case 0: // Top
-        x = Phaser.Math.Between(-padding, screenWidth + padding);
-        y = -padding;
-        break;
-      case 1: // Right
-        x = screenWidth + padding;
-        y = Phaser.Math.Between(-padding, screenHeight + padding);
-        break;
-      case 2: // Bottom
-        x = Phaser.Math.Between(-padding, screenWidth + padding);
-        y = screenHeight + padding;
-        break;
-      default: // Left
-        x = -padding;
-        y = Phaser.Math.Between(-padding, screenHeight + padding);
+    switch (edge) {
+        case 0: // Top
+            x = Phaser.Math.Between(-padding, screenWidth + padding);
+            y = -padding;
+            break;
+        case 1: // Right
+            x = screenWidth + padding;
+            y = Phaser.Math.Between(-padding, screenHeight + padding);
+            break;
+        case 2: // Bottom
+            x = Phaser.Math.Between(-padding, screenWidth + padding);
+            y = screenHeight + padding;
+            break;
+        default: // Left
+            x = -padding;
+            y = Phaser.Math.Between(-padding, screenHeight + padding);
     }
 
     const distanceToShip = Phaser.Math.Distance.Between(x, y, GameScene.ship.x, GameScene.ship.y);
 
-    if(distanceToShip < minDistanceFromShip){
-      switch(edge){
-        case 0: case 2: // Top/Bottom
-          x = x < screenWidth / 2 ?
-            Phaser.Math.Between(screenWidth / 2 + minDistanceFromShip, screenWidth + padding) :
-            Phaser.Math.Between(-padding, screenWidth / 2 - minDistanceFromShip);
-          break;
-        default: // Left/Right
-          y = y < screenHeight / 2 ?
-            Phaser.Math.Between(screenHeight / 2 + minDistanceFromShip, screenHeight + padding) :
-            Phaser.Math.Between(-padding, screenHeight / 2 - minDistanceFromShip);
-      }
+    if (distanceToShip < minDistanceFromShip) {
+        switch (edge) {
+            case 0: case 2: // Top/Bottom
+                x = x < screenWidth / 2 ?
+                    Phaser.Math.Between(screenWidth / 2 + minDistanceFromShip, screenWidth + padding) :
+                    Phaser.Math.Between(-padding, screenWidth / 2 - minDistanceFromShip);
+                break;
+            default: // Left/Right
+                y = y < screenHeight / 2 ?
+                    Phaser.Math.Between(screenHeight / 2 + minDistanceFromShip, screenHeight + padding) :
+                    Phaser.Math.Between(-padding, screenHeight / 2 - minDistanceFromShip);
+        }
     }
 
     const currentTrash = GameInfo.levels[this.currentLevel].trash;
@@ -602,15 +610,23 @@ export default class GameScene extends Phaser.Scene {
     const randomTrash = keys[Phaser.Math.Between(0, keys.length - 1)];
 
     const trash = GameScene.trashGroup.create(x, y, randomTrash).setScale(Phaser.Math.FloatBetween(0.2, 0.25))
-      .setInteractive().on('pointerdown', () => {
-        trash.destroy();
-        this.updateScore(GameInfo.levels[0].trash?.[trash.texture.key as keyof typeof currentTrash]);
-      });
+        .setInteractive()
+        .on('pointerdown', () => {
+            trash.destroy();
+
+            const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+            if (soundEffectsEnabled) {
+                this.sound.play('pickup', { volume: 0.5 });
+            }
+
+            this.updateScore(GameInfo.levels[this.currentLevel].trash?.[trash.texture.key as keyof typeof currentTrash]);
+        });
+
     trash.setAngularVelocity(Phaser.Math.Between(-50, 50));
 
     const targetPoint = new Phaser.Math.Vector2(
-      Phaser.Math.Between(padding, screenWidth - padding),
-      Phaser.Math.Between(padding, screenHeight - padding)
+        Phaser.Math.Between(padding, screenWidth - padding),
+        Phaser.Math.Between(padding, screenHeight - padding)
     );
 
     this.physics.moveTo(trash, targetPoint.x, targetPoint.y, this.trashSpeed);
