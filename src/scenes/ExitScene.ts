@@ -23,10 +23,10 @@ export default class ExitScene extends Phaser.Scene {
 
   preload() {
     this.cameras.main.setBackgroundColor("fff");
-    this.load.image("hole-with-text", "../assets/images/other/hole-with-text.png");
+    this.load.image("hole-with-text", "assets/images/other/hole-with-text.png");
     this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
     GameData.sounds.forEach((sound) => {
-      this.load.audio("easterEggMusic", "../assets/music/easterEgg.mp3");
+      this.load.audio("easterEggMusic", "assets/music/easterEgg.mp3");
     });
   }
 

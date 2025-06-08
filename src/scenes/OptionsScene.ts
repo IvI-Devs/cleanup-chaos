@@ -10,7 +10,7 @@ export default class OptionsScene extends Phaser.Scene {
   private _selectedIndex = 0;
 
   preload(){
-    this.load.image("bg-03", "../assets/images/backgrounds/bg-03.svg");
+    this.load.image("bg-03", "assets/images/backgrounds/bg-03.svg");
     this.load.audio('menuSelect', 'assets/sounds/menuSelect.mp3');
   }
 
