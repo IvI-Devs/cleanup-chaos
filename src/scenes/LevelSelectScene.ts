@@ -15,7 +15,7 @@ export default class LevelSelectScene extends Phaser.Scene {
   preload(){
     this.load.image("bg-01", "assets/images/backgrounds/bg-01.svg");
     this.load.image("pixel-art-rectangle", "assets/images/other/pixel-art-rectangle.svg");
-    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
   }
 
   init(){
@@ -40,7 +40,7 @@ export default class LevelSelectScene extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => { 
         if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-          this.sound.play('menuSelect'); // Suona quando si clicca su "Menu"
+          this.sound.play('menuSelect');
         }
         this.goToMenu(); 
       });
@@ -67,13 +67,13 @@ export default class LevelSelectScene extends Phaser.Scene {
       if(index < this.currentLevel){
         text.setAlpha(1).setInteractive().on('pointerdown', () => { 
           if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-            this.sound.play('menuSelect'); // Suona quando si seleziona un livello
+            this.sound.play('menuSelect');
           }
           this.play(index); 
         });
         rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { 
           if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-            this.sound.play('menuSelect'); // Suona quando si seleziona un livello
+            this.sound.play('menuSelect');
           }
           this.play(index); 
         });
@@ -85,7 +85,7 @@ export default class LevelSelectScene extends Phaser.Scene {
 
     this.input.keyboard.on("keydown-ESC", () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme ESC
+        this.sound.play('menuSelect');
       }
       this.goToMenu(); 
     });

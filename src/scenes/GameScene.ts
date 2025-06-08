@@ -32,11 +32,11 @@ export default class GameScene extends Phaser.Scene {
   };
 
   preload() {
-    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect per selezioni
-    this.load.audio("collision", "assets/sounds/collision.mp3"); // Carica il sound effect per collisioni
-    this.load.audio("boost", "assets/sounds/boost.mp3"); // Carica il sound effect per il boost
-    this.load.audio("shield", "assets/sounds/shield.mp3"); // Carica il sound effect per lo scudo
-    this.load.audio("doublePoints", "assets/sounds/doublePoints.mp3"); // Carica il sound effect per i punti doppi
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
+    this.load.audio("collision", "assets/sounds/collision.mp3");
+    this.load.audio("boost", "assets/sounds/boost.mp3");
+    this.load.audio("shield", "assets/sounds/shield.mp3");
+    this.load.audio("doublePoints", "assets/sounds/doublePoints.mp3");
   }
 
   init(){

@@ -24,7 +24,7 @@ export default class ExitScene extends Phaser.Scene {
   preload() {
     this.cameras.main.setBackgroundColor("fff");
     this.load.image("hole-with-text", "../assets/images/other/hole-with-text.png");
-    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
     GameData.sounds.forEach((sound) => {
       this.load.audio("easterEggMusic", "../assets/music/easterEgg.mp3");
     });
@@ -43,7 +43,7 @@ export default class ExitScene extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => { 
         if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-          this.sound.play('menuSelect'); // Suona quando si clicca sul buco
+          this.sound.play('menuSelect');
         }
         this.goBack(); 
       });
@@ -52,21 +52,21 @@ export default class ExitScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown-ESC', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme ESC
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });
 
     this.input.keyboard.on('keydown-SPACE', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme SPACE
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });
 
     this.input.keyboard.on('keydown-ENTER', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme ENTER
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });

@@ -69,21 +69,21 @@ export default class GameOverScene extends Phaser.Scene {
 
   this.input.keyboard.on('keydown-ESC', () => { 
     if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-      this.sound.play('menuSelect', { volume: 0.5 }); // Suona quando si preme ESC
+      this.sound.play('menuSelect', { volume: 0.5 }); 
     }
     this.goToMenu(); 
   });
 
   this.input.keyboard.on('keydown-SPACE', () => { 
     if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-      this.sound.play('menuSelect', { volume: 0.5 }); // Suona quando si preme SPACE
+      this.sound.play('menuSelect', { volume: 0.5 });
     }
     this.playAgain(); 
   });
 
   this.input.keyboard.on('keydown-ENTER', () => { 
     if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-      this.sound.play('menuSelect', { volume: 0.5 }); // Suona quando si preme ENTER
+      this.sound.play('menuSelect', { volume: 0.5 });
     }
     this.playAgain(); 
   });

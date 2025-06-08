@@ -37,7 +37,7 @@ export default class CreditsScene extends Phaser.Scene {
   preload(){
     this.load.image("bg-02", "../assets/images/backgrounds/bg-02.svg");
     this.load.audio("credits", "../assets/music/credits.mp3");
-    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
   }
 
   create(){
@@ -56,28 +56,28 @@ export default class CreditsScene extends Phaser.Scene {
 
     this.input.keyboard.on('keydown-ESC', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme ESC
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });
 
     this.input.keyboard.on('keydown-SPACE', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme SPACE
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });
 
     this.input.keyboard.on('keydown-ENTER', () => { 
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si preme ENTER
+        this.sound.play('menuSelect');
       }
       this.goBack(); 
     });
 
     this._backArrow.setInteractive().on('pointerdown', () => {
       if (localStorage.getItem('soundEffectsEnabled') === 'true') {
-        this.sound.play('menuSelect'); // Suona quando si clicca sulla freccia
+        this.sound.play('menuSelect');
       }
       this.goBack();
     });
