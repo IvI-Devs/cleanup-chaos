@@ -14,11 +14,11 @@ type Level = {
 export let GameInfo = {
   title: "Cleanup Chaos",
   version: "1.0.0",
-  authors: ["pH@nto.m", "p1x3lc4t", "Z3n0x", "T1g3r", "pAKo3549", "A.P."],
+  authors: ["pH@nto.m", "p1x3lc4t", "Z3n0x", "T1g3r", "P4K0", "A.P."],
   description: "...",
   credits: [
       "Designed by: P4K0, pH@ntom, A.P., Z3n0x",
-      "Developed by: pH@ntom, p1x3lc4t",
+      "Developed by: pH@ntom, p1x3lc4t, P4K0",
       "Music by: P4K0, T1g3r",
   ],
 
