@@ -348,54 +348,55 @@ export default class GameScene extends Phaser.Scene {
     if (!ship.active || !asteroid.active) return;
 
     if (ship.getData('invulnerable')) {
-        if (asteroid.body) asteroid.destroy();
+      if (asteroid.body) asteroid.destroy();
 
-        const proximityRadius = 100;
-        GameScene.asteroids.getChildren().forEach((otherAsteroid: any) => {
-            const distance = Phaser.Math.Distance.Between(
-                ship.x, ship.y,
-                otherAsteroid.x, otherAsteroid.y
-            );
-            if (distance <= proximityRadius && otherAsteroid.active) {
-                otherAsteroid.destroy();
-            }
-        });
+      const proximityRadius = 100;
+      GameScene.asteroids.getChildren().forEach((otherAsteroid: any) => {
+        const distance = Phaser.Math.Distance.Between(
+          ship.x, ship.y,
+          otherAsteroid.x, otherAsteroid.y
+        );
+        if (distance <= proximityRadius && otherAsteroid.active) {
+          otherAsteroid.destroy();
+        }
+      });
 
-        return;
+      return;
     }
 
     if (asteroid.body) asteroid.destroy();
 
     if (GameScene.ship.getData('shield') == false) {
-        this.activateInvulnerability(1000);
+      this.activateInvulnerability(1000);
 
-        this.time.addEvent({
-            delay: 150,
-            repeat: 1,
-            callback: () => {
-                if (GameScene.ship.tintFill) GameScene.ship.clearTint();
-                else GameScene.ship.setTintFill(0xff0000);
-            },
-            callbackScope: this,
-        });
+      this.time.addEvent({
+        delay: 150,
+        repeat: 1,
+        callback: () => {
+          if (GameScene.ship.tintFill) GameScene.ship.clearTint();
+          else GameScene.ship.setTintFill(0xff0000);
+        },
+        callbackScope: this,
+      });
 
-        if (this.hearts > 0) {
-            this.hearts -= 1;
-            this.updateHearts();
-        }
+      if (this.hearts > 0) {
+        this.hearts -= 1;
+        this.updateHearts();
+      }
 
-        const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
-        if (soundEffectsEnabled && this.sound.get('collision')) {
-            this.sound.play('collision', { volume: 0.5, detune: 200 });
-        }
-        this.cameras.main.shake(100, 0.005);
+      const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+      if (soundEffectsEnabled) {
+        this.sound.play('collision', { volume: 0.5 }); 
+      }
+
+      this.cameras.main.shake(100, 0.005);
     }
 
     if (this.hearts <= 0) {
-        this.registry.set("score", this.score);
-        this.scene.stop(this);
-        this.scene.stop("MinimapOverlay");
-        this.scene.start("GameOverScene");
+      this.registry.set("score", this.score);
+      this.scene.stop(this);
+      this.scene.stop("MinimapOverlay");
+      this.scene.start("GameOverScene");
     }
   }
 
