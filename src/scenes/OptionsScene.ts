@@ -35,7 +35,7 @@ export default class OptionsScene extends Phaser.Scene {
   }
 
   preload(){
-    this.load.image("bg-03", "assets/images/backgrounds/bg-03.svg");
+    this.load.image("bg-03", "../assets/images/backgrounds/bg-03.svg");
   }
 
   create(){
