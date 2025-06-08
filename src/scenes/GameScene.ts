@@ -75,7 +75,7 @@ export default class GameScene extends Phaser.Scene {
       D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     };
 
-    this.input.keyboard.on("keydown-ESC", () => { this.scene.pause(); this.scene.launch("PauseMenu"); });
+    this.input.keyboard.on("keydown-ESC", () => { this.scene.pause(); this.scene.launch("PauseScene"); });
     this.input.keyboard.on("keyup-SPACE", () => {
       if(this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
     });
