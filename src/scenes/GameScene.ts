@@ -31,6 +31,14 @@ export default class GameScene extends Phaser.Scene {
     D: Phaser.Input.Keyboard.Key
   };
 
+  preload() {
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect per selezioni
+    this.load.audio("collision", "assets/sounds/collision.mp3"); // Carica il sound effect per collisioni
+    this.load.audio("boost", "assets/sounds/boost.mp3"); // Carica il sound effect per il boost
+    this.load.audio("shield", "assets/sounds/shield.mp3"); // Carica il sound effect per lo scudo
+    this.load.audio("doublePoints", "assets/sounds/doublePoints.mp3"); // Carica il sound effect per i punti doppi
+  }
+
   init(){
     if(localStorage.getItem('gameMode') !== 'arcade' && localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
@@ -75,7 +83,13 @@ export default class GameScene extends Phaser.Scene {
       D: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
     };
 
-    this.input.keyboard.on("keydown-ESC", () => { this.scene.pause(); this.scene.launch("PauseScene"); });
+    this.input.keyboard.on("keydown-ESC", () => { 
+    if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+      this.sound.play('menuSelect');
+    }
+    this.scene.pause(); 
+    this.scene.launch("PauseScene"); 
+    });
     this.input.keyboard.on("keyup-SPACE", () => {
       if(this.sound.get('boost')?.isPlaying) this.sound.stopByKey('boost');
     });

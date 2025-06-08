@@ -15,6 +15,7 @@ export default class LevelSelectScene extends Phaser.Scene {
   preload(){
     this.load.image("bg-01", "assets/images/backgrounds/bg-01.svg");
     this.load.image("pixel-art-rectangle", "assets/images/other/pixel-art-rectangle.svg");
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect
   }
 
   init(){
@@ -37,7 +38,12 @@ export default class LevelSelectScene extends Phaser.Scene {
       .setFontSize(35)
       .setFontFamily(GameInfo.default.font)
       .setInteractive()
-      .on('pointerdown', () => { this.goToMenu() });
+      .on('pointerdown', () => { 
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+          this.sound.play('menuSelect'); // Suona quando si clicca su "Menu"
+        }
+        this.goToMenu(); 
+      });
   }
 
   create(){
@@ -59,15 +65,30 @@ export default class LevelSelectScene extends Phaser.Scene {
       }).setOrigin(0, 0).setAlpha(0.3);
 
       if(index < this.currentLevel){
-        text.setAlpha(1).setInteractive().on('pointerdown', () => { this.play(index) });
-        rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { this.play(index) });
+        text.setAlpha(1).setInteractive().on('pointerdown', () => { 
+          if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect'); // Suona quando si seleziona un livello
+          }
+          this.play(index); 
+        });
+        rectangle.setAlpha(1).setInteractive().on('pointerdown', () => { 
+          if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect'); // Suona quando si seleziona un livello
+          }
+          this.play(index); 
+        });
       }
 
       this._levelsGroup.add(rectangle);
       this._levelsGroup.add(text);
-    })
-    this.input.keyboard.on("keydown-ESC", () => { this.goToMenu(); });
-    this.input.keyboard.on('keydown-ESC', () => { this.goToMenu(); });
+    });
+
+    this.input.keyboard.on("keydown-ESC", () => { 
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect'); // Suona quando si preme ESC
+      }
+      this.goToMenu(); 
+    });
   }
 
   private goToMenu(){
@@ -76,7 +97,7 @@ export default class LevelSelectScene extends Phaser.Scene {
   }
 
   private play(levelNumber: number){
-    localStorage.setItem('selectedLevel', (levelNumber).toString())
+    localStorage.setItem('selectedLevel', (levelNumber).toString());
     this.scene.stop(this);
     this.scene.start('Preloader');
   }

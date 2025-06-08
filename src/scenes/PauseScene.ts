@@ -11,12 +11,12 @@ export default class PauseScene extends Phaser.Scene {
   create() {
     this._menuItems = [];
     this._selectedIndex = 0;
-  
+
     const { width, height } = this.scale;
-  
+
     // Semi-clear background
     this.add.rectangle(0, 0, width, height, 0x000000, 0.5).setOrigin(0);
-  
+
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
 
     // Stop music
@@ -30,7 +30,7 @@ export default class PauseScene extends Phaser.Scene {
       fontFamily: GameInfo.default.font,
       color: "#ffffff",
     }).setOrigin(0.5);
-  
+
     // Menu entries
     const menuItems = ["Resume", "Restart", "Exit"];
     menuItems.forEach((item, index) => {
@@ -41,45 +41,65 @@ export default class PauseScene extends Phaser.Scene {
       })
         .setOrigin(0.5)
         .setInteractive()
-        .on("pointerdown", () => this.selectItem(index))
+        .on("pointerdown", () => {
+          if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+          }
+          this.selectItem(index);
+        })
         .on("pointerover", () => {
           this._selectedIndex = index;
           this.updateMenu();
+          if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+          }
         });
-  
+
       this._menuItems.push(menuItem);
     });
-  
+
     // Keyboard inputs
     this.input.keyboard.on("keydown-UP", () => {
       this._selectedIndex = (this._selectedIndex - 1 + this._menuItems.length) % this._menuItems.length;
       this.updateMenu();
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
     });
-  
+
     this.input.keyboard.on("keydown-DOWN", () => {
       this._selectedIndex = (this._selectedIndex + 1) % this._menuItems.length;
       this.updateMenu();
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
     });
-  
+
     this.input.keyboard.on("keydown-ENTER", () => {
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
       this.selectItem(this._selectedIndex);
     });
 
     this.input.keyboard.on("keydown-ESC", () => {
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
       if (music && localStorage.getItem('musicEnabled') !== 'false') {
         music.resume();
       }
       this.scene.stop();
       this.scene.resume("GameScene");
     });
-  
+
     this.updateMenu();
   }
 
   private updateMenu() {
     this._menuItems.forEach((menuItem, index) => {
       const cleanText = menuItem.text.replace(/> | </g, "");
-  
+
       if (index === this._selectedIndex) {
         menuItem.setText(`> ${cleanText} <`);
       } else {
@@ -111,7 +131,7 @@ export default class PauseScene extends Phaser.Scene {
           music.stop();
         }
         this.scene.stop("GameScene");
-        this.scene.stop("MinimapOverlay")
+        this.scene.stop("MinimapOverlay");
         this.scene.start("MainMenuScene");
         break;
     }

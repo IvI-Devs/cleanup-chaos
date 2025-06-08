@@ -37,6 +37,7 @@ export default class CreditsScene extends Phaser.Scene {
   preload(){
     this.load.image("bg-02", "../assets/images/backgrounds/bg-02.svg");
     this.load.audio("credits", "../assets/music/credits.mp3");
+    this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3"); // Carica il sound effect
   }
 
   create(){
@@ -45,15 +46,41 @@ export default class CreditsScene extends Phaser.Scene {
 
     const musicEnabled = localStorage.getItem('musicEnabled') === 'true';
     if (musicEnabled) {
-        this._music = this.sound.add("credits", { loop: true, volume: 0.5 });
-        this._music.play();
+      this._music = this.sound.add("credits", { loop: true, volume: 0.5 });
+      this._music.play();
     }
 
     this._menuItems = [];
     this._selectedIndex = 0;
     this.createMenu();
 
-    this.input.keyboard.on('keydown-ESC', () => { this.goBack(); });
+    this.input.keyboard.on('keydown-ESC', () => { 
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect'); // Suona quando si preme ESC
+      }
+      this.goBack(); 
+    });
+
+    this.input.keyboard.on('keydown-SPACE', () => { 
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect'); // Suona quando si preme SPACE
+      }
+      this.goBack(); 
+    });
+
+    this.input.keyboard.on('keydown-ENTER', () => { 
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect'); // Suona quando si preme ENTER
+      }
+      this.goBack(); 
+    });
+
+    this._backArrow.setInteractive().on('pointerdown', () => {
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect'); // Suona quando si clicca sulla freccia
+      }
+      this.goBack();
+    });
   }
 
   createMenu(){

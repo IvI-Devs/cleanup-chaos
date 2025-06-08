@@ -18,6 +18,8 @@ export default class MainMenuScene extends Phaser.Scene {
     this.load.image("bg-04", "assets/images/backgrounds/bg-04.svg");
     this.load.image("asteroid", "assets/images/asteroids/asteroid.svg");
     this.load.image("bootscreen-bg", "assets/images/backgrounds/bootscreen.svg");
+    this.load.audio('menuSelect', 'assets/sounds/menuSelect.mp3');
+    this.load.audio('menuClick', 'assets/sounds/menuSelect.mp3');
     this.load.addFile(new WebFontFile(this.load, 'Pixelify Sans')); // font preload
   }
 
@@ -77,44 +79,78 @@ export default class MainMenuScene extends Phaser.Scene {
     this.spawnBackgroundAsteroids();
   }
 
-  createMenu(){
-    for(let i = 0; i < GameInfo.menu.items.length; i++){
-      const item = GameInfo.menu.items[i];
-      const x = this.game.canvas.width / 2;
-      const y = 400 + i * 75;
+  createMenu() {
+    for (let i = 0; i < GameInfo.menu.items.length; i++) {
+        const item = GameInfo.menu.items[i];
+        const x = this.game.canvas.width / 2;
+        const y = 400 + i * 75;
 
-      let menuItem = this.add.text(x, y, item, {
-        fontSize: GameInfo.menu.fontSize,
-        fontFamily: GameInfo.menu.font,
-        color: '#fff'
-      })
-      .setDepth(1001)
-      .setOrigin(0.5)
-      .setInteractive()
-      .on('pointerdown', () => { this.selectItem(i); })
-      .on('pointerover', () => { this._selectedIndex = i; this.updateMenu() });
+        let menuItem = this.add.text(x, y, item, {
+            fontSize: GameInfo.menu.fontSize,
+            fontFamily: GameInfo.menu.font,
+            color: '#fff'
+        })
+        .setDepth(1001)
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => { 
+            if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+                this.sound.play('menuSelect');
+            }
+            this.selectItem(i); 
+        })
+        .on('pointerover', () => { 
+            this._selectedIndex = i; 
+            this.updateMenu(); 
+            if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+                this.sound.play('menuSelect');
+            }
+        });
 
-      this._menuItems.push(menuItem);
+        this._menuItems.push(menuItem);
     }
 
     this.input.keyboard.on('keydown-UP', () => {
         this._selectedIndex = (this._selectedIndex - 1 + this._menuItems.length) % this._menuItems.length;
         this.updateMenu();
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+        }
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
         this._selectedIndex = (this._selectedIndex + 1) % this._menuItems.length;
         this.updateMenu();
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+        }
     });
 
-    this.input.keyboard.on('keydown-ENTER', () => { this.selectItem(this._selectedIndex) });
-    this.input.keyboard.on('keydown-SPACE', () => { this.selectItem(this._selectedIndex) });
+    this.input.keyboard.on('keydown-ENTER', () => { 
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+        }
+        this.selectItem(this._selectedIndex); 
+    });
+
+    this.input.keyboard.on('keydown-SPACE', () => { 
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+            this.sound.play('menuSelect');
+        }
+        this.selectItem(this._selectedIndex); 
+    });
   }
 
   updateMenu() {
-    for(let i = 0; i < this._menuItems.length; i++){
-      if(i === this._selectedIndex) this._menuItems[i].setText(`> ${GameInfo.menu.items[i]} <`);
-      else this._menuItems[i].setText(GameInfo.menu.items[i]);
+    for (let i = 0; i < this._menuItems.length; i++) {
+      if (i === this._selectedIndex) {
+        this._menuItems[i].setText(`> ${GameInfo.menu.items[i]} <`);
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+          this.sound.play('menuSelect'); 
+        }
+      } else {
+        this._menuItems[i].setText(GameInfo.menu.items[i]);
+      }
     }
   }
 

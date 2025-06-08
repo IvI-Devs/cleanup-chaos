@@ -9,6 +9,11 @@ export default class OptionsScene extends Phaser.Scene {
   private _menuItems: any[] = [];
   private _selectedIndex = 0;
 
+  preload(){
+    this.load.image("bg-03", "../assets/images/backgrounds/bg-03.svg");
+    this.load.audio('menuSelect', 'assets/sounds/menuSelect.mp3');
+  }
+
   init(){
     GameInfo.options.items['Music'] = localStorage.getItem('musicEnabled') === 'true';
     GameInfo.options.items['Sound Effects'] = localStorage.getItem('soundEffectsEnabled') === 'true';
@@ -34,10 +39,6 @@ export default class OptionsScene extends Phaser.Scene {
       .setFontFamily(GameInfo.gameTitle.font);
   }
 
-  preload(){
-    this.load.image("bg-03", "../assets/images/backgrounds/bg-03.svg");
-  }
-
   create(){
     this._background = this.add.image(0, 0, "bg-03").setOrigin(0, 0);
     this._title.setText("Options");
@@ -46,14 +47,19 @@ export default class OptionsScene extends Phaser.Scene {
     this._selectedIndex = 0;
     this.createMenu();
 
-    this.input.keyboard.on('keydown-ESC', () => { this.goBack(); });
+    this.input.keyboard.on('keydown-ESC', () => { 
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
+      this.goBack(); 
+    });
   }
 
-  createMenu(){
+  createMenu() {
     const keys = Object.keys(GameInfo.options.items);
     const values = Object.values(GameInfo.options.items);
 
-    for(let i = 0; i < keys.length; i++){
+    for (let i = 0; i < keys.length; i++) {
       const item = `${keys[i]}: ${values[i] === true ? 'ON' : 'OFF'}`;
       const x = this.game.canvas.width / 2;
       const y = 400 + i * 75;
@@ -65,39 +71,59 @@ export default class OptionsScene extends Phaser.Scene {
       })
       .setOrigin(0.5)
       .setInteractive()
-      .on('pointerdown', () => { this.selectItem(i); })
+      .on('pointerdown', () => { 
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+          this.sound.play('menuSelect');
+        }
+        this.selectItem(i); 
+      })
       .on('pointerover', () => {
-          this._selectedIndex = i;
-          this.updateMenu();
+        this._selectedIndex = i;
+        this.updateMenu();
+        if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+          this.sound.play('menuSelect');
+        }
       });
 
       this._menuItems.push(menuItem);
     }
 
     this.input.keyboard.on('keydown-UP', () => {
-        this._selectedIndex = (this._selectedIndex - 1 + this._menuItems.length) % this._menuItems.length;
-        this.updateMenu();
+      this._selectedIndex = (this._selectedIndex - 1 + this._menuItems.length) % this._menuItems.length;
+      this.updateMenu();
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
     });
 
     this.input.keyboard.on('keydown-DOWN', () => {
-        this._selectedIndex = (this._selectedIndex + 1) % this._menuItems.length;
-        this.updateMenu();
+      this._selectedIndex = (this._selectedIndex + 1) % this._menuItems.length;
+      this.updateMenu();
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
     });
 
     this.input.keyboard.on('keydown-ENTER', () => {
-        this.selectItem(this._selectedIndex);
+      if (localStorage.getItem('soundEffectsEnabled') === 'true') {
+        this.sound.play('menuSelect');
+      }
+      this.selectItem(this._selectedIndex);
     });
   }
 
-  updateMenu(){
+  updateMenu() {
     const keys = Object.keys(GameInfo.options.items);
     const values = Object.values(GameInfo.options.items);
 
-    for(let i = 0; i < this._menuItems.length; i++){
+    for (let i = 0; i < this._menuItems.length; i++) {
       const item = `${keys[i]}: ${values[i] === true ? 'ON' : 'OFF'}`;
 
-      if (i === this._selectedIndex) this._menuItems[i].setText(`> ${item} <`);
-      else this._menuItems[i].setText(item);
+      if (i === this._selectedIndex) {
+        this._menuItems[i].setText(`> ${item} <`);
+      } else {
+        this._menuItems[i].setText(item);
+      }
     }
   }
 
