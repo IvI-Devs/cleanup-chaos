@@ -70,7 +70,7 @@ export default class PauseScene extends Phaser.Scene {
         music.resume();
       }
       this.scene.stop();
-      this.scene.resume("MainMenuScene");
+      this.scene.resume("GameScene");
     });
   
     this.updateMenu();
@@ -96,14 +96,14 @@ export default class PauseScene extends Phaser.Scene {
           music.resume();
         }
         this.scene.stop();
-        this.scene.resume("MainMenuScene");
+        this.scene.resume("GameScene");
         break;
       case 1: // Restart
         if (music && music.isPlaying) {
           music.stop();
         }
         this.scene.stop();
-        this.scene.stop("MainMenuScene");
+        this.scene.stop("GameScene");
         this.scene.start("Preloader");
         break;
       case 2: // Exit
