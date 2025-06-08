@@ -78,10 +78,11 @@ export let GameData: gameData = {
   ],
   atlas: [],
   sounds: [
-    { name: "pickup", paths: ["assets/sounds/pickup.mp3"] },
+    { name: "pickup", paths: ["assets/sounds/pickup.wav"] },
     { name: "shield", paths: ["assets/sounds/shield.wav"] },
     { name: "boost", paths: ["assets/sounds/boost.mp3"] },
     { name: "doublePoints", paths: ["assets/sounds/doublePoints.wav"] },
+    { name: "heart", paths: ["assets/sounds/heart.wav"] },
     { name: "death", paths: ["assets/sounds/explosion.wav"] },
     { name: "arcadeMusic", paths: ["assets/music/arcade.mp3"], },
     { name: "easterEggMusic", paths: ["assets/music/easterEgg.mp3"], },

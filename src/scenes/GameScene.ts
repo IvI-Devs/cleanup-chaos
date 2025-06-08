@@ -35,8 +35,9 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
     this.load.audio("collision", "assets/sounds/collision.mp3");
     this.load.audio("boost", "assets/sounds/boost.mp3");
-    this.load.audio("shield", "assets/sounds/shield.mp3");
-    this.load.audio("doublePoints", "assets/sounds/doublePoints.mp3");
+    this.load.audio("shield", "assets/sounds/shield.wav");
+    this.load.audio("doublePoints", "assets/sounds/doublePoints.wav");
+    this.load.audio("heart", "assets/sounds/heart.wav");
   }
 
   init(){
@@ -439,23 +440,31 @@ export default class GameScene extends Phaser.Scene {
     powerUp.setAngularVelocity(Phaser.Math.Between(-100, 100));
   }
 
-private rocketEnhancement(ship: any, powerUp: any) {
+  private rocketEnhancement(ship: any, powerUp: any) {
     if (!ship.active || !powerUp.active || !powerUp.data) return;
 
     const type = powerUp.data.get('type');
 
     if (type === 'heart') {
-      if (this.hearts < 3) {
-        this.hearts += 1;
-        this.updateHearts();
-      }
-      if (powerUp.body) powerUp.destroy();
-    return;
+        if (this.hearts < 3) {
+            this.hearts += 1;
+            this.updateHearts();
+        }
+
+        const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+        if (soundEffectsEnabled) {
+            this.sound.play('heart', { volume: 0.5 });
+        }
+
+        if (powerUp.body) powerUp.destroy();
+        return;
     }
 
     let currentExpiry = ship.data.get(`${type}Expiry`) || 0;
     let remainingTime = currentExpiry - this.time.now;
-    let powerUpTime = remainingTime > 0 ? remainingTime + GameInfo.powerUps[type as keyof typeof GameInfo.powerUps] : GameInfo.powerUps[type as keyof typeof GameInfo.powerUps];
+    let powerUpTime = remainingTime > 0
+        ? remainingTime + GameInfo.powerUps[type as keyof typeof GameInfo.powerUps]
+        : GameInfo.powerUps[type as keyof typeof GameInfo.powerUps];
     let newExpiry = this.time.now + powerUpTime;
 
     if (ship.data.get(`${type}Timer`)) ship.data.get(`${type}Timer`).remove();
@@ -484,7 +493,7 @@ private rocketEnhancement(ship: any, powerUp: any) {
     }
 
     if (powerUp.body) powerUp.destroy();
-}
+  }
 
   private spawnAsteroid(){
     const screenWidth = this.game.canvas.width;
