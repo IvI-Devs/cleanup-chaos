@@ -10,6 +10,10 @@ export default class GameOverScene extends Phaser.Scene {
   private _playAgainRectangle: Phaser.GameObjects.Image;
   public score: number;
 
+  preload(){
+    this.load.audio("death", "assets/sounds/explosion.wav");
+  }
+
   create(){
     this.cameras.main.setBackgroundColor('#000');
     this.score = this.registry.get("score") || 0;
