@@ -36,7 +36,7 @@ export default class CreditsScene extends Phaser.Scene {
 
   preload(){
     this.load.image("bg-02", "assets/images/backgrounds/bg-02.svg");
-    this.load.audio("credits", ".assets/music/credits.mp3");
+    this.load.audio("credits", "assets/music/credits.mp3");
     this.load.audio("menuSelect", "assets/sounds/menuSelect.mp3");
   }
 
