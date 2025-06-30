@@ -1,8 +1,8 @@
 # Guardians of the Void: Cleanup Chaos
 
-![GitHub last commit](https://img.shields.io/github/last-commit/IvI-Devs/cleanup-chaos?&style=for-the-badge&color=8272a4&logoColor=D9E0EE&labelColor=292324)
-![GitHub license](https://img.shields.io/github/license/IvI-Devs/cleanup-chaos?style=for-the-badge&color=8272a4&logoColor=D9E0EE&labelColor=292324)
-![GitHub stars](https://img.shields.io/github/stars/IvI-Devs/cleanup-chaos?style=for-the-badge&color=8272a4&logoColor=D9E0EE&labelColor=292324)
+![](https://img.shields.io/github/last-commit/IvI-Devs/cleanup-chaos?&style=for-the-badge&color=8272a4&logoColor=D9E0EE&labelColor=292324)
+![](https://img.shields.io/github/stars/IvI-Devs/cleanup-chaos?style=for-the-badge&logo=polestar&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
+![](https://img.shields.io/github/repo-size/IvI-Devs/cleanup-chaos?color=CAC992&label=SIZE&logo=files&style=for-the-badge&logoColor=D9E0EE&labelColor=292324)
 
 **Guardians of the Void: Cleanup Chaos** is an exciting 2D space game built with Phaser 3 and TypeScript. Navigate through asteroid fields, collect space debris, and clean up the cosmos while avoiding dangerous obstacles. Features both story-driven levels and endless arcade mode!
 
