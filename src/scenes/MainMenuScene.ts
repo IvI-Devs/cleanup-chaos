@@ -53,7 +53,7 @@ export default class MainMenuScene extends Phaser.Scene {
       .on("pointerdown", () => {
         localStorage.setItem('gameMode', 'arcade');
         this.scene.stop(this);
-        this.scene.start('Preloader');
+        this.scene.start('LevelSelectScene');
       });
 
     // if(localStorage.getItem('gameMode') === null) localStorage.setItem('gameMode', 'arcade');

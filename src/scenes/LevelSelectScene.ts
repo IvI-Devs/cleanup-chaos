@@ -53,7 +53,11 @@ export default class LevelSelectScene extends Phaser.Scene {
     const scaleY = this.scale.height / this._background.height;
     const scale = Math.max(scaleX, scaleY);
     this._background.setScale(scale);
-    this._levelsText.setText("Levels");
+    
+    const gameMode = localStorage.getItem('gameMode');
+    const isArcadeMode = gameMode === 'arcade';
+    
+    this._levelsText.setText("Select Level");
     this._highestScore.setFontFamily(GameInfo.default.font);
     this.currentLevel = Number(localStorage.getItem('level'));
     this._levelsGroup = this.physics.add.group();
@@ -62,15 +66,29 @@ export default class LevelSelectScene extends Phaser.Scene {
     GameInfo.levels.forEach((level, index) => {
       let x = this.scale.width / 6 - 25;
       let y = this.scale.height / 2 - 50;
-      const rectangle = this.add.image(x + (this.scale.width / 5 * index), y, 'pixel-art-rectangle').setOrigin(0, 0).setAlpha(0.3)
+      
+      const levelsPerRow = 4;
+      const row = Math.floor(index / levelsPerRow);
+      const col = index % levelsPerRow;
+      
+      if (GameInfo.levels.length > levelsPerRow) {
+        x = this.scale.width / 8 + (this.scale.width / 6 * col);
+        y = this.scale.height / 2 - 80 + (row * 120);
+      } else {
+        x = x + (this.scale.width / 5 * index);
+      }
+
+      const rectangle = this.add.image(x, y, 'pixel-art-rectangle').setOrigin(0, 0).setAlpha(0.3)
         .setScale(Math.min(this.scale.width / 1200, 1));
-      const text = this.add.text(x + 70 + (this.scale.width / 5 * index), y + 55, (index+1).toString(), {
+      const text = this.add.text(x + 70, y + 55, (index+1).toString(), {
         fontSize: `${Math.min(this.scale.width / 20, 75)}px`,
         color: '#ffffff',
         fontFamily: GameInfo.default.font
       }).setOrigin(0, 0).setAlpha(0.3);
 
-      if(index < this.currentLevel){
+      const isLevelAvailable = true; // Allow access to all levels
+      
+      if(isLevelAvailable){
         text.setAlpha(1).setInteractive().on('pointerdown', () => { 
           if (localStorage.getItem('soundEffectsEnabled') === 'true') {
             this.sound.play('menuSelect');

@@ -13,11 +13,14 @@ export default class GameScene extends Phaser.Scene {
   private cursor: Phaser.Types.Input.Keyboard.CursorKeys;
   private _speed: number = 250;
   private currentLevel: number = 0;
+  private flagSpawned: boolean = false;
 
   public static asteroids: Phaser.Physics.Arcade.Group;
   public static trashGroup: Phaser.Physics.Arcade.Group;
   private heartsGroup: Phaser.GameObjects.Group;
   public static powerUps: Phaser.Physics.Arcade.Group;
+  public static flagGroup: Phaser.Physics.Arcade.Group;
+
   private asteroidSpeed: number = 150;
   private trashSpeed: number = 150;
 
@@ -42,7 +45,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(){
-    if(localStorage.getItem('gameMode') !== 'arcade' && localStorage.getItem('selectedLevel') !== null){
+    if(localStorage.getItem('selectedLevel') !== null){
       this.currentLevel = parseInt(localStorage.getItem('selectedLevel'));
     }
     else this.currentLevel = 0;
@@ -65,6 +68,7 @@ export default class GameScene extends Phaser.Scene {
     GameScene.asteroids = this.physics.add.group();
     GameScene.trashGroup = this.physics.add.group();
     GameScene.powerUps = this.physics.add.group();
+    GameScene.flagGroup = this.physics.add.group();
     this.heartsGroup = this.add.group();
 
     this.createShip();
@@ -77,6 +81,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(GameScene.ship, GameScene.asteroids, (ship, asteroid) => this.handleCollision(ship, asteroid), undefined, this);
     this.physics.add.overlap(GameScene.ship, GameScene.trashGroup, (ship, trash) => this.pickUpTrash(ship, trash), undefined, this);
     this.physics.add.overlap(GameScene.ship, GameScene.powerUps, (ship, powerUp) => this.rocketEnhancement(ship, powerUp), undefined, this);
+    this.physics.add.overlap(GameScene.ship, GameScene.flagGroup, (ship, flag) => this.reachFlag(ship, flag), undefined, this);
 
     this.keys = {
       W: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
@@ -99,6 +104,8 @@ export default class GameScene extends Phaser.Scene {
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].asteroidsGenerationDelay ?? 1500, callback: this.spawnAsteroid, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].trashGenerationDelay ?? 1500, callback: this.spawnTrash, callbackScope: this, loop: true });
     this.time.addEvent({ delay: GameInfo.levels[this.currentLevel].powerUpsGenerationDelay ?? GameInfo.powerUpsGenerationDelay, callback: this.spawnPowerUps, callbackScope: this, loop: true });
+    
+    this.scene.launch("MinimapOverlay");
   }
 
   private checkLevelCompletion() {
@@ -108,6 +115,7 @@ export default class GameScene extends Phaser.Scene {
         GameScene.asteroids.clear(true, true);
         GameScene.trashGroup.clear(true, true);
         GameScene.powerUps.clear(true, true);
+        GameScene.flagGroup.clear(true, true);
 
         this.registry.set("score", this.score);
 
@@ -304,6 +312,8 @@ export default class GameScene extends Phaser.Scene {
         asteroid.destroy();
       }
     });
+
+    // Flag/target management - handled by MinimapOverlay
   }
 
   private flashObject(item: any, frequency: number){
@@ -630,7 +640,58 @@ pickUpTrash(ship: any, trash: any) {
     );
 
     this.physics.moveTo(trash, targetPoint.x, targetPoint.y, this.trashSpeed);
+  }
 
-    this.scene.launch("MinimapOverlay");
+  private spawnFlag() {
+    if (this.flagSpawned) return;
+    
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
+    const minDistanceFromShip = 200;
+    const maxDistanceFromShip = 400;
+    const padding = 100;
+
+    const shipX = GameScene.ship.x;
+    const shipY = GameScene.ship.y;
+    
+    const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+    const distance = Phaser.Math.FloatBetween(minDistanceFromShip, maxDistanceFromShip);
+    
+    let flagX = shipX + Math.cos(angle) * distance;
+    let flagY = shipY + Math.sin(angle) * distance;
+    
+    flagX = Phaser.Math.Clamp(flagX, padding, screenWidth - padding);
+    flagY = Phaser.Math.Clamp(flagY, padding, screenHeight - padding);
+
+    const flag = GameScene.flagGroup.create(flagX, flagY, 'flag').setScale(0.2);
+    flag.body.setSize(flag.width, flag.height);
+    flag.setDepth(1500);
+    
+    this.tweens.add({
+      targets: flag,
+      scale: { from: 0.2, to: 0.3 },
+      duration: 1000,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut'
+    });
+    
+    this.flagSpawned = true;
+  }
+
+  private reachFlag(ship: any, flag: any) {
+    if (!ship.active || !flag.active) return;
+
+    if (flag.body) flag.destroy();
+
+    const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+    if (soundEffectsEnabled) {
+        this.sound.play('pickup', { volume: 0.8 });
+    }
+
+    this.updateScore(1000);
+    
+    this.flagSpawned = false;
+    this.time.delayedCall(3000, () => this.spawnFlag());
   }
 }

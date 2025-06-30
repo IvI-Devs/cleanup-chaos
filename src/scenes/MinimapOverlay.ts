@@ -20,14 +20,15 @@ export default class Minimap extends Phaser.Scene {
     private cameraHeight: number;
     private currentLevel: number = 0;
 
-    private targetPoint: Phaser.Geom.Point | null = null;
     private pathGraphics: Phaser.GameObjects.Graphics;
     private isTargetGenerated: boolean = false;
     private readonly minDistance: number = 300;
     private readonly minMargin: number = 100;
     private readonly navigationForce: number = -10;
-    private readonly targetReachedThreshold: number = 50;
+    private readonly targetReachedThreshold: number = 80;
+    private targetPoint: Phaser.Geom.Point | null = null;
     private targetMarker: Phaser.GameObjects.Image | null = null;
+    private minimapFlagMarker: Phaser.GameObjects.Image | null = null;
 
     create(){
       const camera = this.cameras.main;
@@ -55,74 +56,121 @@ export default class Minimap extends Phaser.Scene {
       if(this.isTargetGenerated || !GameScene.ship) return;
       const worldBounds = this.physics.world.bounds;
       if(this.targetMarker){ this.targetMarker.destroy(); this.targetMarker = null; }
+      
+      const gameScene = this.scene.get("GameScene") as GameScene;
+      
+      // Generate a target point that's visible but not too close to the ship
+      const shipX = GameScene.ship.x;
+      const shipY = GameScene.ship.y;
+      const minDistance = 200;
+      const maxDistance = 400;
+      
       let attempts = 0;
-      const maxAttempts = 100;
-      let validPointFound = false;
-
-      while (!validPointFound && attempts < maxAttempts) {
-        this.targetPoint = new Phaser.Geom.Point(
-          Phaser.Math.Between(this.minMargin, worldBounds.width - this.minMargin),
-          Phaser.Math.Between(this.minMargin, worldBounds.height - this.minMargin)
-        );
-
-        const distance = Phaser.Math.Distance.Between(
-          GameScene.ship.x,
-          GameScene.ship.y,
-          this.targetPoint.x,
-          this.targetPoint.y
-        );
-
-        if(distance >= this.minDistance) validPointFound = true;
+      let flagX, flagY, clampedX, clampedY;
+      
+      do {
+        // Random angle and distance
+        const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
+        const distance = Phaser.Math.FloatBetween(minDistance, maxDistance);
+        
+        flagX = shipX + Math.cos(angle) * distance;
+        flagY = shipY + Math.sin(angle) * distance;
+        
+        // Ensure the flag is within world bounds with some padding
+        const padding = 100;
+        clampedX = Phaser.Math.Clamp(flagX, worldBounds.x + padding, worldBounds.x + worldBounds.width - padding);
+        clampedY = Phaser.Math.Clamp(flagY, worldBounds.y + padding, worldBounds.y + worldBounds.height - padding);
+        
         attempts++;
-      }
+      } while (this.isInMinimapArea(clampedX, clampedY) && attempts < 20);
+      
+      this.targetPoint = new Phaser.Geom.Point(clampedX, clampedY);
 
-      if (!validPointFound) {
-        const angle = Phaser.Math.Between(0, 360);
-        this.targetPoint = new Phaser.Geom.Point(
-          GameScene.ship.x + Math.cos(Phaser.Math.DegToRad(angle)) * this.minDistance,
-          GameScene.ship.y + Math.sin(Phaser.Math.DegToRad(angle)) * this.minDistance
-        );
-      }
+      this.targetMarker = gameScene.add.image(this.targetPoint.x, this.targetPoint.y, 'flag')
+        .setDepth(2000)
+        .setScale(0.05)
+        .setAlpha(1);
 
-        this.targetMarker = this.add.image(this.targetPoint.x, this.targetPoint.y, 'target-marker')
-        .setDepth(999)
-        .setScale(0.5)
-        .setAlpha(0.8);
-
-        this.tweens.add({
-            targets: this.targetMarker,
-            scale: 0.6,
-            duration: 1000,
-            yoyo: true,
-            repeat: -1
-        });
+      gameScene.tweens.add({
+          targets: this.targetMarker,
+          scale: { from: 0.05, to: 0.08 },
+          duration: 1000,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.easeInOut'
+      });
 
       this.isTargetGenerated = true;
     }
 
-    private addScoreToMainScene(points: number){
-      const introScene = this.scene.get("GameScene") as GameScene;
-      if (introScene && introScene.updateScore) {
-        introScene.updateScore(points);
+    private addScoreToMainScene(points: number, x?: number, y?: number){
+      const gameScene = this.scene.get("GameScene") as GameScene;
+      if (gameScene && gameScene.updateScore) {
+        // For flag points, bypass the double points multiplier
+        // Update score directly without applying power-up multipliers
+        gameScene.score += points;
+        gameScene['_scoreText'].setText(`Score: ${gameScene.score}`);
+        gameScene['checkLevelCompletion']();
 
-        const scorePopup = this.add.text(
-          this.scale.width / 2,
-          this.scale.height / 2,
+        // Use provided coordinates or default to center of screen
+        const popupX = x !== undefined ? x : this.scale.width / 2;
+        const popupY = y !== undefined ? y : this.scale.height / 2;
+
+        const scorePopup = gameScene.add.text(
+          popupX,
+          popupY,
           `+${points}`,
-          { font: '48px', color: '#00ff00', fontFamily: GameInfo.default.font }
+          {
+            fontSize: `${Math.min(this.scale.width / 25, 48)}px`,
+            fontFamily: GameInfo.default.font,
+            color: '#ffff00',
+            stroke: '#000000',
+            strokeThickness: 2
+          }
         )
         .setOrigin(0.5)
         .setDepth(1001);
 
-        this.tweens.add({
+        gameScene.tweens.add({
           targets: scorePopup,
-          y: this.scale.height / 2 - 100,
+          y: popupY - 100,
           alpha: 0,
           duration: 1000,
           onComplete: () => scorePopup.destroy()
         });
       }
     }
+
+    private checkTargetReached(){
+      if (!this.targetPoint || !GameScene.ship) return;
+      
+      const distance = Phaser.Math.Distance.Between(
+        GameScene.ship.x,
+        GameScene.ship.y,
+        this.targetPoint.x,
+        this.targetPoint.y
+      );
+
+      if (distance < this.targetReachedThreshold) {
+        // Play pickup sound
+        const gameScene = this.scene.get("GameScene") as GameScene;
+        const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
+        if (soundEffectsEnabled && gameScene) {
+          gameScene.sound.play('pickup', { volume: 0.8 });
+        }
+        
+        this.addScoreToMainScene(1000, this.targetPoint.x, this.targetPoint.y);
+        this.resetTarget();
+        
+        // Spawn new target after delay to avoid duplicates
+        setTimeout(() => {
+          if (!this.isTargetGenerated && localStorage.getItem('gameMode') === 'arcade') {
+            this.generateRandomTarget();
+          }
+        }, 1000);
+      }
+    }
+
 
     private navigateToTarget(){
       if (!this.targetPoint || !GameScene.ship?.body) return;
@@ -136,7 +184,7 @@ export default class Minimap extends Phaser.Scene {
 
       if (distance < this.targetReachedThreshold) {
         body.setAcceleration(0, 0);
-        this.addScoreToMainScene(1000);
+        // Target reached handling is now done in GameScene
         this.resetTarget();
         return;
       }
@@ -182,7 +230,7 @@ export default class Minimap extends Phaser.Scene {
   }
 
   private drawPath() {
-    if (this.currentLevel !== 0 || !this.targetPoint || !GameScene.ship) return;
+    if (!this.targetPoint || !GameScene.ship) return;
 
     const worldBounds = this.physics.world.bounds;
     const scale = this.minimapSize / Math.max(worldBounds.width, worldBounds.height);
@@ -198,15 +246,21 @@ export default class Minimap extends Phaser.Scene {
     const targetMinimapY = centerY - offsetY + (this.targetPoint.y * scale);
 
     this.pathGraphics.clear()
-      .lineStyle(4, 0x33ff33, 0.9)
+      .lineStyle(3, 0x00ff00, 0.8)
       .beginPath()
       .moveTo(playerMinimapX, playerMinimapY)
       .lineTo(targetMinimapX, targetMinimapY)
-      .strokePath()
-      .fillStyle(0x33ff33, 0.9)
-      .fillCircle(targetMinimapX, targetMinimapY, 6)
-      .lineStyle(2, 0xffffff, 1)
-      .strokeCircle(targetMinimapX, targetMinimapY, 6);
+      .strokePath();
+      
+    // Create or update minimap flag marker
+    if (!this.minimapFlagMarker) {
+      this.minimapFlagMarker = this.add.image(targetMinimapX, targetMinimapY, 'flag')
+        .setDepth(1003)
+        .setScale(0.03)
+        .setScrollFactor(0);
+    } else {
+      this.minimapFlagMarker.setPosition(targetMinimapX, targetMinimapY);
+    }
 }
 
     private drawPlayerIndicator() {
@@ -247,15 +301,19 @@ export default class Minimap extends Phaser.Scene {
     update(){
       const sceneActive = this.scene.get("GameScene").scene.isActive();
       [this.minimapBg, this.minimap, this.minimapPlayerIndicator, this.pathGraphics].forEach(obj => obj.setVisible(sceneActive));
+      
+      // Hide minimap flag marker when game is paused
+      if (this.minimapFlagMarker) {
+        this.minimapFlagMarker.setVisible(sceneActive);
+      }
 
       if (!sceneActive || !GameScene.ship || !GameScene.asteroids || !GameScene.trashGroup || !GameScene.powerUps) {
-        if(!sceneActive) this.isTargetGenerated = false;
         return;
       }
 
       if(localStorage.getItem('gameMode') === 'arcade'){
         if(!this.isTargetGenerated) this.generateRandomTarget();
-        if(this.currentLevel === 0) this.navigateToTarget();
+        this.checkTargetReached();
       }
 
       this.minimap.clear().lineStyle(2, 0xffffff, 1)
@@ -277,6 +335,30 @@ export default class Minimap extends Phaser.Scene {
     public resetTarget() {
       this.isTargetGenerated = false;
       this.targetPoint = null;
+      if(this.targetMarker) {
+        this.targetMarker.destroy();
+        this.targetMarker = null;
+      }
+      if(this.minimapFlagMarker) {
+        this.minimapFlagMarker.destroy();
+        this.minimapFlagMarker = null;
+      }
       if(GameScene.ship?.body) (GameScene.ship.body as Phaser.Physics.Arcade.Body).setAcceleration(0, 0);
+    }
+
+    private isInMinimapArea(x: number, y: number): boolean {
+      // Calculate minimap area bounds
+      const minimapLeft = this.scale.width - this.minimapPadding - this.minimapSize;
+      const minimapRight = this.scale.width - this.minimapPadding;
+      const minimapTop = this.minimapPadding;
+      const minimapBottom = this.minimapPadding + this.minimapSize;
+      
+      // Add some extra margin around the minimap
+      const margin = 50;
+      
+      return x >= minimapLeft - margin && 
+             x <= minimapRight + margin && 
+             y >= minimapTop - margin && 
+             y <= minimapBottom + margin;
     }
 }
