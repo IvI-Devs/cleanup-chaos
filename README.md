@@ -20,7 +20,7 @@
 
 Guardians of the Void puts you in control of a space cleanup vessel tasked with collecting debris while navigating through dangerous asteroid fields. The game combines action-packed gameplay with environmental themes, challenging players to clean up space while surviving increasingly difficult obstacles.
 
-### How to Play
+### 🕹️ How to Play
 
 • **Movement**: Use WASD keys or arrow keys to navigate your ship  
 • **Objective**: Collect space debris (trash) to earn points  
@@ -33,7 +33,7 @@ Guardians of the Void puts you in control of a space cleanup vessel tasked with 
 • **Pause**: Press ESC to pause the game  
 • **Lives**: You have 3 hearts - lose them all and it's game over!  
 
-### Game Modes
+### 🎯 Game Modes
 
 • **Story Mode**: Progress through carefully designed levels with specific objectives  
 • **Arcade Mode**: Endless gameplay with increasing difficulty for high score challenges  
@@ -48,12 +48,12 @@ Guardians of the Void puts you in control of a space cleanup vessel tasked with 
 
 ## 🛠️ Development
 
-### Prerequisites
+### 📋 Prerequisites
 
 - [Node.js](https://nodejs.org/) (>= 12)
 - [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
 
-### Installation
+### 🔧 Installation
 
 1. Clone the repository:
 ```bash
@@ -86,7 +86,7 @@ npm run serve
 npm run check-deployment
 ```
 
-### Project Structure
+### 📁 Project Structure
 
 ```
 cleanup-chaos/
@@ -104,18 +104,18 @@ cleanup-chaos/
 
 ## 🎯 Game Features
 
-### Visual Elements
+### 🎨 Visual Elements
 - **Dynamic Backgrounds**: Multiple space environments
 - **Particle Effects**: Smooth animations and visual feedback
 - **Responsive UI**: Scales perfectly on any screen size
 - **Ship Damage States**: Visual representation of ship health
 
-### Audio System
+### 🎵 Audio System
 - **Background Music**: Immersive space soundtracks
 - **Sound Effects**: Detailed audio feedback for all actions
 - **Audio Controls**: Toggle music and sound effects independently
 
-### Progression System
+### 📈 Progression System
 - **Level Unlock**: Complete levels to unlock new challenges
 - **High Score Tracking**: Local storage of best performances
 - **Achievement System**: Track your progress through the game
