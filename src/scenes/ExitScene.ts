@@ -9,14 +9,14 @@ export default class ExitScene extends Phaser.Scene {
 
   init(){
     this._text = this.add
-      .text(this.game.canvas.width / 2, 200, "")
+      .text(this.scale.width / 2, this.scale.height * 0.25, "")
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 0.5)
       .setColor('000')
       .setWordWrapWidth(1000)
       .setAlign(GameInfo.gameTitle.align)
-      .setFontSize(50)
+      .setFontSize(Math.min(this.scale.width / 25, 50))
       .setFontFamily(GameInfo.gameTitle.font);
   }
 
@@ -37,9 +37,10 @@ export default class ExitScene extends Phaser.Scene {
       this._music.play();
     }
 
-    this._hole = this.add.image(this.game.canvas.width / 2, this.game.canvas.height / 2 + 100, "hole-with-text")
+    this._hole = this.add.image(this.scale.width / 2, this.scale.height / 2 + this.scale.height * 0.1, "hole-with-text")
       .setOrigin(0.5, 0.5)
       .setDepth(1000)
+      .setScale(Math.min(this.scale.width / 800, this.scale.height / 600))
       .setInteractive()
       .on('pointerdown', () => { 
         if (localStorage.getItem('soundEffectsEnabled') === 'true') {

@@ -55,7 +55,7 @@ export default class GameScene extends Phaser.Scene {
     this.cursor = this.input.keyboard.createCursorKeys();
     this._background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, `${GameInfo.levels[this.currentLevel].background ?? 'bg-01'}-wider`).setOrigin(0, 0);
     this._scoreText = this.add.text(50, 50, `Score: ${this.score}`)
-      .setFontSize(35).setFontFamily(GameInfo.default.font).setDepth(1000);
+      .setFontSize(Math.min(this.scale.width / 35, 35)).setFontFamily(GameInfo.default.font).setDepth(1000);
 
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
     if (localStorage.getItem('musicEnabled') !== 'false' && music && !music.isPlaying) music.play();
@@ -131,7 +131,7 @@ export default class GameScene extends Phaser.Scene {
   private showLevelCompleteMessage() {
     const style = {
       fontFamily: GameInfo.default.font,
-      fontSize: '48px',
+      fontSize: `${Math.min(this.scale.width / 25, 48)}px`,
       color: '#ffffff',
       stroke: '#000000',
       strokeThickness: 4,
@@ -158,7 +158,7 @@ export default class GameScene extends Phaser.Scene {
   private showVictoryMessage() {
     const style = {
       fontFamily: GameInfo.default.font,
-      fontSize: '48px',
+      fontSize: `${Math.min(this.scale.width / 25, 48)}px`,
       color: '#ffff00',
       stroke: '#000000',
       strokeThickness: 4,
@@ -204,7 +204,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   private createShip(): void {
-    GameScene.ship = this.physics.add.sprite(this.game.canvas.width / 2, this.game.canvas.height / 2, "ship-base").setScale(0.5);
+    GameScene.ship = this.physics.add.sprite(this.scale.width / 2, this.scale.height / 2, "ship-base").setScale(0.5);
     const body = GameScene.ship.body as Phaser.Physics.Arcade.Body;
     body.setSize(GameScene.ship.width, GameScene.ship.height);
     body.setCollideWorldBounds(true);
@@ -299,8 +299,8 @@ export default class GameScene extends Phaser.Scene {
     body.setOffset(0, 0);
 
     GameScene.asteroids.getChildren().forEach((asteroid: any) => {
-      if(asteroid.x < -100 || asteroid.x > this.game.canvas.width + 100 ||
-        asteroid.y < -100 || asteroid.y > this.game.canvas.height + 100){
+      if(asteroid.x < -100 || asteroid.x > this.scale.width + 100 ||
+        asteroid.y < -100 || asteroid.y > this.scale.height + 100){
         asteroid.destroy();
       }
     });
@@ -410,8 +410,8 @@ pickUpTrash(ship: any, trash: any) {
   }
 
   private spawnPowerUps(){
-    const screenWidth = this.game.canvas.width;
-    const screenHeight = this.game.canvas.height;
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
     const padding = 50;
 
     let x: number, y: number;
@@ -504,8 +504,8 @@ pickUpTrash(ship: any, trash: any) {
   }
 
   private spawnAsteroid(){
-    const screenWidth = this.game.canvas.width;
-    const screenHeight = this.game.canvas.height;
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
     const minDistanceFromShip = 300;
     const padding = 50;
 
@@ -563,8 +563,8 @@ pickUpTrash(ship: any, trash: any) {
   }
 
   private spawnTrash() {
-    const screenWidth = this.game.canvas.width;
-    const screenHeight = this.game.canvas.height;
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
     const minDistanceFromShip = 300;
     const padding = 50;
 

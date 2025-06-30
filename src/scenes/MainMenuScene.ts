@@ -25,14 +25,14 @@ export default class MainMenuScene extends Phaser.Scene {
 
   init(){
     this._gameTitle = this.add
-      .text(this.game.canvas.width / 2, 250, "")
+      .text(this.scale.width / 2, this.scale.height * 0.3, "")
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor('#fff')
       .setWordWrapWidth(1000)
       .setAlign(GameInfo.gameTitle.align)
-      .setFontSize(100)
+      .setFontSize(Math.min(this.scale.width / 15, 100))
       .setFontFamily(GameInfo.gameTitle.font);
 
     if(localStorage.getItem('level') === null) localStorage.setItem('level', '4');
@@ -43,7 +43,7 @@ export default class MainMenuScene extends Phaser.Scene {
     
     if (localStorage.getItem('soundEffectsEnabled') === null) localStorage.setItem('soundEffectsEnabled', 'true');
 
-    this._arcadeMode = this.add.text(this.game.canvas.width - 175, this.game.canvas.height - 50, "")
+    this._arcadeMode = this.add.text(this.scale.width - 175, this.scale.height - 50, "")
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor('#0099DB')
@@ -61,6 +61,12 @@ export default class MainMenuScene extends Phaser.Scene {
 
   create(){
     this._background = this.add.image(0, 0, "bg-04").setOrigin(0, 0);
+    // Scale background to cover entire screen
+    const scaleX = this.scale.width / this._background.width;
+    const scaleY = this.scale.height / this._background.height;
+    const scale = Math.max(scaleX, scaleY);
+    this._background.setScale(scale);
+    
     if(localStorage.getItem('score') != null) this._arcadeMode.setText("Arcade Mode");
     this._gameTitle.setText(GameInfo.gameTitle.text);
 
@@ -82,11 +88,11 @@ export default class MainMenuScene extends Phaser.Scene {
   createMenu() {
     for (let i = 0; i < GameInfo.menu.items.length; i++) {
         const item = GameInfo.menu.items[i];
-        const x = this.game.canvas.width / 2;
-        const y = 400 + i * 75;
+        const x = this.scale.width / 2;
+        const y = this.scale.height * 0.5 + i * 75;
 
         let menuItem = this.add.text(x, y, item, {
-            fontSize: GameInfo.menu.fontSize,
+            fontSize: `${Math.min(this.scale.width / 25, GameInfo.menu.fontSize)}px`,
             fontFamily: GameInfo.menu.font,
             color: '#fff'
         })

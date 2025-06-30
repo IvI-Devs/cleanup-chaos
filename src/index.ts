@@ -19,10 +19,10 @@ window.addEventListener("load", () => {
     backgroundColor: GameData.globals.bgColor,
     parent: "my-game",
     scale: {
-      mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: GameData.globals.gameWidth,
-      height: GameData.globals.gameHeight,
+      width: window.innerWidth,
+      height: window.innerHeight,
     },
     scene: [
       MainMenuScene,
@@ -51,4 +51,9 @@ window.addEventListener("load", () => {
   };
 
   const game = new Phaser.Game(config); // game initializing according to configs
+  
+  // Handle window resize
+  window.addEventListener('resize', () => {
+    game.scale.resize(window.innerWidth, window.innerHeight);
+  });
 });

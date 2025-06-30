@@ -1,7 +1,7 @@
 export let GameData: gameData = {
   globals: {
-    gameWidth: 1280,
-    gameHeight: 800,
+    gameWidth: window.innerWidth || 1920,
+    gameHeight: window.innerHeight || 1080,
     bgColor: "#ffffff",
     debug: false
   },
@@ -9,14 +9,14 @@ export let GameData: gameData = {
   preloader: {
     bgColor: "ffffff",
     image: "logo",
-    imageX: 1280 / 2,
-    imageY: 800 / 2,
+    imageX: (window.innerWidth || 1920) / 2,
+    imageY: (window.innerHeight || 1080) / 2,
     loadingText: "Loading...",
     loadingTextFont: "Pixelify Sans",
     loadingTextComplete: ">> Press a button to start <<",
-    loadingTextY: 700,
+    loadingTextY: (window.innerHeight || 1080) - 100,
     loadingBarColor: 0xffffff,
-    loadingBarY: 630,
+    loadingBarY: (window.innerHeight || 1080) - 150,
   },
 
   spritesheets: [

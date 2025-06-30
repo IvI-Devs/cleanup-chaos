@@ -18,6 +18,11 @@ export default class GameOverScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#000');
     this.score = this.registry.get("score") || 0;
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    // Scale background to cover entire screen
+    const scaleX = this.scale.width / this._background.width;
+    const scaleY = this.scale.height / this._background.height;
+    const scale = Math.max(scaleX, scaleY);
+    this._background.setScale(scale);
 
     const music = this.registry.get('backgroundMusic') as Phaser.Sound.BaseSound;
     if (music && music.isPlaying) {
@@ -31,38 +36,38 @@ export default class GameOverScene extends Phaser.Scene {
 
     if(this.score > parseInt(localStorage.getItem('score'))) localStorage.setItem('score', this.score.toString());
 
-    this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
+    this._backToMenu = this.add.text(75, this.scale.height * 0.08, "Menu").setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor("#fff")
       .setWordWrapWidth(1000)
-      .setFontSize(35)
+      .setFontSize(Math.min(this.scale.width / 35, 35))
       .setFontFamily(GameInfo.default.font)
       .setInteractive()
       .on('pointerdown', () => { this.goToMenu() });
 
     this._gameOverText = this.add
-      .text(this.game.canvas.width / 2, this.game.canvas.height / 2 - 50, "Game Over")
+      .text(this.scale.width / 2, this.scale.height / 2 - this.scale.height * 0.05, "Game Over")
       .setAlpha(1)
       .setOrigin(0.5, 1)
       .setColor('#fff')
-      .setFontSize(100)
+      .setFontSize(Math.min(this.scale.width / 15, 100))
       .setFontFamily(GameInfo.default.font);
 
     this._subtitle = this.add
-      .text(this.game.canvas.width - 50, this.game.canvas.height - 50, "")
+      .text(this.scale.width - 50, this.scale.height - 50, "")
       .setAlpha(1)
       .setOrigin(1, 1)
       .setColor('#0099DB')
-      .setFontSize(40)
+      .setFontSize(Math.min(this.scale.width / 30, 40))
       .setFontFamily(GameInfo.default.font);
 
     this._playAgainButton = this.add
-      .text(this.game.canvas.width / 2, this.game.canvas.height / 2 + 50, "Play Again")
+      .text(this.scale.width / 2, this.scale.height / 2 + this.scale.height * 0.08, "Play Again")
       .setAlpha(1)
       .setOrigin(0.5, 1)
       .setColor('#fff')
-      .setFontSize(30)
+      .setFontSize(Math.min(this.scale.width / 40, 30))
       .setFontFamily(GameInfo.default.font)
       .setInteractive().on('pointerdown', () => this.playAgain() );
 

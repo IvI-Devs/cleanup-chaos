@@ -21,15 +21,21 @@ export default class Preloader extends Phaser.Scene {
 
   init(){
     this._background = this.add.image(0, 0, "bootscreen-bg").setOrigin(0, 0);
+    // Scale background to cover entire screen
+    const scaleX = this.scale.width / this._background.width;
+    const scaleY = this.scale.height / this._background.height;
+    const scale = Math.max(scaleX, scaleY);
+    this._background.setScale(scale);
+    
     this._gameTitle = this.add
-      .text(this.game.canvas.width / 2, 250, GameInfo.gameTitle.text)
+      .text(this.scale.width / 2, this.scale.height * 0.3, GameInfo.gameTitle.text)
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor('#fff')
       .setWordWrapWidth(1000)
       .setAlign(GameInfo.gameTitle.align)
-      .setFontSize(100)
+      .setFontSize(Math.min(this.scale.width / 15, 100))
       .setFontFamily(GameInfo.gameTitle.font);
 
     GameData.sounds.forEach((sound) => {
@@ -38,20 +44,20 @@ export default class Preloader extends Phaser.Scene {
 
     if(localStorage.getItem('score') === null) localStorage.setItem('score', '0');
     else{
-      this._subtitle = this.add.text(this.game.canvas.width / 2, 300, "")
+      this._subtitle = this.add.text(this.scale.width / 2, this.scale.height * 0.35, "")
         .setDepth(1001)
         .setOrigin(0.5, 1)
         .setColor('#0099DB')
-        .setFontSize(40)
+        .setFontSize(Math.min(this.scale.width / 30, 40))
         .setFontFamily(GameInfo.default.font);
     }
 
-    this._backToMenu = this.add.text(75, 70, "Menu").setAlpha(1)
+    this._backToMenu = this.add.text(75, this.scale.height * 0.08, "Menu").setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor("#fff")
       .setWordWrapWidth(1000)
-      .setFontSize(35)
+      .setFontSize(Math.min(this.scale.width / 35, 35))
       .setFontFamily(GameInfo.default.font)
       .setInteractive()
       .on('pointerdown', () => { this.goToMenu() });
@@ -63,12 +69,12 @@ export default class Preloader extends Phaser.Scene {
     });
 
     this._loading = this.add
-      .text(this.game.canvas.width / 2, GameData.preloader.loadingTextY, "")
+      .text(this.scale.width / 2, this.scale.height * 0.85, "")
       .setAlpha(1)
       .setDepth(1001)
       .setOrigin(0.5, 1)
       .setColor('#fff')
-      .setFontSize(40)
+      .setFontSize(Math.min(this.scale.width / 30, 40))
       .setFontFamily(GameData.preloader.loadingTextFont);
 
     if(localStorage.getItem('gameMode') === 'arcade'){
@@ -102,7 +108,7 @@ export default class Preloader extends Phaser.Scene {
     // this.load.on("progress", (value: number) => {
     //   this._progress.clear();
     //   this._progress.fillStyle(GameData.preloader.loadingBarColor, 1);
-    //   this._progress.fillRect(0, GameData.preloader.loadingBarY, GameData.globals.gameWidth * value, 70);
+    //   this._progress.fillRect(0, this.scale.height * 0.8, this.scale.width * value, 70);
     //   this._loading.setText(GameData.preloader.loadingText + " " + Math.round(value * 100) + "%");
     // });
 

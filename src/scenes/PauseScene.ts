@@ -25,8 +25,8 @@ export default class PauseScene extends Phaser.Scene {
     }
 
     // Menu title
-    this.add.text(width / 2, height / 2 - 150, "Pause Menu", {
-      fontSize: "48px",
+    this.add.text(width / 2, height / 2 - height * 0.15, "Pause Menu", {
+      fontSize: `${Math.min(width / 25, 48)}px`,
       fontFamily: GameInfo.default.font,
       color: "#ffffff",
     }).setOrigin(0.5);
@@ -34,8 +34,8 @@ export default class PauseScene extends Phaser.Scene {
     // Menu entries
     const menuItems = ["Resume", "Restart", "Exit"];
     menuItems.forEach((item, index) => {
-      const menuItem = this.add.text(width / 2, height / 2 - 50 + index * 50, item, {
-        fontSize: "32px",
+      const menuItem = this.add.text(width / 2, height / 2 - height * 0.05 + index * Math.min(height / 15, 50), item, {
+        fontSize: `${Math.min(width / 35, 32)}px`,
         fontFamily: GameInfo.default.font,
         color: "#ffffff",
       })
