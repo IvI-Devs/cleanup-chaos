@@ -103,14 +103,7 @@ export default class LevelSelectScene extends Phaser.Scene {
           this.play(index); 
         });
 
-        if (isLevelCompleted) {
-          const completedIndicator = this.add.text(x + 130, y + 20, '✓', {
-            fontSize: `${Math.min(this.scale.width / 40, 30)}px`,
-            color: '#00ff00',
-            fontFamily: GameInfo.default.font
-          }).setOrigin(0, 0);
-          this._levelsGroup.add(completedIndicator);
-        }
+        // Removed completed level indicator as requested
       }
 
       this._levelsGroup.add(rectangle);

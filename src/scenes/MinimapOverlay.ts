@@ -35,6 +35,12 @@ export default class Minimap extends Phaser.Scene {
       this.cameraWidth = camera.width;
       this.cameraHeight = camera.height;
 
+      // Initialize target generation state for arcade mode
+      this.isTargetGenerated = false;
+      this.targetPoint = null;
+      this.targetMarker = null;
+      this.minimapFlagMarker = null;
+
       this.minimapBg = this.add.rectangle(
         this.scale.width - this.minimapPadding - this.minimapSize / 2,
         this.minimapPadding + this.minimapSize / 2,
@@ -62,8 +68,8 @@ export default class Minimap extends Phaser.Scene {
       // Generate a target point that's visible but not too close to the ship
       const shipX = GameScene.ship.x;
       const shipY = GameScene.ship.y;
-      const minDistance = 200;
-      const maxDistance = 400;
+      const minDistance = 400; // Increased from 200 to avoid spawning too close to previous point
+      const maxDistance = 600; // Increased proportionally
       
       let attempts = 0;
       let flagX, flagY, clampedX, clampedY;

@@ -1,8 +1,12 @@
+<div align="center">
+
 # Guardians of the Void: Cleanup Chaos
 
 ![](https://img.shields.io/github/last-commit/lvl-Devs/cleanup-chaos?&style=for-the-badge&color=8272a4&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/stars/lvl-Devs/cleanup-chaos?style=for-the-badge&logo=polestar&color=FFB1C8&logoColor=D9E0EE&labelColor=292324)
 ![](https://img.shields.io/github/repo-size/lvl-Devs/cleanup-chaos?color=CAC992&label=SIZE&logo=files&style=for-the-badge&logoColor=D9E0EE&labelColor=292324)
+
+</div>
 
 **Guardians of the Void: Cleanup Chaos** is an exciting 2D space game built with Phaser 3 and TypeScript. Navigate through asteroid fields, collect space debris, and clean up the cosmos while avoiding dangerous obstacles. Features both story-driven levels and endless arcade mode!
 
@@ -122,9 +126,9 @@ cleanup-chaos/
 
 ## 👥 Credits
 
-- **Design**: [P4K0](https://github.com/Pako3549), [pH@ntom](https://github.com/antodeev), [A.P.](https://youtu.be/xvFZjo5PgG0?si=ZXlZYL7QkCGWbESW), [Z3n0x](https://github.com/Zenox19)
-- **Development**: [pH@ntom](https://github.com/antodeev), [p1x3lc4t](https://github.com/gkkconan), [P4K0](https://github.com/Pako3549)
-- **Music**: [P4K0](https://github.com/Pako3549), [T1g3r](https://github.com/Luigirau)
+- **Design**: [Pako3549](https://github.com/Pako3549), [pH@ntom](https://github.com/antodeev), [A.P.](https://youtu.be/xvFZjo5PgG0?si=ZXlZYL7QkCGWbESW), [Z3n0x](https://github.com/Zenox19)
+- **Development**: [pH@ntom](https://github.com/antodeev), [gkkconan](https://github.com/gkkconan), [Pako3549](https://github.com/Pako3549)
+- **Music**: [Pako3549](https://github.com/Pako3549), [T1g3r](https://github.com/Luigirau)
 
 ## 📄 License
 

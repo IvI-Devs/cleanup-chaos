@@ -664,8 +664,8 @@ pickUpTrash(ship: any, trash: any) {
     
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
-    const minDistanceFromShip = 200;
-    const maxDistanceFromShip = 400;
+    const minDistanceFromShip = 400; // Increased from 200 to avoid spawning too close to previous point
+    const maxDistanceFromShip = 600; // Increased proportionally
     const padding = 100;
 
     const shipX = GameScene.ship.x;
