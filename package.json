@@ -8,6 +8,7 @@
     "build": "rimraf dist && webpack --config webpack/webpack.prod.js",
     "bundle": "npm run build",
     "serve": "serve dist",
+    "deploy": "./deploy.sh",
     "format": "prettier --check src/scripts/**",
     "format:write": "prettier --write src/scripts/**"
   },

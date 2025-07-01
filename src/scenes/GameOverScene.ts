@@ -9,9 +9,15 @@ export default class GameOverScene extends Phaser.Scene {
   private _backToMenu: Phaser.GameObjects.Text;
   private _playAgainRectangle: Phaser.GameObjects.Image;
   public score: number;
+  private isVictory: boolean = false;
 
   preload(){
     this.load.audio("death", "assets/sounds/explosion.wav");
+    this.load.audio("victory", "assets/sounds/victory.mp3");
+  }
+
+  init(data: any) {
+    this.isVictory = data && data.victory === true;
   }
 
   create(){
@@ -31,7 +37,11 @@ export default class GameOverScene extends Phaser.Scene {
 
     const soundEffectsEnabled = localStorage.getItem('soundEffectsEnabled') === 'true';
     if (soundEffectsEnabled) {
-        this.sound.play('death', { volume: 0.5 });
+        if (this.isVictory) {
+            this.sound.play('victory', { volume: 0.5 });
+        } else {
+            this.sound.play('death', { volume: 0.5 });
+        }
     }
 
     if(this.score > parseInt(localStorage.getItem('score'))) localStorage.setItem('score', this.score.toString());
@@ -46,13 +56,29 @@ export default class GameOverScene extends Phaser.Scene {
       .setInteractive()
       .on('pointerdown', () => { this.goToMenu() });
 
+    const mainText = this.isVictory ? "Victory!" : "Game Over";
+    const mainTextColor = this.isVictory ? '#ffff00' : '#fff';
+    
     this._gameOverText = this.add
-      .text(this.scale.width / 2, this.scale.height / 2 - this.scale.height * 0.05, "Game Over")
+      .text(this.scale.width / 2, this.scale.height / 2 - this.scale.height * 0.05, mainText)
       .setAlpha(1)
       .setOrigin(0.5, 1)
-      .setColor('#fff')
+      .setColor(mainTextColor)
       .setFontSize(Math.min(this.scale.width / 15, 100))
       .setFontFamily(GameInfo.default.font);
+
+    // Add victory animation
+    if (this.isVictory) {
+        this.tweens.add({
+            targets: this._gameOverText,
+            scaleX: { from: 1, to: 1.1 },
+            scaleY: { from: 1, to: 1.1 },
+            duration: 1000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+    }
 
     this._subtitle = this.add
       .text(this.scale.width - 50, this.scale.height - 50, "")
@@ -62,8 +88,10 @@ export default class GameOverScene extends Phaser.Scene {
       .setFontSize(Math.min(this.scale.width / 30, 40))
       .setFontFamily(GameInfo.default.font);
 
+    const buttonText = this.isVictory ? "Play Again" : "Try Again";
+    
     this._playAgainButton = this.add
-      .text(this.scale.width / 2, this.scale.height / 2 + this.scale.height * 0.08, "Play Again")
+      .text(this.scale.width / 2, this.scale.height / 2 + this.scale.height * 0.08, buttonText)
       .setAlpha(1)
       .setOrigin(0.5, 1)
       .setColor('#fff')
@@ -97,13 +125,26 @@ export default class GameOverScene extends Phaser.Scene {
     this.playAgain(); 
   });
 
-    if(localStorage.getItem('gameMode') == 'arcade') this._subtitle.setText(`Your score: ${this.score}`);
-    else this._subtitle.setText(`Level ${parseInt(localStorage.getItem('selectedLevel'))+1}`);
+    if(localStorage.getItem('gameMode') == 'arcade') {
+        this._subtitle.setText(`Your score: ${this.score}`);
+    } else {
+        if (this.isVictory) {
+            this._subtitle.setText(`Final Score: ${this.score}`);
+        } else {
+            this._subtitle.setText(`Level ${parseInt(localStorage.getItem('selectedLevel'))+1}`);
+        }
+    }
   }
 
   private playAgain(){
     this.scene.stop(this);
-    this.scene.start('Preloader');
+    if (this.isVictory) {
+        // After victory, go back to level selection to choose what to play next
+        this.scene.start('LevelSelectScene');
+    } else {
+        // After game over, restart from the preloader to try again
+        this.scene.start('Preloader');
+    }
   }
 
   private goToMenu(){

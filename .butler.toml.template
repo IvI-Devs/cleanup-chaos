@@ -1,0 +1,26 @@
+# Butler configuration for Cleanup Chaos
+# https://itch.io/docs/butler/config.html
+# 
+# IMPORTANT: This file contains sensitive credentials and should not be committed to git
+# Copy this template to .butler.toml and update with your actual credentials
+
+[defaults]
+user = "your-itch-username"  # Replace with your itch.io username
+game = "your-game-name"      # Replace with your game name on itch.io
+
+[channels.html5]
+path = "public"
+description = "Web version (HTML5)"
+
+# Add more channels if needed:
+# [channels.windows]
+# path = "builds/windows"
+# description = "Windows version"
+# 
+# [channels.linux]
+# path = "builds/linux"
+# description = "Linux version"
+# 
+# [channels.mac]
+# path = "builds/mac"
+# description = "macOS version"

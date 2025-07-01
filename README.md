@@ -85,9 +85,56 @@ npm run build
 npm run serve
 ```
 
-6. Check deployment:
+6. Deploy to itch.io:
 ```bash
-npm run check-deployment
+npm run deploy
+```
+
+### 🚀 Deployment
+
+The project is configured to deploy automatically to itch.io using Butler. 
+
+> **⚠️ IMPORTANT**: Deployment is restricted to project administrators only. Regular contributors cannot deploy the game.
+
+#### For Administrators Only:
+
+To set up deployment credentials:
+
+1. Install Butler (if not already installed):
+```bash
+curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+unzip butler.zip && chmod +x butler && sudo mv butler /usr/local/bin/
+```
+
+2. Authenticate with itch.io:
+```bash
+butler login
+```
+
+3. Create your Butler configuration file:
+```bash
+cp .butler.toml.template .butler.toml
+```
+
+4. Edit `.butler.toml` with your actual credentials:
+```toml
+# Butler configuration for Cleanup Chaos
+# https://itch.io/docs/butler/config.html
+
+[defaults]
+user = "your-itch-username"  # Replace with your itch.io username
+game = "your-game-name"      # Replace with your game name on itch.io
+
+[channels.html5]
+path = "public"
+description = "Web version (HTML5)"
+```
+
+5. The deployment scripts will automatically read your credentials from `.butler.toml`
+
+6. Deploy:
+```bash
+npm run deploy
 ```
 
 ### 📁 Project Structure
@@ -102,6 +149,7 @@ cleanup-chaos/
 │   ├── GameInfo.ts      # Game metadata
 │   └── index.ts         # Main game entry point
 ├── dist/                # Built game files
+├── public/              # Production build output (used for deployment)
 ├── webpack/             # Webpack configuration
 └── deployment-check.js  # Build verification script
 ```
@@ -136,7 +184,7 @@ This project is open-source and available under the GPL-3.0 License. See the [LI
 
 ## 🔗 Links
 
-- [Play the Game](https://lvl-devs.itch.io/cleanup-chaos)
+- [Play the Game](https://your-itch-username.itch.io/your-game-name)
 - [Report Issues](https://github.com/lvl-Devs/cleanup-chaos/issues)
 - [Contribute](https://github.com/lvl-Devs/cleanup-chaos/pulls)
 
