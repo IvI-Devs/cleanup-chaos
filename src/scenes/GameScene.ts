@@ -662,25 +662,77 @@ pickUpTrash(ship: any, trash: any) {
   private spawnFlag() {
     if (this.flagSpawned) return;
     
+    // Check if there are already flags in the group
+    if (GameScene.flagGroup && GameScene.flagGroup.children.size > 0) {
+      return; // Don't spawn if flags already exist
+    }
+    
     const screenWidth = this.scale.width;
     const screenHeight = this.scale.height;
-    const minDistanceFromShip = 400; // Increased from 200 to avoid spawning too close to previous point
-    const maxDistanceFromShip = 600; // Increased proportionally
-    const padding = 100;
-
     const shipX = GameScene.ship.x;
     const shipY = GameScene.ship.y;
     
-    const angle = Phaser.Math.FloatBetween(0, Math.PI * 2);
-    const distance = Phaser.Math.FloatBetween(minDistanceFromShip, maxDistanceFromShip);
+    // Define safe zones where the flag can spawn (away from UI and ship)
+    const safeZones = [
+      // Center area
+      { x: screenWidth * 0.4, y: screenHeight * 0.4, width: screenWidth * 0.2, height: screenHeight * 0.2 },
+      // Right side
+      { x: screenWidth * 0.65, y: screenHeight * 0.25, width: screenWidth * 0.3, height: screenHeight * 0.5 },
+      // Bottom area  
+      { x: screenWidth * 0.3, y: screenHeight * 0.7, width: screenWidth * 0.4, height: screenHeight * 0.25 },
+      // Top-right (avoiding minimap)
+      { x: screenWidth * 0.55, y: screenHeight * 0.05, width: screenWidth * 0.25, height: screenHeight * 0.15 }
+    ];
     
-    let flagX = shipX + Math.cos(angle) * distance;
-    let flagY = shipY + Math.sin(angle) * distance;
+    let bestPosition = null;
+    let maxDistance = 0;
     
-    flagX = Phaser.Math.Clamp(flagX, padding, screenWidth - padding);
-    flagY = Phaser.Math.Clamp(flagY, padding, screenHeight - padding);
+    // Try multiple positions in each safe zone and pick the one furthest from ship
+    for (const zone of safeZones) {
+      for (let attempt = 0; attempt < 20; attempt++) {
+        const flagX = Phaser.Math.FloatBetween(zone.x, zone.x + zone.width);
+        const flagY = Phaser.Math.FloatBetween(zone.y, zone.y + zone.height);
+        
+        // Make sure position is within screen bounds
+        if (flagX < 50 || flagX > screenWidth - 50 || flagY < 50 || flagY > screenHeight - 50) {
+          continue;
+        }
+        
+        // Skip if in UI area (top-left)
+        if (flagX < 500 && flagY < 300) {
+          continue;
+        }
+        
+        const distance = Phaser.Math.Distance.Between(shipX, shipY, flagX, flagY);
+        
+        // Only consider positions that are far enough AND farther than previous best
+        if (distance > 600 && distance > maxDistance) {
+          maxDistance = distance;
+          bestPosition = { x: flagX, y: flagY };
+        }
+      }
+    }
+    
+    // Fallback: if no good position found, use guaranteed safe position
+    if (!bestPosition || maxDistance < 500) {
+      bestPosition = {
+        x: screenWidth * 0.8,   // Far right
+        y: screenHeight * 0.6   // Lower area
+      };
+      
+      // Make sure fallback is also far from ship
+      const fallbackDistance = Phaser.Math.Distance.Between(shipX, shipY, bestPosition.x, bestPosition.y);
+      if (fallbackDistance < 500) {
+        // Move to opposite corner
+        bestPosition.x = shipX > screenWidth / 2 ? screenWidth * 0.2 : screenWidth * 0.8;
+        bestPosition.y = shipY > screenHeight / 2 ? screenHeight * 0.2 : screenHeight * 0.8;
+      }
+    }
 
-    const flag = GameScene.flagGroup.create(flagX, flagY, 'flag').setScale(0.2);
+    // Set flagSpawned to true BEFORE creating the flag
+    this.flagSpawned = true;
+
+    const flag = GameScene.flagGroup.create(bestPosition.x, bestPosition.y, 'flag').setScale(0.2);
     flag.body.setSize(flag.width, flag.height);
     flag.setDepth(1500);
     
@@ -692,12 +744,17 @@ pickUpTrash(ship: any, trash: any) {
       repeat: -1,
       ease: 'Sine.easeInOut'
     });
-    
-    this.flagSpawned = true;
   }
 
   private reachFlag(ship: any, flag: any) {
     if (!ship.active || !flag.active) return;
+    
+    // Prevent multiple calls for the same flag
+    if (flag.getData('collected')) return;
+    flag.setData('collected', true);
+
+    // Immediately disable flag spawning to prevent duplicates
+    this.flagSpawned = true;
 
     if (flag.body) flag.destroy();
 
@@ -708,7 +765,13 @@ pickUpTrash(ship: any, trash: any) {
 
     this.updateScore(1000);
     
-    this.flagSpawned = false;
-    this.time.delayedCall(3000, () => this.spawnFlag());
+    // Clear any existing delayed calls to prevent multiple spawns
+    this.time.removeAllEvents();
+    
+    // Reset flagSpawned after a delay and then spawn new flag
+    this.time.delayedCall(3000, () => {
+      this.flagSpawned = false;
+      this.spawnFlag();
+    });
   }
 }
