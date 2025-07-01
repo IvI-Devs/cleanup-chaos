@@ -119,6 +119,8 @@ export default class GameScene extends Phaser.Scene {
 
         this.registry.set("score", this.score);
 
+        this.unlockNextLevel();
+
         const nextLevel = this.currentLevel + 1;
 
         if(nextLevel < GameInfo.levels.length){
@@ -135,6 +137,21 @@ export default class GameScene extends Phaser.Scene {
         }
     }
 }
+
+  private unlockNextLevel() {
+    const completedLevels = this.getCompletedLevels();
+    const currentLevelIndex = this.currentLevel;
+    
+    if (!completedLevels.includes(currentLevelIndex)) {
+      completedLevels.push(currentLevelIndex);
+      localStorage.setItem('completedLevels', JSON.stringify(completedLevels));
+    }
+  }
+
+  private getCompletedLevels(): number[] {
+    const completed = localStorage.getItem('completedLevels');
+    return completed ? JSON.parse(completed) : [];
+  }
 
   private showLevelCompleteMessage() {
     const style = {

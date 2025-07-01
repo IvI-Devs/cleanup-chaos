@@ -1,4 +1,5 @@
 import { GameInfo } from "../GameInfo";
+import { GameData } from "../GameData";
 import WebFontFile from "../scenes/webFontFile";
 
 export default class MainMenuScene extends Phaser.Scene {
@@ -43,6 +44,8 @@ export default class MainMenuScene extends Phaser.Scene {
     
     if (localStorage.getItem('soundEffectsEnabled') === null) localStorage.setItem('soundEffectsEnabled', 'true');
 
+    if (localStorage.getItem('completedLevels') === null) localStorage.setItem('completedLevels', '[]');
+
     this._arcadeMode = this.add.text(this.scale.width - 175, this.scale.height - 50, "")
       .setDepth(1001)
       .setOrigin(0.5, 1)
@@ -83,6 +86,15 @@ export default class MainMenuScene extends Phaser.Scene {
     });
 
     this.spawnBackgroundAsteroids();
+
+    // Debug: Reset progress command (only during development)
+    if (GameData.globals.debug) {
+      (window as any).resetProgress = () => {
+        localStorage.setItem('completedLevels', '[]');
+        console.log('Progress reset - only level 1 is now available');
+      };
+      console.log('Debug mode enabled - use resetProgress() to reset level progression');
+    }
   }
 
   createMenu() {
