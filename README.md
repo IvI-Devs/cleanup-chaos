@@ -116,19 +116,26 @@ butler login
 cp .butler.toml.template .butler.toml
 ```
 
-4. Edit `.butler.toml` with your actual credentials:
+4. Edit `.butler.toml` with your actual values:
 ```toml
-# Butler configuration for Cleanup Chaos
-# https://itch.io/docs/butler/config.html
-
 [defaults]
-user = "your-itch-username"  # Replace with your itch.io username
-game = "your-game-name"      # Replace with your game name on itch.io
+user = "your-itch-username"
+game = "your-game-name"
 
 [channels.html5]
 path = "public"
 description = "Web version (HTML5)"
 ```
+
+**Configuration Notes:**
+- Copy the template from `.butler.toml.template` to get started
+- `user` MUST be the itch.io username that **owns** the game (not just the deployer)
+- `game` must match exactly the game name from the itch.io URL
+- If the game URL is `https://lvl-devs.itch.io/cleanup-chaos`, then:
+  - `user = "lvl-devs"` (the game owner)
+  - `game = "cleanup-chaos"` (the game identifier)
+- The person deploying must have collaboration permissions on the itch.io game
+- Butler credentials (from `butler login`) must have deployment access to this specific game
 
 5. The deployment scripts will automatically read your credentials from `.butler.toml`
 
