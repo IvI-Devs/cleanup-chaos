@@ -47,8 +47,7 @@ Guardians of the Void puts you in control of a space cleanup vessel tasked with 
 • **Phaser 3**: Powerful HTML5 game framework for 2D game development  
 • **TypeScript**: Type-safe JavaScript for robust game logic  
 • **Webpack**: Module bundler for efficient asset management and building  
-• **SCSS**: Advanced CSS preprocessing for responsive styling  
-• **HTML5 Canvas**: Hardware-accelerated graphics rendering  
+• **npm/pnpm**: Package management and build automation  
 
 ## 🛠️ Development
 
@@ -61,7 +60,7 @@ Guardians of the Void puts you in control of a space cleanup vessel tasked with 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/IvI-Devs/cleanup-chaos.git
+git clone https://github.com/lvl-devs/cleanup-chaos.git
 cd cleanup-chaos
 ```
 
@@ -148,17 +147,44 @@ npm run deploy
 
 ```
 cleanup-chaos/
+├── .butler.toml              # Butler deployment configuration
+├── .butler.toml.template     # Butler configuration template
+├── deploy.sh                 # Production deployment script
+├── test-deploy.sh            # Test deployment script
+├── package.json              # Project dependencies and scripts
+├── tsconfig.json             # TypeScript configuration
 ├── src/
-│   ├── scenes/          # Game scenes (Menu, Game, Credits, etc.)
-│   ├── assets/          # Game assets (images, sounds, music)
-│   ├── scss/            # Stylesheets
-│   ├── GameData.ts      # Game configuration
-│   ├── GameInfo.ts      # Game metadata
-│   └── index.ts         # Main game entry point
-├── dist/                # Built game files
-├── public/              # Production build output (used for deployment)
-├── webpack/             # Webpack configuration
-└── deployment-check.js  # Build verification script
+│   ├── assets/               # Game assets
+│   │   ├── fonts/            # Font files
+│   │   ├── images/           # Game images
+│   │   │   ├── asteroids/    # Asteroid sprites
+│   │   │   ├── backgrounds/  # Background images
+│   │   │   ├── hearts/       # Health UI sprites
+│   │   │   ├── other/        # Miscellaneous sprites
+│   │   │   ├── power-ups/    # Power-up sprites
+│   │   │   ├── ships/        # Player ship sprites
+│   │   │   └── trash/        # Collectible trash sprites
+│   │   ├── music/            # Background music files
+│   │   └── sounds/           # Sound effects
+│   ├── scenes/               # Phaser game scenes
+│   │   ├── CreditsScene.ts
+│   │   ├── GameScene.ts      # Main gameplay scene
+│   │   ├── MainMenuScene.ts
+│   │   ├── Preloader.ts
+│   │   └── ...               # Other scene files
+│   ├── pwa/                  # Progressive Web App files
+│   ├── scss/                 # SCSS stylesheets
+│   ├── GameData.ts           # Game configuration and data
+│   ├── GameInfo.ts           # Game metadata and information
+│   ├── index.ts              # Main game entry point
+│   ├── style.ts              # Game styling
+│   └── index.html            # HTML template
+├── public/                   # Production build output
+├── typings/                  # TypeScript type definitions
+└── webpack/                  # Webpack configuration files
+    ├── webpack.common.js
+    ├── webpack.dev.js
+    └── webpack.prod.js
 ```
 
 ## 🎯 Game Features
