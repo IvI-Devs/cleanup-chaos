@@ -217,7 +217,7 @@ This project is open-source and available under the GPL-3.0 License. See the [LI
 
 ## 🔗 Links
 
-- [Play the Game](https://your-itch-username.itch.io/your-game-name)
+- [Play the Game](https://lvl-devs.itch.io/cleanup-chaos)
 - [Report Issues](https://github.com/lvl-Devs/cleanup-chaos/issues)
 - [Contribute](https://github.com/lvl-Devs/cleanup-chaos/pulls)
 
